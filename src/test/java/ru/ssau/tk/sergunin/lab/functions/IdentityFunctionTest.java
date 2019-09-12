@@ -8,6 +8,7 @@ public class IdentityFunctionTest {
 
     @Test
     public void testApply() {
-        assertEquals(IdentityFunction.apply(5), 5, 0.0001);
+        MathFunction x=new IdentityFunction();
+        assertEquals(x.apply(5), 5, 0.0001);
     }
 }
