@@ -29,10 +29,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
             newNode.prev = last;
             head.prev = newNode;
             last.next = newNode;
+            newNode.index=last.index+1;
             newNode.x = x;
             newNode.y = y;
             last = newNode;
-            newNode.index++;
+
         }
     }
 
@@ -55,7 +56,6 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
             this.addNode(buff, source.apply(buff));
             buff += step;
         }
-        ;
     }
 
     public int getCount() {
@@ -70,10 +70,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
         return last.y;
     }
 
-    public Node getNode(int index) {
-        if (index > (getCount() / 2)) {
+    protected Node getNode(int index) {
+        if (index > (last.index / 2)) {
             buff = last;
-            for (int i = getCount() + 1; i > 0; i--) {
+            for (int i = last.index; i > 0; i--) {
                 if (buff.index == i) {
                     return buff;
                 } else {
