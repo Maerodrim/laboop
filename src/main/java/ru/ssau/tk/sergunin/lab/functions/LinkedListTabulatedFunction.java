@@ -14,23 +14,24 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     void addNode(double x, double y) {
-        Node newclass = new Node();
+        Node newNode = new Node();
         if (head == null) {
-            head = newclass;
-            newclass.next = head;
-            newclass.prev = head;
-            newclass.x = x;
-            newclass.y = y;
-            last = newclass;
-            newclass.index = 0;
+            head = newNode;
+            newNode.next = head;
+            newNode.prev = head;
+            newNode.x = x;
+            newNode.y = y;
+            last = newNode;
+            newNode.index = 0;
         } else {
-            newclass.next = head;
-            newclass.prev = last;
-            head.prev = newclass;
-            newclass.x = x;
-            newclass.y = y;
-            last = newclass;
-            newclass.index++;
+            newNode.next = head;
+            newNode.prev = last;
+            head.prev = newNode;
+            last.next = newNode;
+            newNode.x = x;
+            newNode.y = y;
+            last = newNode;
+            newNode.index++;
         }
     }
 
