@@ -56,19 +56,19 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
         ;
     }
 
-    int getCount() {
+    public int getCount() {
         return last.index;
     }
 
-    Node leftBound() {
-        return head;
+    public double leftBound() {
+        return head.y;
     }
 
-    Node rightBound() {
-        return last;
+    public double rightBound() {
+        return last.y;
     }
 
-    Node getNode(int index) {
+    public Node getNode(int index) {
         if (index > (getCount() / 2)) {
             Node buff = last;
             for (int i = getCount() + 1; i > 0; i--) {
@@ -91,19 +91,19 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
         return null;
     }
 
-    double getX(int index) {
+    public double getX(int index) {
         return getNode(index).x;
     }
 
-    double getY(int index) {
+    public double getY(int index) {
         return getNode(index).y;
     }
 
-    void setY(int index, double value) {
+    public void setY(int index, double value) {
         getNode(index).y = value;
     }
 
-    int indexOfX(double x) {
+    public int indexOfX(double x) {
         Node buff = head;
         for (int i = 0; i <= getCount(); i++) {
             if (buff.x == x) {
@@ -115,7 +115,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
         return -1;
     }
 
-    int indexOfY(double y) {
+    public int indexOfY(double y) {
         Node buff = head;
         for (int i = 0; i <= getCount(); i++) {
             if (buff.y == y) {
@@ -125,5 +125,24 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
             }
         }
         return -1;
+    }
+
+    public int floorIndexOfX(double x) {
+        return 0;
+    }
+
+    @Override
+    double extrapolateLeft(double x) {
+        return 0;
+    }
+
+    @Override
+    double extrapolateRight(double x) {
+        return 0;
+    }
+
+    @Override
+    double interpolate(double x, int floorIndex) {
+        return 0;
     }
 }
