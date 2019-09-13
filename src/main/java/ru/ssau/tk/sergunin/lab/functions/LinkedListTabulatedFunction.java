@@ -3,6 +3,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
     private Node head;
     private Node last;
+    private Node buff;
 
     private class Node {
         public int index;
@@ -48,10 +49,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
             xTo = xFrom + xTo;
             xFrom = -xFrom + xTo;
         }
+        double step=(xTo - xFrom) / (count-1);
         double buff = xFrom;
-        for (int i = 0; i < (count + 1); i++) {
+        for (int i = 0; i <count; i++) {
             this.addNode(buff, source.apply(buff));
-            buff += (xTo - xFrom) / count;
+            buff += step;
         }
         ;
     }
@@ -70,7 +72,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
 
     public Node getNode(int index) {
         if (index > (getCount() / 2)) {
-            Node buff = last;
+            buff = last;
             for (int i = getCount() + 1; i > 0; i--) {
                 if (buff.index == i) {
                     return buff;
@@ -79,7 +81,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
                 }
             }
         } else {
-            Node buff = head;
+            buff = head;
             for (int i = 0; i < (index + 1); i++) {
                 if (buff.index == i) {
                     return buff;
@@ -104,7 +106,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     public int indexOfX(double x) {
-        Node buff = head;
+        buff = head;
         for (int i = 0; i <= getCount(); i++) {
             if (buff.x == x) {
                 return buff.index;
@@ -116,7 +118,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     public int indexOfY(double y) {
-        Node buff = head;
+        buff = head;
         for (int i = 0; i <= getCount(); i++) {
             if (buff.y == y) {
                 return buff.index;
@@ -128,7 +130,17 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     public int floorIndexOfX(double x) {
-        return 0;
+        buff = head;
+        Node floorX=head;
+        for (int i = 0; i <= getCount(); i++) {
+            if (buff.x == x) {
+                return buff.index;
+            } else {
+                if(x>floorX.x){floorX=buff;}
+                buff = buff.next;
+            }
+        }
+        return floorX.index;
     }
 
     @Override
