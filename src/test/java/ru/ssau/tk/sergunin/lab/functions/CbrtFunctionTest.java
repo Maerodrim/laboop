@@ -4,11 +4,11 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
-public class Sqrt3FunctionTest {
+public class CbrtFunctionTest {
 
     @Test
     public void testApply() {
-        MathFunction x=new Sqrt3Function();
+        MathFunction x=new CbrtFunction();
         assertEquals(x.apply(5), Math.pow(5,1./3), 0.0001);
     }
 }
