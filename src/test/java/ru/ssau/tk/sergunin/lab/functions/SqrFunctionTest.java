@@ -4,11 +4,11 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
-public class IdentityFunctionTest {
+public class SqrFunctionTest {
 
     @Test
     public void testApply() {
-        MathFunction x = new IdentityFunction();
-        assertEquals(x.apply(5), 5, 0.0001);
+        MathFunction x = new SqrFunction();
+        assertEquals(x.apply(5), 25, 0.0001);
     }
 }
