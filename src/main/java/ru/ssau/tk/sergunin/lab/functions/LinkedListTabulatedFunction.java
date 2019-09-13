@@ -49,9 +49,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
             xTo = xFrom + xTo;
             xFrom = -xFrom + xTo;
         }
-        double step=(xTo - xFrom) / (count-1);
+        double step = (xTo - xFrom) / (count - 1);
         double buff = xFrom;
-        for (int i = 0; i <count; i++) {
+        for (int i = 0; i < count; i++) {
             this.addNode(buff, source.apply(buff));
             buff += step;
         }
@@ -131,12 +131,16 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
 
     public int floorIndexOfX(double x) {
         buff = head;
-        Node floorX=head;
+        Node floorX = head;
         for (int i = 0; i <= getCount(); i++) {
             if (buff.x == x) {
                 return buff.index;
             } else {
-                if(x>floorX.x){floorX=buff;}
+                if (x > floorX.x) {
+                    floorX = buff;
+                } else {
+                    return floorX.index;
+                }
                 buff = buff.next;
             }
         }
