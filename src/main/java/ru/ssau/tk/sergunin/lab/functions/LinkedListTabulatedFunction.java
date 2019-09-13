@@ -69,19 +69,18 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     Node getNode(int index) {
-        if(index>(getCount()/2)){
+        if (index > (getCount() / 2)) {
             Node buff = last;
-            for (int i = getCount(); i > 0; i--) {
+            for (int i = getCount() + 1; i > 0; i--) {
                 if (buff.index == i) {
                     return buff;
                 } else {
                     buff = buff.prev;
                 }
             }
-        }
-        else{
+        } else {
             Node buff = head;
-            for (int i = 0; i < (index+1); i++) {
+            for (int i = 0; i < (index + 1); i++) {
                 if (buff.index == i) {
                     return buff;
                 } else {
@@ -91,8 +90,40 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
         }
         return null;
     }
-//    getX(){};
-//   getY(){};
-//    setY(){};
 
+    double getX(int index) {
+        return getNode(index).x;
+    }
+
+    double getY(int index) {
+        return getNode(index).y;
+    }
+
+    void setY(int index, double value) {
+        getNode(index).y = value;
+    }
+
+    int indexOfX(double x) {
+        Node buff = head;
+        for (int i = 0; i <= getCount(); i++) {
+            if (buff.x == x) {
+                return buff.index;
+            } else {
+                buff = buff.next;
+            }
+        }
+        return -1;
+    }
+
+    int indexOfY(double y) {
+        Node buff = head;
+        for (int i = 0; i <= getCount(); i++) {
+            if (buff.y == y) {
+                return buff.index;
+            } else {
+                buff = buff.next;
+            }
+        }
+        return -1;
+    }
 }
