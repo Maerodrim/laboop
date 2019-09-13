@@ -161,4 +161,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
     double interpolate(double x, int floorIndex) {
         return 0;
     }
+
+    @Override
+    public void insert(double x, double y) {
+
+    }
 }

@@ -121,4 +121,9 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction{
     public double rightBound() {
         return xValues[count - 1];
     }
+
+    @Override
+    public void insert(double x, double y) {
+
+    }
 }
