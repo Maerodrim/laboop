@@ -14,68 +14,111 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction{
     }
 
     ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count){
-        xFrom = xFrom - xTo;
-        xTo = xFrom + xTo;
-        xFrom = -xFrom + xTo;
+        this.count = count;
+        if (xFrom > xTo) {
+            xFrom = xFrom - xTo;
+            xTo = xFrom + xTo;
+            xFrom = -xFrom + xTo;
+        }
+        xValues = new double[count];
+        yValues = new double[count];
+        double buff = xFrom;
+        double step = (xTo - xFrom) / (count-1);
+        if (xFrom != xTo) {
+            for (int i = 0; i < count; i++) {
+                xValues[i] = buff;
+                yValues[i] = source.apply(buff);
+                buff += step;
+            }
+        }
+        else {
+            double funcXFrom = source.apply(xFrom);
+            for (int i = 0; i < count; i++) {
+                xValues[i] = xFrom;
+                yValues[i] = funcXFrom;
+                buff += step;
+            }
+        }
     }
 
     @Override
     int floorIndexOfX(double x) {
-        return 0;
+        int i;
+        if (x < leftBound()) {
+            return 0;
+        }
+        for(i = 0; i < count; i++) {
+            if (xValues[i] > x){
+                return i-1;
+            }
+        }
+        return count;
     }
 
     @Override
     double extrapolateLeft(double x) {
-        return 0;
+        return interpolate(x, xValues[0], xValues[1], yValues[0], yValues[1]);
     }
 
     @Override
     double extrapolateRight(double x) {
-        return 0;
+        return interpolate(x, xValues[count - 2], xValues[count - 1], yValues[count - 2], yValues[count - 1]);
     }
 
     @Override
     double interpolate(double x, int floorIndex) {
-        return 0;
+        return interpolate(x, xValues[floorIndex], xValues[floorIndex + 1], yValues[floorIndex], yValues[floorIndex + 1]);
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return count;
     }
 
     @Override
     public double getX(int index) {
-        return 0;
+        return xValues[index];
     }
 
     @Override
     public double getY(int index) {
-        return 0;
+        return yValues[index];
     }
 
     @Override
     public void setY(int index, double value) {
-
+        yValues[index] = value;
     }
 
     @Override
     public int indexOfX(double x) {
-        return 0;
+        int i;
+        for(i = 0; i < count; i++) {
+            if (xValues[i] == x){
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public int indexOfY(double y) {
-        return 0;
+        int i;
+        for(i = 0; i < count; i++) {
+            if (yValues[i] == y){
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public double leftBound() {
-        return 0;
+        return xValues[0];
     }
 
     @Override
     public double rightBound() {
-        return 0;
+        return xValues[count - 1];
     }
 }
