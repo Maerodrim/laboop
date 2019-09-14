@@ -1,10 +1,20 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
+public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable,Removable {
     private Node head;
     private Node last;
     private Node buff;
     private int count;
+
+    @Override
+    public void remove(int index) {
+        buff=getNode(index);
+        Node previous = buff.prev;
+        Node further = buff.next;
+        previous.next = further;
+        further.prev = previous;
+        count--;
+    }
 
     private class Node {
         Node next;
