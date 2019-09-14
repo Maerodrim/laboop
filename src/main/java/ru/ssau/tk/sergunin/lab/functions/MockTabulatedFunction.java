@@ -105,4 +105,9 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction{
     public double rightBound() {
         return x1;
     }
+
+    @Override
+    public void insert(double x, double y) {
+
+    }
 }
