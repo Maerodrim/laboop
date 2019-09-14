@@ -136,54 +136,52 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             setY(indexOfX(x), y);
         } else {
             int index = floorIndexOfX(x);
-            double[] xValues2 = new double[count + 1];
-            double[] yValues2 = new double[count + 1];
+            double[] xTmp = new double[count + 1];
+            double[] yTmp = new double[count + 1];
             if (index == 0) {
-                xValues2[0] = x;
-                yValues2[0] = y;
-                System.arraycopy(xValues, 0, xValues2, 1, count);
-                System.arraycopy(yValues, 0, yValues2, 1, count);
+                xTmp[0] = x;
+                yTmp[0] = y;
+                System.arraycopy(xValues, 0, xTmp, 1, count);
+                System.arraycopy(yValues, 0, yTmp, 1, count);
                 count++;
             } else if (index == count) {
-                System.arraycopy(xValues, 0, xValues2, 0, count);
-                System.arraycopy(yValues, 0, yValues2, 0, count);
-                xValues2[count] = x;
-                yValues2[count] = y;
+                System.arraycopy(xValues, 0, xTmp, 0, count);
+                System.arraycopy(yValues, 0, yTmp, 0, count);
+                xTmp[count] = x;
+                yTmp[count] = y;
                 count++;
             } else {
-                System.arraycopy(xValues, 0, xValues2, 0, index);
-                System.arraycopy(yValues, 0, yValues2, 0, index);
-                xValues2[index] = x;
-                yValues2[index] = y;
-                System.arraycopy(xValues, index, xValues2, index + 1, (count - index));
-                System.arraycopy(yValues, index, yValues2, index + 1, (count - index));
+                System.arraycopy(xValues, 0, xTmp, 0, index);
+                System.arraycopy(yValues, 0, yTmp, 0, index);
+                xTmp[index] = x;
+                yTmp[index] = y;
+                System.arraycopy(xValues, index, xTmp, index + 1, (count - index));
+                System.arraycopy(yValues, index, yTmp, index + 1, (count - index));
                 count++;
             }
-            this.xValues = xValues2;
-            this.yValues = yValues2;
+            this.xValues = xTmp;
+            this.yValues = yTmp;
         }
     }
 
     @Override
     public void remove(int index) {
-        double[] xValues2 = new double[count - 1];
-        double[] yValues2 = new double[count - 1];
+        double[] xTmp = new double[count - 1];
+        double[] yTmp = new double[count - 1];
         if (index == 0) {
-            System.arraycopy(xValues, 1, xValues2, 0, count);
-            System.arraycopy(yValues, 1, yValues2, 0, count);
-            count--;
+            System.arraycopy(xValues, 1, xTmp, 0, count);
+            System.arraycopy(yValues, 1, yTmp, 0, count);
         } else if (index == count) {
-            System.arraycopy(xValues, 0, xValues2, 0, count - 1);
-            System.arraycopy(yValues, 0, yValues2, 0, count - 1);
-            count--;
+            System.arraycopy(xValues, 0, xTmp, 0, count - 1);
+            System.arraycopy(yValues, 0, yTmp, 0, count - 1);
         } else {
-            System.arraycopy(xValues, 0, xValues2, 0, index);
-            System.arraycopy(yValues, 0, yValues2, 0, index);
-            System.arraycopy(xValues, index + 1, xValues2, index, (count - index - 1));
-            System.arraycopy(yValues, index + 1, yValues2, index, (count - index - 1));
-            count--;
+            System.arraycopy(xValues, 0, xTmp, 0, index);
+            System.arraycopy(yValues, 0, yTmp, 0, index);
+            System.arraycopy(xValues, index + 1, xTmp, index, (count - index - 1));
+            System.arraycopy(yValues, index + 1, yTmp, index, (count - index - 1));
         }
-        this.xValues = xValues2;
-        this.yValues = yValues2;
+        count--;
+        this.xValues = xTmp;
+        this.yValues = yTmp;
     }
 }
