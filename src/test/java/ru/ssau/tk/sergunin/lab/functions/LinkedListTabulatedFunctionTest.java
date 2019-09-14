@@ -111,7 +111,7 @@ public class LinkedListTabulatedFunctionTest {
 
     @Test
     public void testApply() {
-        assertEquals(FirstList.apply(1.5), 3, accuracy);
+        assertEquals(FirstList.apply(1), 2, accuracy);
     }
 
 }
