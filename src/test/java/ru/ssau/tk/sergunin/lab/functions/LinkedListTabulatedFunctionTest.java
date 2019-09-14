@@ -1,6 +1,5 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import org.testng.annotations.AfterSuite;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -108,6 +107,11 @@ public class LinkedListTabulatedFunctionTest {
         assertEquals(FirstList.getY(1), 10, accuracy);
         assertEquals(FirstList.indexOfX(3.5), 4, accuracy);
         assertEquals(FirstList.indexOfX(7), 7, accuracy);
+    }
+
+    @Test
+    public void testApply() {
+        assertEquals(FirstList.apply(1.5), 3, accuracy);
     }
 
 }

@@ -197,4 +197,37 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
             }
         }
     }
+
+    @Override
+    public double apply(double x) {
+        if (x < leftBound()) {
+            return extrapolateLeft(x);
+        }
+        else if (x > rightBound()) {
+            return extrapolateRight(x);
+        }
+        else if (indexOfX(x) != -1){
+            return getY(indexOfX(x));
+        }
+        else {
+            Node left = floorNodeOfX(x);
+            Node right = left.next;
+            return left.y + (right.y - left.y) * (x - left.x) / (right.x - left.x);
+        }
+    }
+
+    protected Node floorNodeOfX(double x){
+        if (x < head.x) {
+            return head;
+        }
+        buff = head;
+        for (int i = 0; i < getCount(); i++) {
+            if (buff.x < x) {
+                buff = buff.next;
+            } else {
+                return buff.prev;
+            }
+        }
+        return last;
+    }
 }
