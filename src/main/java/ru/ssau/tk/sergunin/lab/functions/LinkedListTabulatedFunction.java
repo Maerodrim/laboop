@@ -4,13 +4,13 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
     private Node head;
     private Node last;
     private Node buff;
+    private int count;
 
     private class Node {
-        public int index;
-        public Node next;
-        public Node prev;
-        public double x;
-        public double y;
+        Node next;
+        Node prev;
+        double x;
+        double y;
 
     }
 
@@ -23,28 +23,26 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
             newNode.x = x;
             newNode.y = y;
             last = newNode;
-            newNode.index = 0;
         } else {
             newNode.next = head;
             newNode.prev = last;
             head.prev = newNode;
             last.next = newNode;
-            newNode.index=last.index+1;
             newNode.x = x;
             newNode.y = y;
             last = newNode;
-
         }
     }
 
     public LinkedListTabulatedFunction(double[] xValues, double[] yValues) {
-        for (int i = 0; i < xValues.length; i++) {
+        this.count = xValues.length;
+        for (int i = 0; i < count; i++) {
             this.addNode(xValues[i], yValues[i]);
         }
     }
 
     public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
-
+        this.count = count;
         if (xFrom > xTo) {
             xFrom = xFrom - xTo;
             xTo = xFrom + xTo;
@@ -59,22 +57,22 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     public int getCount() {
-        return last.index;
+        return count;
     }
 
     public double leftBound() {
-        return head.y;
+        return head.x;
     }
 
     public double rightBound() {
-        return last.y;
+        return last.x;
     }
 
     protected Node getNode(int index) {
-        if (index > (last.index / 2)) {
+        if (index > (count / 2)) {
             buff = last;
-            for (int i = last.index; i > 0; i--) {
-                if (buff.index == i) {
+            for (int i = count - 1; i > 0; i--) {
+                if (i == index) {
                     return buff;
                 } else {
                     buff = buff.prev;
@@ -82,8 +80,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
             }
         } else {
             buff = head;
-            for (int i = 0; i < (index + 1); i++) {
-                if (buff.index == i) {
+            for (int i = 0; i < count; i++) {
+                if (index == i) {
                     return buff;
                 } else {
                     buff = buff.next;
@@ -107,9 +105,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
 
     public int indexOfX(double x) {
         buff = head;
-        for (int i = 0; i <= getCount(); i++) {
+        for (int i = 0; i < count; i++) {
             if (buff.x == x) {
-                return buff.index;
+                return i;
             } else {
                 buff = buff.next;
             }
@@ -119,9 +117,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
 
     public int indexOfY(double y) {
         buff = head;
-        for (int i = 0; i <= getCount(); i++) {
+        for (int i = 0; i < count; i++) {
             if (buff.y == y) {
-                return buff.index;
+                return i;
             } else {
                 buff = buff.next;
             }
@@ -130,35 +128,123 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     public int floorIndexOfX(double x) {
+        if (x < head.x) {
+            return 0;
+        }
         buff = head;
-        Node floorX = head;
-        for (int i = 0; i <= getCount(); i++) {
-            if (buff.x == x) {
-                return buff.index;
-            } else {
-                if (x > floorX.x) {
-                    floorX = buff;
-                } else {
-                    return floorX.index;
-                }
+        for (int i = 0; i < count; i++) {
+            if (buff.x < x) {
                 buff = buff.next;
+            } else {
+                return i - 1;
             }
         }
-        return floorX.index;
+        return getCount();
     }
 
     @Override
     double extrapolateLeft(double x) {
-        return 0;
+        if (count == 1) {
+            return x;
+        }
+        return head.y + (head.next.y - head.y) * (x - head.x) / (head.next.x - head.x);
     }
 
     @Override
     double extrapolateRight(double x) {
-        return 0;
+        if (count == 1) {
+            return x;
+        }
+        return last.prev.y + (last.y - last.prev.y) * (x - last.prev.x) / (last.x - last.prev.x);
     }
 
     @Override
     double interpolate(double x, int floorIndex) {
-        return 0;
+        if (count == 1) {
+            return x;
+        }
+        Node left = getNode(floorIndex);
+        Node right = left.next;
+        return left.y + (right.y - left.y) * (x - left.x) / (right.x - left.x);
+    }
+
+    public void insert(double x, double y) {
+        if (indexOfX(x) != -1) {
+            setY(indexOfX(x), y);
+        } else {
+            int index = floorIndexOfX(x);
+            Node newNode = new Node();
+            if (index == 0) {
+                newNode.next = head;
+                newNode.prev = last;
+                newNode.x = x;
+                newNode.y = y;
+                head.prev = newNode;
+                last.next = newNode;
+                head = newNode;
+                count++;
+            } else if (index == count) {
+                newNode.next = head;
+                newNode.prev = last;
+                newNode.x = x;
+                newNode.y = y;
+                head.prev = newNode;
+                last.next = newNode;
+                last = newNode;
+                count++;
+            } else {
+                Node previous = getNode(index);
+                Node further = getNode(index + 1);
+                newNode.next = further;
+                newNode.prev = previous;
+                newNode.x = x;
+                newNode.y = y;
+                previous.next = newNode;
+                further.prev = newNode;
+                count++;
+            }
+        }
+    }
+
+    @Override
+    public double apply(double x) {
+        if (x < leftBound()) {
+            return extrapolateLeft(x);
+        } else if (x > rightBound()) {
+            return extrapolateRight(x);
+        } else if (nodeOfX(x) != null) {
+            return nodeOfX(x).y;
+        } else {
+            Node left = floorNodeOfX(x);
+            Node right = left.next;
+            return left.y + (right.y - left.y) * (x - left.x) / (right.x - left.x);
+        }
+    }
+
+    protected Node floorNodeOfX(double x) {
+        if (x < head.x) {
+            return head;
+        }
+        buff = head;
+        for (int i = 0; i < count; i++) {
+            if (buff.x < x) {
+                buff = buff.next;
+            } else {
+                return buff.prev;
+            }
+        }
+        return last;
+    }
+
+    protected Node nodeOfX(double x) {
+        buff = head;
+        for (int i = 0; i < count; i++) {
+            if (buff.x == x) {
+                return buff;
+            } else {
+                buff = buff.next;
+            }
+        }
+        return null;
     }
 }
