@@ -1,7 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import java.util.Arrays;
-public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable{
+
+public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private double[] xValues;
     private double[] yValues;
     private int count;
@@ -12,7 +13,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         this.yValues = Arrays.copyOf(yValues, count);
     }
 
-    ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count){
+    ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
         this.count = count;
         if (xFrom > xTo) {
             xFrom = xFrom - xTo;
@@ -22,15 +23,14 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         xValues = new double[count];
         yValues = new double[count];
         double buff = xFrom;
-        double step = (xTo - xFrom) / (count-1);
+        double step = (xTo - xFrom) / (count - 1);
         if (xFrom != xTo) {
             for (int i = 0; i < count; i++) {
                 xValues[i] = buff;
                 yValues[i] = source.apply(buff);
                 buff += step;
             }
-        }
-        else {
+        } else {
             double funcXFrom = source.apply(xFrom);
             for (int i = 0; i < count; i++) {
                 xValues[i] = xFrom;
@@ -46,9 +46,9 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         if (x < leftBound()) {
             return 0;
         }
-        for(i = 0; i < count; i++) {
-            if (xValues[i] > x){
-                return i-1;
+        for (i = 0; i < count; i++) {
+            if (xValues[i] > x) {
+                return i - 1;
             }
         }
         return count;
@@ -101,8 +101,8 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @Override
     public int indexOfX(double x) {
         int i;
-        for(i = 0; i < count; i++) {
-            if (xValues[i] == x){
+        for (i = 0; i < count; i++) {
+            if (xValues[i] == x) {
                 return i;
             }
         }
@@ -112,8 +112,8 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @Override
     public int indexOfY(double y) {
         int i;
-        for(i = 0; i < count; i++) {
-            if (yValues[i] == y){
+        for (i = 0; i < count; i++) {
+            if (yValues[i] == y) {
                 return i;
             }
         }
@@ -136,31 +136,54 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             setY(indexOfX(x), y);
         } else {
             int index = floorIndexOfX(x);
-            double[] xValues2=new double[this.count+1];
-            double[] yValues2=new double[this.count+1];
+            double[] xValues2 = new double[count + 1];
+            double[] yValues2 = new double[count + 1];
             if (index == 0) {
-                xValues2[0]=x;
-                yValues2[0]=y;
-                System.arraycopy(xValues, 0, xValues2, 1, this.count);
-                System.arraycopy(yValues, 0, yValues2, 1, this.count);
-                this.count+=1;
+                xValues2[0] = x;
+                yValues2[0] = y;
+                System.arraycopy(xValues, 0, xValues2, 1, count);
+                System.arraycopy(yValues, 0, yValues2, 1, count);
+                count++;
             } else if (index == count) {
-                System.arraycopy(xValues, 0, xValues2, 0, this.count);
-                System.arraycopy(yValues, 0, yValues2, 0, this.count);
-                xValues2[count]=x;
-                yValues2[count]=y;
-                this.count+=1;
+                System.arraycopy(xValues, 0, xValues2, 0, count);
+                System.arraycopy(yValues, 0, yValues2, 0, count);
+                xValues2[count] = x;
+                yValues2[count] = y;
+                count++;
             } else {
                 System.arraycopy(xValues, 0, xValues2, 0, index);
                 System.arraycopy(yValues, 0, yValues2, 0, index);
-                xValues2[index]=x;
-                yValues2[index]=y;
-                System.arraycopy(xValues, index, xValues2, index+1, (this.count-index));
-                System.arraycopy(yValues, index, yValues2, index+1, (this.count-index));
-                this.count+=1;
+                xValues2[index] = x;
+                yValues2[index] = y;
+                System.arraycopy(xValues, index, xValues2, index + 1, (count - index));
+                System.arraycopy(yValues, index, yValues2, index + 1, (count - index));
+                count++;
             }
-            this.xValues=xValues2;
-            this.yValues=yValues2;
+            this.xValues = xValues2;
+            this.yValues = yValues2;
         }
+    }
+
+    @Override
+    public void remove(int index) {
+        double[] xValues2 = new double[count - 1];
+        double[] yValues2 = new double[count - 1];
+        if (index == 0) {
+            System.arraycopy(xValues, 1, xValues2, 0, count);
+            System.arraycopy(yValues, 1, yValues2, 0, count);
+            count--;
+        } else if (index == count) {
+            System.arraycopy(xValues, 0, xValues2, 0, count - 1);
+            System.arraycopy(yValues, 0, yValues2, 0, count - 1);
+            count--;
+        } else {
+            System.arraycopy(xValues, 0, xValues2, 0, index);
+            System.arraycopy(yValues, 0, yValues2, 0, index);
+            System.arraycopy(xValues, index + 1, xValues2, index, (count - index - 1));
+            System.arraycopy(yValues, index + 1, yValues2, index, (count - index - 1));
+            count--;
+        }
+        this.xValues = xValues2;
+        this.yValues = yValues2;
     }
 }

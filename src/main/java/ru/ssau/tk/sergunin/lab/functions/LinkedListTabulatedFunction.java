@@ -6,16 +6,6 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private Node buff;
     private int count;
 
-    @Override
-    public void remove(int index) {
-        buff=getNode(index);
-        Node previous = buff.prev;
-        Node further = buff.next;
-        previous.next = further;
-        further.prev = previous;
-        count--;
-    }
-
     private class Node {
         Node next;
         Node prev;
@@ -257,5 +247,15 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 count++;
             }
         }
+    }
+
+    @Override
+    public void remove(int index) {
+        buff = getNode(index);
+        Node previous = buff.prev;
+        Node further = buff.next;
+        previous.next = further;
+        further.prev = previous;
+        count--;
     }
 }
