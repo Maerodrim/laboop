@@ -1,8 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import java.util.Arrays;
-
-public class ArrayTabulatedFunction extends AbstractTabulatedFunction{
+public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable{
     private double[] xValues;
     private double[] yValues;
     private int count;
@@ -133,6 +132,35 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction{
 
     @Override
     public void insert(double x, double y) {
-
+        if (indexOfX(x) != -1) {
+            setY(indexOfX(x), y);
+        } else {
+            int index = floorIndexOfX(x);
+            double[] xValues2=new double[this.count+1];
+            double[] yValues2=new double[this.count+1];
+            if (index == 0) {
+                xValues2[0]=x;
+                yValues2[0]=y;
+                System.arraycopy(xValues, 0, xValues2, 1, this.count);
+                System.arraycopy(yValues, 0, yValues2, 1, this.count);
+                this.count+=1;
+            } else if (index == count) {
+                System.arraycopy(xValues, 0, xValues2, 0, this.count);
+                System.arraycopy(yValues, 0, yValues2, 0, this.count);
+                xValues2[count]=x;
+                yValues2[count]=y;
+                this.count+=1;
+            } else {
+                System.arraycopy(xValues, 0, xValues2, 0, index);
+                System.arraycopy(yValues, 0, yValues2, 0, index);
+                xValues2[index]=x;
+                yValues2[index]=y;
+                System.arraycopy(xValues, index, xValues2, index+1, (this.count-index));
+                System.arraycopy(yValues, index, yValues2, index+1, (this.count-index));
+                this.count+=1;
+            }
+            this.xValues=xValues2;
+            this.yValues=yValues2;
+        }
     }
 }

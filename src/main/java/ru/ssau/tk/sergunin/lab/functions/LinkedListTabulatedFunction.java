@@ -1,10 +1,20 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
+public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable,Removable {
     private Node head;
     private Node last;
     private Node buff;
     private int count;
+
+    @Override
+    public void remove(int index) {
+        buff=getNode(index);
+        Node previous = buff.prev;
+        Node further = buff.next;
+        previous.next = further;
+        further.prev = previous;
+        count--;
+    }
 
     private class Node {
         Node next;
@@ -169,45 +179,6 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     @Override
-    public void insert(double x, double y) {
-        if (indexOfX(x) != -1) {
-            setY(indexOfX(x), y);
-        } else {
-            int index = floorIndexOfX(x);
-            Node newNode = new Node();
-            if (index == 0) {
-                newNode.next = head;
-                newNode.prev = last;
-                newNode.x = x;
-                newNode.y = y;
-                head.prev = newNode;
-                last.next = newNode;
-                head = newNode;
-                count++;
-            } else if (index == count) {
-                newNode.next = head;
-                newNode.prev = last;
-                newNode.x = x;
-                newNode.y = y;
-                head.prev = newNode;
-                last.next = newNode;
-                last = newNode;
-                count++;
-            } else {
-                Node previous = getNode(index);
-                Node further = getNode(index + 1);
-                newNode.next = further;
-                newNode.prev = previous;
-                newNode.x = x;
-                newNode.y = y;
-                previous.next = newNode;
-                further.prev = newNode;
-                count++;
-            }
-        }
-    }
-
-    @Override
     public double apply(double x) {
         if (x < leftBound()) {
             return extrapolateLeft(x);
@@ -247,5 +218,44 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
             }
         }
         return null;
+    }
+
+    @Override
+    public void insert(double x, double y) {
+        if (indexOfX(x) != -1) {
+            setY(indexOfX(x), y);
+        } else {
+            int index = floorIndexOfX(x);
+            Node newNode = new Node();
+            if (index == 0) {
+                newNode.next = head;
+                newNode.prev = last;
+                newNode.x = x;
+                newNode.y = y;
+                head.prev = newNode;
+                last.next = newNode;
+                head = newNode;
+                count++;
+            } else if (index == count) {
+                newNode.next = head;
+                newNode.prev = last;
+                newNode.x = x;
+                newNode.y = y;
+                head.prev = newNode;
+                last.next = newNode;
+                last = newNode;
+                count++;
+            } else {
+                Node previous = getNode(index);
+                Node further = getNode(index + 1);
+                newNode.next = further;
+                newNode.prev = previous;
+                newNode.x = x;
+                newNode.y = y;
+                previous.next = newNode;
+                further.prev = newNode;
+                count++;
+            }
+        }
     }
 }
