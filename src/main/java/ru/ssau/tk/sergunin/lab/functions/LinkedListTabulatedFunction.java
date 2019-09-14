@@ -247,4 +247,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction {
         }
         return null;
     }
+
+    @Override
+    public void insert(double x, double y) {
+
+    }
 }

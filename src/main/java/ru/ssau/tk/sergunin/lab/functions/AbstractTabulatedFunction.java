@@ -22,7 +22,7 @@ public abstract class AbstractTabulatedFunction implements TabulatedFunction{
         else if (x > rightBound()) {
             return extrapolateRight(x);
         }
-        else if (indexOfX(x) == -1){
+        else if (indexOfX(x) != -1){
             return getY(indexOfX(x));
         }
         else {
