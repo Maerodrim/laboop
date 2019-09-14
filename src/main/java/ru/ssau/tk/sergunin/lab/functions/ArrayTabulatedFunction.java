@@ -57,16 +57,25 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction{
 
     @Override
     double extrapolateLeft(double x) {
+        if (count == 1) {
+            return x;
+        }
         return interpolate(x, xValues[0], xValues[1], yValues[0], yValues[1]);
     }
 
     @Override
     double extrapolateRight(double x) {
+        if (count == 1) {
+            return x;
+        }
         return interpolate(x, xValues[count - 2], xValues[count - 1], yValues[count - 2], yValues[count - 1]);
     }
 
     @Override
     double interpolate(double x, int floorIndex) {
+        if (count == 1) {
+            return x;
+        }
         return interpolate(x, xValues[floorIndex], xValues[floorIndex + 1], yValues[floorIndex], yValues[floorIndex + 1]);
     }
 
