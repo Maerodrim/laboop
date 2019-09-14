@@ -113,4 +113,9 @@ public class LinkedListTabulatedFunctionTest {
         assertEquals(FirstList.apply(1), 2, accuracy);
     }
 
+    @Test
+    public void testRemove() {
+        SecondList.remove(SecondList.getCount()-1);
+        assertEquals(SecondList.rightBound(), 10, accuracy);
+    }
 }
