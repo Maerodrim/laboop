@@ -17,6 +17,7 @@ public class ArrayTabulatedFunctionTest {
         assertEquals(firstArray.getCount(), 5, accuracy);
         assertEquals(secondArray.getCount(), 11, accuracy);
     }
+
     @Test
     public void testLeftBound() {
         assertEquals(firstArray.leftBound(), -2, accuracy);
