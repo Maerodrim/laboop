@@ -8,7 +8,7 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
     private double y1 = 10;
 
     @Override
-    int floorIndexOfX(double x) {
+    protected int floorIndexOfX(double x) {
         if (x < x0) {
             return 0;
         } else if (x > x0 && x < x1) {
@@ -19,17 +19,17 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     @Override
-    double extrapolateLeft(double x) {
+    protected double extrapolateLeft(double x) {
         return interpolate(x, x0, x1, y0, y1);
     }
 
     @Override
-    double extrapolateRight(double x) {
+    protected double extrapolateRight(double x) {
         return interpolate(x, x0, x1, y0, y1);
     }
 
     @Override
-    double interpolate(double x, int floorIndex) {
+    protected double interpolate(double x, int floorIndex) {
         return interpolate(x, x0, x1, y0, y1);
     }
 
@@ -97,8 +97,5 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
         return x1;
     }
 
-    @Override
-    public void insert(double x, double y) {
 
-    }
 }
