@@ -3,7 +3,6 @@ package ru.ssau.tk.sergunin.lab.functions;
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private Node head;
     private Node last;
-    private Node buff;
     private int count;
 
     private static class Node {
@@ -50,9 +49,15 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
         double step = (xTo - xFrom) / (count - 1);
         double buff = xFrom;
-        for (int i = 0; i < count; i++) {
-            this.addNode(buff, source.apply(buff));
-            buff += step;
+        if (xFrom != xTo) {
+            for (int i = 0; i < count; i++) {
+                this.addNode(buff, source.apply(buff));
+                buff += step;
+            }
+        } else {
+            for (int i = 0; i < count; i++) {
+                this.addNode(xFrom, source.apply(xFrom));
+            }
         }
     }
 
@@ -68,7 +73,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return last.x;
     }
 
-    protected Node getNode(int index) {
+    private Node getNode(int index) {
+        Node buff;
         if (index > (count / 2)) {
             buff = last;
             for (int i = count - 1; i > 0; i--) {
@@ -104,6 +110,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     public int indexOfX(double x) {
+        Node buff;
         buff = head;
         for (int i = 0; i < count; i++) {
             if (buff.x == x) {
@@ -116,6 +123,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     public int indexOfY(double y) {
+        Node buff;
         buff = head;
         for (int i = 0; i < count; i++) {
             if (buff.y == y) {
@@ -128,6 +136,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     public int floorIndexOfX(double x) {
+        Node buff;
         if (x < head.x) {
             return 0;
         }
@@ -144,24 +153,24 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     @Override
     protected double extrapolateLeft(double x) {
-        if (count == 1) {
-            return x;
+        if (head.x == last.x) {
+            return head.y;
         }
         return head.y + (head.next.y - head.y) * (x - head.x) / (head.next.x - head.x);
     }
 
     @Override
     protected double extrapolateRight(double x) {
-        if (count == 1) {
-            return x;
+        if (head.x == last.x) {
+            return head.y;
         }
         return last.prev.y + (last.y - last.prev.y) * (x - last.prev.x) / (last.x - last.prev.x);
     }
 
     @Override
     protected double interpolate(double x, int floorIndex) {
-        if (count == 1) {
-            return x;
+        if (head.x == last.x) {
+            return head.y;
         }
         Node left = getNode(floorIndex);
         Node right = left.next;
@@ -170,6 +179,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     @Override
     public double apply(double x) {
+        if (head.x == last.x) {
+            return head.y;
+        }
         if (x < leftBound()) {
             return extrapolateLeft(x);
         } else if (x > rightBound()) {
@@ -183,7 +195,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
     }
 
-    protected Node floorNodeOfX(double x) {
+    private Node floorNodeOfX(double x) {
+        Node buff;
         if (x < head.x) {
             return head;
         }
@@ -198,7 +211,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return last;
     }
 
-    protected Node nodeOfX(double x) {
+    private Node nodeOfX(double x) {
+        Node buff;
         buff = head;
         for (int i = 0; i < count; i++) {
             if (buff.x == x) {
@@ -237,7 +251,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 count++;
             } else {
                 Node previous = getNode(index);
-                Node further = getNode(index + 1);
+                Node further = previous.next;
                 newNode.next = further;
                 newNode.prev = previous;
                 newNode.x = x;
@@ -251,6 +265,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     @Override
     public void remove(int index) {
+        Node buff;
         buff = getNode(index);
         Node previous = buff.prev;
         Node further = buff.next;

@@ -11,7 +11,6 @@ public class MathFunctionTest {
     private MathFunction sqr = new SqrFunction();
     private MathFunction composite = sinh.andThen(sqr).andThen(cbrt);
 
-
     @Test
     public void testAndThen() {
         assertEquals(composite.apply(8), Math.sinh(4), 0.00001);
