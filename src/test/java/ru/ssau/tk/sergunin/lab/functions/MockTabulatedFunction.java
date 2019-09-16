@@ -1,6 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-public class MockTabulatedFunction extends AbstractTabulatedFunction{
+public class MockTabulatedFunction extends AbstractTabulatedFunction {
 
     private final double x0 = 0;
     private final double x1 = 1;
@@ -8,30 +8,28 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction{
     private double y1 = 10;
 
     @Override
-    int floorIndexOfX(double x) {
+    protected int floorIndexOfX(double x) {
         if (x < x0) {
             return 0;
-        }
-        else if (x > x0 && x < x1) {
+        } else if (x > x0 && x < x1) {
             return 1;
-        }
-        else {
+        } else {
             return 2;
         }
     }
 
     @Override
-    double extrapolateLeft(double x) {
+    protected double extrapolateLeft(double x) {
         return interpolate(x, x0, x1, y0, y1);
     }
 
     @Override
-    double extrapolateRight(double x) {
+    protected double extrapolateRight(double x) {
         return interpolate(x, x0, x1, y0, y1);
     }
 
     @Override
-    double interpolate(double x, int floorIndex) {
+    protected double interpolate(double x, int floorIndex) {
         return interpolate(x, x0, x1, y0, y1);
     }
 
@@ -44,8 +42,7 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction{
     public double getX(int index) {
         if (index == 0) {
             return x0;
-        }
-        else {
+        } else {
             return x1;
         }
     }
@@ -54,8 +51,7 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction{
     public double getY(int index) {
         if (index == 0) {
             return y0;
-        }
-        else {
+        } else {
             return y1;
         }
     }
@@ -64,8 +60,7 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction{
     public void setY(int index, double value) {
         if (index == 0) {
             y0 = value;
-        }
-        else {
+        } else {
             y1 = value;
         }
     }
@@ -74,11 +69,9 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction{
     public int indexOfX(double x) {
         if (x == x0) {
             return 0;
-        }
-        else if (x == x1) {
+        } else if (x == x1) {
             return 1;
-        }
-        else {
+        } else {
             return -1;
         }
     }
@@ -87,11 +80,9 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction{
     public int indexOfY(double y) {
         if (y == y0) {
             return 0;
-        }
-        else if (y == y1) {
+        } else if (y == y1) {
             return 1;
-        }
-        else {
+        } else {
             return -1;
         }
     }
@@ -106,8 +97,5 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction{
         return x1;
     }
 
-    @Override
-    public void insert(double x, double y) {
 
-    }
 }

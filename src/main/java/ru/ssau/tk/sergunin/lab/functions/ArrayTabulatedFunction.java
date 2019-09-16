@@ -41,7 +41,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    int floorIndexOfX(double x) {
+    protected int floorIndexOfX(double x) {
         int i;
         if (x < leftBound()) {
             return 0;
@@ -55,7 +55,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    double extrapolateLeft(double x) {
+    protected double extrapolateLeft(double x) {
         if (count == 1) {
             return x;
         }
@@ -63,7 +63,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    double extrapolateRight(double x) {
+    protected double extrapolateRight(double x) {
         if (count == 1) {
             return x;
         }
@@ -71,7 +71,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    double interpolate(double x, int floorIndex) {
+    protected double interpolate(double x, int floorIndex) {
         if (count == 1) {
             return x;
         }

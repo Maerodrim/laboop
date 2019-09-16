@@ -8,7 +8,7 @@ public class CbrtFunctionTest {
 
     @Test
     public void testApply() {
-        MathFunction x=new CbrtFunction();
-        assertEquals(x.apply(5), Math.pow(5,1./3), 0.0001);
+        MathFunction x = new CbrtFunction();
+        assertEquals(x.apply(5), Math.pow(5, 1. / 3), 0.0001);
     }
 }

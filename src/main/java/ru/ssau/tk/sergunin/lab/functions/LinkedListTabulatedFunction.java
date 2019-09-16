@@ -1,12 +1,12 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable,Removable {
+public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private Node head;
     private Node last;
     private Node buff;
     private int count;
 
-    private class Node {
+    private static class Node {
         Node next;
         Node prev;
         double x;
@@ -143,7 +143,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    double extrapolateLeft(double x) {
+    protected double extrapolateLeft(double x) {
         if (count == 1) {
             return x;
         }
@@ -151,7 +151,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    double extrapolateRight(double x) {
+    protected double extrapolateRight(double x) {
         if (count == 1) {
             return x;
         }
@@ -159,7 +159,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    double interpolate(double x, int floorIndex) {
+    protected double interpolate(double x, int floorIndex) {
         if (count == 1) {
             return x;
         }
