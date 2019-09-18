@@ -176,10 +176,10 @@ public class ArrayTabulatedFunctionTest {
     @Test
     public void testRemove() {
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        secondArray.remove(secondArray.getCount() - 1);
-        assertEquals(secondArray.rightBound(), 9, accuracy);
+        secondArray.remove(secondArray.getCount() - 2);
+        assertEquals(secondArray.rightBound(), 10, accuracy);
         secondArray.remove(0);
-        assertEquals(secondArray.rightBound(), 9, accuracy);
+        assertEquals(secondArray.leftBound(), 1, accuracy);
         secondArray.remove(8);
         assertEquals(secondArray.getCount(), 8, accuracy);
     }
