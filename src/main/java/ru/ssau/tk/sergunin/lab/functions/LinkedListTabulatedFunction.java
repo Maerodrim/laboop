@@ -5,34 +5,6 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private Node last;
     private int count;
 
-    private static class Node {
-        Node next;
-        Node prev;
-        double x;
-        double y;
-
-    }
-
-    void addNode(double x, double y) {
-        Node newNode = new Node();
-        if (head == null) {
-            head = newNode;
-            newNode.next = head;
-            newNode.prev = head;
-            newNode.x = x;
-            newNode.y = y;
-            last = newNode;
-        } else {
-            newNode.next = head;
-            newNode.prev = last;
-            head.prev = newNode;
-            last.next = newNode;
-            newNode.x = x;
-            newNode.y = y;
-            last = newNode;
-        }
-    }
-
     public LinkedListTabulatedFunction(double[] xValues, double[] yValues) {
         this.count = xValues.length;
         for (int i = 0; i < count; i++) {
@@ -58,6 +30,26 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             for (int i = 0; i < count; i++) {
                 this.addNode(xFrom, source.apply(xFrom));
             }
+        }
+    }
+
+    void addNode(double x, double y) {
+        Node newNode = new Node();
+        if (head == null) {
+            head = newNode;
+            newNode.next = head;
+            newNode.prev = head;
+            newNode.x = x;
+            newNode.y = y;
+            last = newNode;
+        } else {
+            newNode.next = head;
+            newNode.prev = last;
+            head.prev = newNode;
+            last.next = newNode;
+            newNode.x = x;
+            newNode.y = y;
+            last = newNode;
         }
     }
 
@@ -272,5 +264,13 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         previous.next = further;
         further.prev = previous;
         count--;
+    }
+
+    private static class Node {
+        Node next;
+        Node prev;
+        double x;
+        double y;
+
     }
 }

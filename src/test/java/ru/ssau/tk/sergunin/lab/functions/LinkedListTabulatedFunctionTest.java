@@ -5,10 +5,10 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
 public class LinkedListTabulatedFunctionTest {
-    private MathFunction funcF = new SqrFunction();
     private final double[] xValues = new double[]{1., 2., 3., 4., 5.};
     private final double[] yValues = new double[]{2., 4., 6., 8., 10.};
     private final double accuracy = 0.00001;
+    private MathFunction funcF = new SqrFunction();
 
     private LinkedListTabulatedFunction initializeListThroughTwoArrays() {
         return new LinkedListTabulatedFunction(xValues, yValues);

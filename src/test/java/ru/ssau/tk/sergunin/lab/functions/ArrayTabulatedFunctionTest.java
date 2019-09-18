@@ -5,12 +5,12 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
 public class ArrayTabulatedFunctionTest {
+    private final double accuracy = 0.00001;
     private MathFunction funcF = new SqrFunction();
     private double[] xValues = new double[]{1., 2., 3., 4., 5.};
     private double[] yValues = new double[]{2., 4., 6., 8., 10.};
     private ArrayTabulatedFunction firstArray = new ArrayTabulatedFunction(xValues, yValues);
     private ArrayTabulatedFunction secondArray = new ArrayTabulatedFunction(funcF, 10, 0, 11);
-    private final double accuracy = 0.00001;
 
     @Test
     public void testGetCount() {

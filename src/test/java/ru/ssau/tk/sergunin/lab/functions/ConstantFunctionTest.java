@@ -2,10 +2,10 @@ package ru.ssau.tk.sergunin.lab.functions;
 
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 public class ConstantFunctionTest {
-    MathFunction x = new ConstantFunction(10);
+    private MathFunction x = new ConstantFunction(10);
 
     @Test
     public void testApply() {
