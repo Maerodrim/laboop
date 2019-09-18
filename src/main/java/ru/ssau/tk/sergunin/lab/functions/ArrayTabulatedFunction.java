@@ -169,9 +169,9 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         double[] xTmp = new double[count - 1];
         double[] yTmp = new double[count - 1];
         if (index == 0) {
-            System.arraycopy(xValues, 1, xTmp, 0, count);
-            System.arraycopy(yValues, 1, yTmp, 0, count);
-        } else if (index == count) {
+            System.arraycopy(xValues, 1, xTmp, 0, count-1);
+            System.arraycopy(yValues, 1, yTmp, 0, count-1);
+        } else if (index == (count-1)) {
             System.arraycopy(xValues, 0, xTmp, 0, count - 1);
             System.arraycopy(yValues, 0, yTmp, 0, count - 1);
         } else {
