@@ -8,7 +8,7 @@ public class ArrayTabulatedFunctionTest {
     private MathFunction funcF = new SqrFunction();
     private final double[] xValues = new double[]{1., 2., 3., 4., 5.};
     private final double[] yValues = new double[]{2., 4., 6., 8., 10.};
-    private final double accuracy = 0.00001;
+    private final double ACCURACY = 0.00001;
 
     private  ArrayTabulatedFunction initializeArrayThroughTwoArrays() {
         return new  ArrayTabulatedFunction(xValues, yValues);
@@ -25,15 +25,15 @@ public class ArrayTabulatedFunctionTest {
     public void testConstrakt() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         for(int i=0;i<5;i++) {
-            assertEquals(firstArray.getY(i), 2 * (i+1), accuracy);
+            assertEquals(firstArray.getY(i), 2 * (i + 1), ACCURACY);
         }
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         for(int i=0;i<11;i++) {
-            assertEquals(secondArray.getY(i), i * i, accuracy);
+            assertEquals(secondArray.getY(i), i * i, ACCURACY);
         }
         ArrayTabulatedFunction thirdArray = initializeArrayWithOneElement();
         for(int i=0;i<1;i++) {
-            assertEquals(thirdArray.getY(i), 25, accuracy);
+            assertEquals(thirdArray.getY(i), 25, ACCURACY);
         }
     }
 
@@ -41,24 +41,24 @@ public class ArrayTabulatedFunctionTest {
     public void testGetCount() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.getCount(), 5, accuracy);
-        assertEquals(secondArray.getCount(), 11, accuracy);
+        assertEquals(firstArray.getCount(), 5, ACCURACY);
+        assertEquals(secondArray.getCount(), 11, ACCURACY);
     }
 
     @Test
     public void testLeftBound() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.leftBound(), 1, accuracy);
-        assertEquals(secondArray.leftBound(), 0, accuracy);
+        assertEquals(firstArray.leftBound(), 1, ACCURACY);
+        assertEquals(secondArray.leftBound(), 0, ACCURACY);
     }
 
     @Test
     public void testRightBound() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.rightBound(), 5, accuracy);
-        assertEquals(secondArray.rightBound(), 10, accuracy);
+        assertEquals(firstArray.rightBound(), 5, ACCURACY);
+        assertEquals(secondArray.rightBound(), 10, ACCURACY);
     }
 
 
@@ -66,16 +66,16 @@ public class ArrayTabulatedFunctionTest {
     public void testGetX() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.getX(0), 1, accuracy);
-        assertEquals(secondArray.getX(0), 0, accuracy);
+        assertEquals(firstArray.getX(0), 1, ACCURACY);
+        assertEquals(secondArray.getX(0), 0, ACCURACY);
     }
 
     @Test
     public void testGetY() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.getY(0), 2, accuracy);
-        assertEquals(secondArray.getY(0), 0, accuracy);
+        assertEquals(firstArray.getY(0), 2, ACCURACY);
+        assertEquals(secondArray.getY(0), 0, ACCURACY);
     }
 
     @Test
@@ -83,37 +83,37 @@ public class ArrayTabulatedFunctionTest {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         firstArray.setY(4, 13);
-        assertEquals(firstArray.getY(4), 13, accuracy);
+        assertEquals(firstArray.getY(4), 13, ACCURACY);
         secondArray.setY(7, 25);
-        assertEquals(secondArray.getY(7), 25, accuracy);
+        assertEquals(secondArray.getY(7), 25, ACCURACY);
     }
 
     @Test
     public void testIndexOfX() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.indexOfX(5), 4, accuracy);
-        assertEquals(secondArray.indexOfX(0), 0, accuracy);
+        assertEquals(firstArray.indexOfX(5), 4, ACCURACY);
+        assertEquals(secondArray.indexOfX(0), 0, ACCURACY);
     }
 
     @Test
     public void testIndexOfY() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.indexOfY(13), -1, accuracy);
-        assertEquals(secondArray.indexOfY(0), 0, accuracy);
+        assertEquals(firstArray.indexOfY(13), -1, ACCURACY);
+        assertEquals(secondArray.indexOfY(0), 0, ACCURACY);
     }
 
     @Test
     public void testFloorIndexOfX() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.floorIndexOfX(0), 0, accuracy);
-        assertEquals(firstArray.floorIndexOfX(3.5), 2, accuracy);
-        assertEquals(firstArray.floorIndexOfX(6), 5, accuracy);
-        assertEquals(secondArray.floorIndexOfX(-1), 0, accuracy);
-        assertEquals(secondArray.floorIndexOfX(5.5), 5, accuracy);
-        assertEquals(secondArray.floorIndexOfX(11), 11, accuracy);
+        assertEquals(firstArray.floorIndexOfX(0), 0, ACCURACY);
+        assertEquals(firstArray.floorIndexOfX(3.5), 2, ACCURACY);
+        assertEquals(firstArray.floorIndexOfX(6), 5, ACCURACY);
+        assertEquals(secondArray.floorIndexOfX(-1), 0, ACCURACY);
+        assertEquals(secondArray.floorIndexOfX(5.5), 5, ACCURACY);
+        assertEquals(secondArray.floorIndexOfX(11), 11, ACCURACY);
     }
 
     @Test
@@ -121,9 +121,9 @@ public class ArrayTabulatedFunctionTest {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         ArrayTabulatedFunction thirdArray = initializeArrayWithOneElement();
-        assertEquals(firstArray.extrapolateLeft(0), 0, accuracy);
-        assertEquals(firstArray.extrapolateLeft(0), 0, accuracy);
-        assertEquals(thirdArray.extrapolateLeft(4), 4, accuracy);
+        assertEquals(firstArray.extrapolateLeft(0), 0, ACCURACY);
+        assertEquals(firstArray.extrapolateLeft(0), 0, ACCURACY);
+        assertEquals(thirdArray.extrapolateLeft(4), 4, ACCURACY);
     }
 
     @Test
@@ -131,17 +131,17 @@ public class ArrayTabulatedFunctionTest {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         ArrayTabulatedFunction thirdArray = initializeArrayWithOneElement();
-        assertEquals(firstArray.extrapolateRight(6), 12, accuracy);
-        assertEquals(secondArray.extrapolateRight(11), 119, accuracy);
-        assertEquals(thirdArray.extrapolateRight(6), 6, accuracy);
+        assertEquals(firstArray.extrapolateRight(6), 12, ACCURACY);
+        assertEquals(secondArray.extrapolateRight(11), 119, ACCURACY);
+        assertEquals(thirdArray.extrapolateRight(6), 6, ACCURACY);
     }
 
     @Test
     public void testInterpolate() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.interpolate(2.5, 2), 5, accuracy);
-        assertEquals(secondArray.interpolate(1.5, 1), 2.5, accuracy);
+        assertEquals(firstArray.interpolate(2.5, 2), 5, ACCURACY);
+        assertEquals(secondArray.interpolate(1.5, 1), 2.5, ACCURACY);
     }
 
     @Test
@@ -153,11 +153,11 @@ public class ArrayTabulatedFunctionTest {
         firstArray.insert(1, 10);
         firstArray.insert(3.5, 5);
         firstArray.insert(7, 5);
-        assertEquals(firstArray.getY(0), 5, accuracy);
-        assertEquals(firstArray.getY(1), 10, accuracy);
-        assertEquals(firstArray.indexOfX(3.5), 3, accuracy);
-        assertEquals(firstArray.indexOfX(7), 7, accuracy);
-        assertEquals(thirdArray.interpolate(5, 0), 5, accuracy);
+        assertEquals(firstArray.getY(0), 5, ACCURACY);
+        assertEquals(firstArray.getY(1), 10, ACCURACY);
+        assertEquals(firstArray.indexOfX(3.5), 3, ACCURACY);
+        assertEquals(firstArray.indexOfX(7), 7, ACCURACY);
+        assertEquals(thirdArray.interpolate(5, 0), 5, ACCURACY);
     }
 
     @Test
@@ -166,10 +166,10 @@ public class ArrayTabulatedFunctionTest {
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         ArrayTabulatedFunction thirdArray = initializeArrayWithOneElement();
         for (int i = -5; i < xValues.length + 5; i++) {
-            assertEquals(firstArray.apply((i < 0 || i >= xValues.length) ? i : firstArray.getX(i)), (i < 0 || i >= xValues.length) ? i * 2 : yValues[i], accuracy);
+            assertEquals(firstArray.apply((i < 0 || i >= xValues.length) ? i : firstArray.getX(i)), (i < 0 || i >= xValues.length) ? i * 2 : yValues[i], ACCURACY);
         }
         for (int i = 0; i < secondArray.getCount(); i++) {
-            assertEquals(secondArray.apply(secondArray.getX(i)), i * i, accuracy);
+            assertEquals(secondArray.apply(secondArray.getX(i)), i * i, ACCURACY);
         }
     }
 
@@ -177,11 +177,11 @@ public class ArrayTabulatedFunctionTest {
     public void testRemove() {
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         secondArray.remove(secondArray.getCount() - 2);
-        assertEquals(secondArray.rightBound(), 10, accuracy);
+        assertEquals(secondArray.rightBound(), 10, ACCURACY);
         secondArray.remove(0);
-        assertEquals(secondArray.leftBound(), 1, accuracy);
+        assertEquals(secondArray.leftBound(), 1, ACCURACY);
         secondArray.remove(8);
-        assertEquals(secondArray.getCount(), 8, accuracy);
+        assertEquals(secondArray.getCount(), 8, ACCURACY);
     }
 
 }
