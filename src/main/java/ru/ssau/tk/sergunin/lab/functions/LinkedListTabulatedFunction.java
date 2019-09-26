@@ -69,7 +69,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     private Node getNode(int index) {
-        checkAutoOfBounds(index);
+        checkOutOfBounds(index);
         Node buff;
         if (index > (count / 2)) {
             buff = last;
@@ -94,17 +94,17 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     public double getX(int index) {
-        checkAutoOfBounds(index);
+        checkOutOfBounds(index);
         return getNode(index).x;
     }
 
     public double getY(int index) {
-        checkAutoOfBounds(index);
+        checkOutOfBounds(index);
         return getNode(index).y;
     }
 
     public void setY(int index, double value) {
-        checkAutoOfBounds(index);
+        checkOutOfBounds(index);
         getNode(index).y = value;
     }
 
@@ -196,7 +196,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private Node floorNodeOfX(double x) {
         Node buff;
         if (x < head.x) {
-            return head;
+            throw new IllegalArgumentException("ErrorfloorIndexOfX");
         }
         buff = head;
         for (int i = 0; i < count; i++) {
@@ -280,9 +280,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     }
 
-    private void checkAutoOfBounds(int index) {
+    private void checkOutOfBounds(int index) {
         if (index < 0 || index >= count) {
-            throw new ArrayIndexOutOfBoundsException("ErrorAutoOfBounds");
+            throw new ArrayIndexOutOfBoundsException("ErrorOutOfBounds");
         }
     }
 }

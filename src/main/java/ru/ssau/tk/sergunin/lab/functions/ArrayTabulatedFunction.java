@@ -88,19 +88,19 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     @Override
     public double getX(int index) {
-        checkAutoOfBounds(index);
+        checkOutOfBounds(index);
         return xValues[index];
     }
 
     @Override
     public double getY(int index) {
-        checkAutoOfBounds(index);
+        checkOutOfBounds(index);
         return yValues[index];
     }
 
     @Override
     public void setY(int index, double value) {
-        checkAutoOfBounds(index);
+        checkOutOfBounds(index);
         yValues[index] = value;
     }
 
@@ -191,9 +191,9 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         this.yValues = yTmp;
     }
 
-    private void checkAutoOfBounds(int index){
+    private void checkOutOfBounds(int index){
         if (index < 0 || index >= count) {
-            throw new ArrayIndexOutOfBoundsException("ErrorAutoOfBounds");
+            throw new ArrayIndexOutOfBoundsException("ErrorOutOfBounds");
         }
     }
 }
