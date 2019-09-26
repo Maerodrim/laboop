@@ -6,6 +6,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private int count;
 
     public LinkedListTabulatedFunction(double[] xValues, double[] yValues) {
+        if (xValues.length <= 2 || xValues.length != yValues.length)
+            throw new IllegalArgumentException("less than minimum length");
         this.count = xValues.length;
         for (int i = 0; i < count; i++) {
             this.addNode(xValues[i], yValues[i]);
@@ -13,6 +15,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
+        if (count <= 2) throw new IllegalArgumentException("less than minimum length");
         this.count = count;
         if (xFrom > xTo) {
             xFrom = xFrom - xTo;
@@ -66,6 +69,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     private Node getNode(int index) {
+        checkAutoOfBounds(index);
         Node buff;
         if (index > (count / 2)) {
             buff = last;
@@ -90,14 +94,17 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     public double getX(int index) {
+        checkAutoOfBounds(index);
         return getNode(index).x;
     }
 
     public double getY(int index) {
+        checkAutoOfBounds(index);
         return getNode(index).y;
     }
 
     public void setY(int index, double value) {
+        checkAutoOfBounds(index);
         getNode(index).y = value;
     }
 
@@ -130,16 +137,15 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     public int floorIndexOfX(double x) {
         Node buff;
         if (x < head.x) {
-            return 0;
+            throw new IllegalArgumentException("ErrorfloorIndexOfX");
         }
         buff = head;
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++)
             if (buff.x < x) {
                 buff = buff.next;
             } else {
                 return i - 1;
             }
-        }
         return getCount();
     }
 
@@ -272,5 +278,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         double x;
         double y;
 
+    }
+
+    private void checkAutoOfBounds(int index) {
+        if (index < 0 || index >= count) {
+            throw new ArrayIndexOutOfBoundsException("ErrorAutoOfBounds");
+        }
     }
 }

@@ -8,12 +8,15 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     private int count;
 
     ArrayTabulatedFunction(double[] xValues, double[] yValues) {
+        if (xValues.length <= 2 || xValues.length != yValues.length)
+            throw new IllegalArgumentException("less than minimum length");
         this.count = xValues.length;
         this.xValues = Arrays.copyOf(xValues, count);
         this.yValues = Arrays.copyOf(yValues, count);
     }
 
     ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
+        if(count<=2)throw new IllegalArgumentException("less than minimum length");
         this.count = count;
         if (xFrom > xTo) {
             xFrom = xFrom - xTo;
@@ -44,7 +47,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     protected int floorIndexOfX(double x) {
         int i;
         if (x < leftBound()) {
-            return 0;
+            throw new IllegalArgumentException("ErrorfloorIndexOfX");
         }
         for (i = 0; i < count; i++) {
             if (xValues[i] > x) {
@@ -85,16 +88,19 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     @Override
     public double getX(int index) {
+        checkAutoOfBounds(index);
         return xValues[index];
     }
 
     @Override
     public double getY(int index) {
+        checkAutoOfBounds(index);
         return yValues[index];
     }
 
     @Override
     public void setY(int index, double value) {
+        checkAutoOfBounds(index);
         yValues[index] = value;
     }
 
@@ -183,5 +189,11 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         count--;
         this.xValues = xTmp;
         this.yValues = yTmp;
+    }
+
+    private void checkAutoOfBounds(int index){
+        if (index < 0 || index >= count) {
+            throw new ArrayIndexOutOfBoundsException("ErrorAutoOfBounds");
+        }
     }
 }
