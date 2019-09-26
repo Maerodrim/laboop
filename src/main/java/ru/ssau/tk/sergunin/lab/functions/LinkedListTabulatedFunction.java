@@ -1,5 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import java.util.Iterator;
+
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private Node head;
     private Node last;
@@ -270,6 +272,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         previous.next = further;
         further.prev = previous;
         count--;
+    }
+
+    @Override
+    public Iterator iterator() {
+        throw new UnsupportedOperationException();
     }
 
     private static class Node {

@@ -1,6 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private double[] xValues;
@@ -195,5 +196,10 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         if (index < 0 || index >= count) {
             throw new ArrayIndexOutOfBoundsException("ErrorOutOfBounds");
         }
+    }
+
+    @Override
+    public Iterator iterator() {
+        throw new UnsupportedOperationException();
     }
 }
