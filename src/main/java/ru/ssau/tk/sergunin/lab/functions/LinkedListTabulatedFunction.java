@@ -1,7 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Iterator;
 
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private Node head;
@@ -68,7 +69,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return last.x;
     }
 
-    @NotNull
+    @Nullable
     private Node getNode(int index) {
         Node buff;
         if (index > (count / 2)) {
@@ -268,6 +269,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         previous.next = further;
         further.prev = previous;
         count--;
+    }
+
+    @Override
+    public Iterator iterator() {
+        return null;
     }
 
     private static class Node {

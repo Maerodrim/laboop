@@ -1,6 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private double[] xValues;
@@ -179,5 +180,10 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         count--;
         this.xValues = xTmp;
         this.yValues = yTmp;
+    }
+
+    @Override
+    public Iterator iterator() {
+        return null;
     }
 }

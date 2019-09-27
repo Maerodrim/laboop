@@ -1,5 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import java.util.Iterator;
+
 public class MockTabulatedFunction extends AbstractTabulatedFunction {
 
     private final double x0 = 0;
@@ -98,4 +100,8 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
     }
 
 
+    @Override
+    public Iterator iterator() {
+        return null;
+    }
 }
