@@ -99,9 +99,8 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
         return x1;
     }
 
-
     @Override
-    public Iterator iterator() {
+    public Iterator<Point> iterator() {
         return null;
     }
 }

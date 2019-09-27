@@ -1,6 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-public interface TabulatedFunction extends MathFunction, Iterable {
+public interface TabulatedFunction extends MathFunction, Iterable<Point> {
     int getCount();
 
     double getX(int index) throws RuntimeException;

@@ -5,6 +5,9 @@ import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import static org.testng.Assert.assertEquals;
 
 public class ArrayTabulatedFunctionTest {
@@ -194,4 +197,21 @@ public class ArrayTabulatedFunctionTest {
         secondArray.remove(-1);
     }
 
+    @Test(expectedExceptions = NoSuchElementException.class)
+    public void testIterator() {
+        ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
+        Iterator<Point> iterator = firstArray.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            Point point = iterator.next();
+            assertEquals(point.x, firstArray.getX(i), 0.0001);
+            assertEquals(point.y, firstArray.getY(i++), 0.0001);
+        }
+        i = 0;
+        for (Point point : firstArray) {
+            assertEquals(point.x, firstArray.getX(i), 0.0001);
+            assertEquals(point.y, firstArray.getY(i++), 0.0001);
+        }
+        iterator.next();
+    }
 }

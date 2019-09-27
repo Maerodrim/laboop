@@ -1,11 +1,13 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private Node head;
@@ -279,10 +281,33 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         count--;
     }
 
+    @NotNull
     @Override
-    public Iterator iterator() {
+    public Iterator<Point> iterator() {
         return null;
     }
+
+/*    @Override
+    public Iterator<Point> iterator() {
+        Iterator<Point> iterator = new Iterator<>() {
+            private Node node = last;
+            //boolean isFirst = true;
+
+            public boolean hasNext() {
+                return node != null;
+            }
+
+            public Point next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                node = hasNext() ? node.next : null;
+                //isFirst = false;
+                return new Point(node.x, node.y);
+            }
+        };
+        return iterator;
+    }*/
 
     private static class Node {
         Node next;
