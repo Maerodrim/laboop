@@ -1,6 +1,9 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import org.testng.annotations.Test;
+import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
+import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
+import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
 
 import static org.testng.Assert.assertEquals;
 
@@ -31,13 +34,23 @@ public class LinkedListTabulatedFunctionTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testIllegalArgumentExceptionInListInitializeThroughTwoArrays() {
+    public void testIllegalArgumentExceptionInLinkedListInitializeThroughTwoArrays() {
         LinkedListTabulatedFunction list = new LinkedListTabulatedFunction(new double[]{1}, new double[]{2});
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testIllegalArgumentExceptionInListInitializeThroughMathFunction() {
+    public void testIllegalArgumentExceptionInLinkedListInitializeThroughMathFunction() {
         LinkedListTabulatedFunction list = new LinkedListTabulatedFunction(funcF, 0, 0, 1);
+    }
+
+    @Test(expectedExceptions = DifferentLengthOfArraysException.class)
+    public void testDifferentLengthOfArraysExceptionInLinkedListInitializeThroughTwoArrays() {
+        LinkedListTabulatedFunction list = new LinkedListTabulatedFunction(new double[]{1, 2}, new double[]{2});
+    }
+
+    @Test(expectedExceptions = ArrayIsNotSortedException.class)
+    public void testArrayIsNotSortedExceptionInLinkedListInitializeThroughTwoArrays() {
+        LinkedListTabulatedFunction list = new LinkedListTabulatedFunction(new double[]{2, 1}, new double[]{2, 2});
     }
 
     @Test
@@ -144,12 +157,13 @@ public class LinkedListTabulatedFunctionTest {
         assertEquals(secondList.extrapolateRight(11), 119, ACCURACY);
     }
 
-    @Test
+    @Test(expectedExceptions = InterpolationException.class)
     public void testInterpolate() {
         LinkedListTabulatedFunction firstList = initializeListThroughTwoArrays();
         LinkedListTabulatedFunction secondList = initializeListThroughMathFunction();
-        assertEquals(firstList.interpolate(2.5, 2), 5, ACCURACY);
-        assertEquals(secondList.interpolate(1.5, 1), 2.5, ACCURACY);
+        assertEquals(firstList.interpolate(2.5, 1), 5, ACCURACY);
+        assertEquals(secondList.interpolate(1.5, 2), 2.5, ACCURACY);
+        assertEquals(secondList.interpolate(1.5, 2), 2.5, ACCURACY);
     }
 
     @Test

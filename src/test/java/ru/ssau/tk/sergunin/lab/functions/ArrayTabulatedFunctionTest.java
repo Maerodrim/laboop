@@ -1,6 +1,9 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import org.testng.annotations.Test;
+import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
+import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
+import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
 
 import static org.testng.Assert.assertEquals;
 
@@ -33,6 +36,16 @@ public class ArrayTabulatedFunctionTest {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testIllegalArgumentExceptionInArrayInitializeThroughTwoArrays() {
         ArrayTabulatedFunction array = new ArrayTabulatedFunction(new double[]{1}, new double[]{2});
+    }
+
+    @Test(expectedExceptions = DifferentLengthOfArraysException.class)
+    public void testDifferentLengthOfArraysExceptionInArrayInitializeThroughTwoArrays() {
+        ArrayTabulatedFunction array = new ArrayTabulatedFunction(new double[]{1, 2}, new double[]{2});
+    }
+
+    @Test(expectedExceptions = ArrayIsNotSortedException.class)
+    public void testArrayIsNotSortedExceptionInArrayInitializeThroughTwoArrays() {
+        ArrayTabulatedFunction array = new ArrayTabulatedFunction(new double[]{2, 1}, new double[]{1, 1});
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -134,12 +147,13 @@ public class ArrayTabulatedFunctionTest {
         assertEquals(secondArray.extrapolateRight(11), 119, ACCURACY);
     }
 
-    @Test
+    @Test(expectedExceptions = InterpolationException.class)
     public void testInterpolate() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.interpolate(2.5, 2), 5, ACCURACY);
-        assertEquals(secondArray.interpolate(1.5, 1), 2.5, ACCURACY);
+        assertEquals(firstArray.interpolate(2.5, 1), 5, ACCURACY);
+        assertEquals(secondArray.interpolate(1.5, 2), 2.5, ACCURACY);
+        assertEquals(secondArray.interpolate(1.5, 2), 2.5, ACCURACY);
     }
 
     @Test
@@ -154,7 +168,6 @@ public class ArrayTabulatedFunctionTest {
         assertEquals(firstArray.getY(1), 10, ACCURACY);
         assertEquals(firstArray.indexOfX(3.5), 3, ACCURACY);
         assertEquals(firstArray.indexOfX(7), 7, ACCURACY);
-        assertEquals(secondArray.interpolate(5, 0), 5, ACCURACY);
     }
 
     @Test

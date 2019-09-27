@@ -1,6 +1,9 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import org.jetbrains.annotations.Nullable;
+import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
+import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
+import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
 
 import java.util.Iterator;
 
@@ -9,7 +12,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private Node last;
     private int count;
 
-    LinkedListTabulatedFunction(double[] xValues, double[] yValues) throws IllegalArgumentException {
+    LinkedListTabulatedFunction(double[] xValues, double[] yValues) throws IllegalArgumentException, DifferentLengthOfArraysException, ArrayIsNotSortedException {
+        checkLengthIsTheSame(xValues, yValues);
+        checkSorted(xValues);
         if (xValues.length < 2) {
             throw new IllegalArgumentException("Length of array less than minimum length");
         }
@@ -19,7 +24,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
     }
 
-    LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws IllegalArgumentException {
+    LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws IllegalArgumentException, DifferentLengthOfArraysException, ArrayIsNotSortedException {
         if (count < 2) {
             throw new IllegalArgumentException("The count of points is less than the minimum count (2)");
         }
@@ -167,9 +172,12 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    protected double interpolate(double x, int floorIndex) {
+    protected double interpolate(double x, int floorIndex) throws InterpolationException {
         Node left = getNode(floorIndex);
         Node right = left.next;
+        if (x < left.x || right.x < x) {
+            throw new InterpolationException();
+        }
         return left.y + (right.y - left.y) * (x - left.x) / (right.x - left.x);
     }
 

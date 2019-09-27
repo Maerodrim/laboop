@@ -1,5 +1,9 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
+import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
+import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
+
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -8,7 +12,9 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     private double[] yValues;
     private int count;
 
-    ArrayTabulatedFunction(double[] xValues, double[] yValues) {
+    ArrayTabulatedFunction(double[] xValues, double[] yValues) throws DifferentLengthOfArraysException, ArrayIsNotSortedException {
+        checkLengthIsTheSame(xValues, yValues);
+        checkSorted(xValues);
         if (xValues.length < 2) {
             throw new IllegalArgumentException("Array less than minimum length");
         }
@@ -17,7 +23,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         this.yValues = Arrays.copyOf(yValues, count);
     }
 
-    ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
+    ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws DifferentLengthOfArraysException, ArrayIsNotSortedException {
         if (count < 2) {
             throw new IllegalArgumentException("Count less than minimum length");
         }
@@ -64,6 +70,9 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     @Override
     protected double interpolate(double x, int floorIndex) {
+        if (x < xValues[floorIndex] || xValues[floorIndex + 1] < x) {
+            throw new InterpolationException();
+        }
         return interpolate(x, xValues[floorIndex], xValues[floorIndex + 1], yValues[floorIndex], yValues[floorIndex + 1]);
     }
 
