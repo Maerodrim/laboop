@@ -8,7 +8,7 @@ public class ConstantFunction implements MathFunction {
     }
 
     @Override
-    public double apply(double x) {
+    public double apply(double x) throws ArrayIndexOutOfBoundsException, IllegalArgumentException {
         return constant;
     }
 

@@ -1,21 +1,27 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private Node head;
     private Node last;
     private int count;
 
-    public LinkedListTabulatedFunction(double[] xValues, double[] yValues) {
-        if (xValues.length <= 2 || xValues.length != yValues.length)
-            throw new IllegalArgumentException("less than minimum length");
+    LinkedListTabulatedFunction(double[] xValues, double[] yValues) throws IllegalArgumentException {
+        if (xValues.length < 2) {
+            throw new IllegalArgumentException("Length of array less than minimum length");
+        }
         this.count = xValues.length;
         for (int i = 0; i < count; i++) {
             this.addNode(xValues[i], yValues[i]);
         }
     }
 
-    public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
-        if (count <= 2) throw new IllegalArgumentException("less than minimum length");
+    LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws IllegalArgumentException {
+        if (count < 2) {
+            throw new IllegalArgumentException("The count of points is less than the minimum count (2)");
+        }
         this.count = count;
         if (xFrom > xTo) {
             xFrom = xFrom - xTo;
@@ -24,15 +30,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
         double step = (xTo - xFrom) / (count - 1);
         double buff = xFrom;
-        if (xFrom != xTo) {
-            for (int i = 0; i < count; i++) {
-                this.addNode(buff, source.apply(buff));
-                buff += step;
-            }
-        } else {
-            for (int i = 0; i < count; i++) {
-                this.addNode(xFrom, source.apply(xFrom));
-            }
+        for (int i = 0; i < count; i++) {
+            this.addNode(buff, source.apply(buff));
+            buff += step;
         }
     }
 
@@ -68,8 +68,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return last.x;
     }
 
+    @NotNull
     private Node getNode(int index) {
-        checkOutOfBounds(index);
         Node buff;
         if (index > (count / 2)) {
             buff = last;
@@ -93,18 +93,24 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return null;
     }
 
-    public double getX(int index) {
-        checkOutOfBounds(index);
+    public double getX(int index) throws IllegalArgumentException {
+        if (index < 0 || index >= count) {
+            throw new IllegalArgumentException("Index is out of bounds");
+        }
         return getNode(index).x;
     }
 
-    public double getY(int index) {
-        checkOutOfBounds(index);
+    public double getY(int index) throws IllegalArgumentException {
+        if (index < 0 || index >= count) {
+            throw new IllegalArgumentException("Index is out of bounds");
+        }
         return getNode(index).y;
     }
 
-    public void setY(int index, double value) {
-        checkOutOfBounds(index);
+    public void setY(int index, double value) throws IllegalArgumentException {
+        if (index < 0 || index >= count) {
+            throw new IllegalArgumentException("Index is out of bounds");
+        }
         getNode(index).y = value;
     }
 
@@ -134,10 +140,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return -1;
     }
 
-    public int floorIndexOfX(double x) {
+    public int floorIndexOfX(double x) throws IllegalArgumentException {
         Node buff;
         if (x < head.x) {
-            throw new IllegalArgumentException("ErrorfloorIndexOfX");
+            throw new IllegalArgumentException("Argument x less than minimal x in tabulated function");
         }
         buff = head;
         for (int i = 0; i < count; i++)
@@ -151,25 +157,16 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     @Override
     protected double extrapolateLeft(double x) {
-        if (head.x == last.x) {
-            return head.y;
-        }
         return head.y + (head.next.y - head.y) * (x - head.x) / (head.next.x - head.x);
     }
 
     @Override
     protected double extrapolateRight(double x) {
-        if (head.x == last.x) {
-            return head.y;
-        }
         return last.prev.y + (last.y - last.prev.y) * (x - last.prev.x) / (last.x - last.prev.x);
     }
 
     @Override
     protected double interpolate(double x, int floorIndex) {
-        if (head.x == last.x) {
-            return head.y;
-        }
         Node left = getNode(floorIndex);
         Node right = left.next;
         return left.y + (right.y - left.y) * (x - left.x) / (right.x - left.x);
@@ -177,9 +174,6 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     @Override
     public double apply(double x) {
-        if (head.x == last.x) {
-            return head.y;
-        }
         if (x < leftBound()) {
             return extrapolateLeft(x);
         } else if (x > rightBound()) {
@@ -193,10 +187,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
     }
 
-    private Node floorNodeOfX(double x) {
+    private Node floorNodeOfX(double x) throws IllegalArgumentException {
         Node buff;
         if (x < head.x) {
-            throw new IllegalArgumentException("ErrorfloorIndexOfX");
+            throw new IllegalArgumentException("Argument x less than minimal x in tabulated function");
         }
         buff = head;
         for (int i = 0; i < count; i++) {
@@ -209,6 +203,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return last;
     }
 
+    @Nullable
     private Node nodeOfX(double x) {
         Node buff;
         buff = head;
@@ -227,25 +222,25 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         if (indexOfX(x) != -1) {
             setY(indexOfX(x), y);
         } else {
-            int index = floorIndexOfX(x);
+            int index;
+            try {
+                index = floorIndexOfX(x);
+            } catch (IllegalArgumentException e) {
+                index = 0;
+            }
             Node newNode = new Node();
-            if (index == 0) {
+            if (index == 0 || index == count) {
                 newNode.next = head;
                 newNode.prev = last;
                 newNode.x = x;
                 newNode.y = y;
                 head.prev = newNode;
                 last.next = newNode;
-                head = newNode;
-                count++;
-            } else if (index == count) {
-                newNode.next = head;
-                newNode.prev = last;
-                newNode.x = x;
-                newNode.y = y;
-                head.prev = newNode;
-                last.next = newNode;
-                last = newNode;
+                if (index == 0) {
+                    head = newNode;
+                } else {
+                    last = newNode;
+                }
                 count++;
             } else {
                 Node previous = getNode(index);
@@ -262,9 +257,12 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
-    public void remove(int index) {
+    public void remove(int index) throws IllegalArgumentException {
         Node buff;
         buff = getNode(index);
+        if (buff == null) {
+            throw new IllegalArgumentException("Index is out of bounds");
+        }
         Node previous = buff.prev;
         Node further = buff.next;
         previous.next = further;
@@ -277,12 +275,5 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         Node prev;
         double x;
         double y;
-
-    }
-
-    private void checkOutOfBounds(int index) {
-        if (index < 0 || index >= count) {
-            throw new ArrayIndexOutOfBoundsException("ErrorOutOfBounds");
-        }
     }
 }

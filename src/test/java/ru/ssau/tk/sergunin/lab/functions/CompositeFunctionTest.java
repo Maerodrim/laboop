@@ -21,6 +21,7 @@ public class CompositeFunctionTest {
 
         assertEquals(tabArray.andThen(sqr).apply(2), 76, ACCURACY);
         assertEquals(sqr.andThen(tabArray).apply(2), 1936, ACCURACY);
+
         assertEquals(cbrt.andThen(sinh).andThen(tabList).andThen(cbrt).apply(2), 693.2857, ACCURACY);
         assertEquals(cbrt.andThen(sinh).andThen(tabArray).andThen(cbrt).apply(2), 693.2857, ACCURACY);
     }

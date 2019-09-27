@@ -2,7 +2,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 
 public abstract class AbstractTabulatedFunction implements TabulatedFunction {
 
-    protected abstract int floorIndexOfX(double x);
+    protected abstract int floorIndexOfX(double x) throws IllegalArgumentException;
 
     protected abstract double extrapolateLeft(double x);
 
