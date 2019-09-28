@@ -2,6 +2,11 @@ package ru.ssau.tk.sergunin.lab.operations;
 
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 
-public interface DifferentialOperator extends MathFunction {
-    <T> T derive(T function);
+public interface DifferentialOperator<T extends MathFunction> extends MathFunction {
+    T derive(T function);
+
+    @Override
+    default double apply(double x){
+        return 0;
+    }
 }
