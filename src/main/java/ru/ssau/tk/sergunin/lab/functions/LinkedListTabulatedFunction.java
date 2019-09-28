@@ -1,6 +1,5 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
@@ -281,33 +280,28 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         count--;
     }
 
-    @NotNull
     @Override
     public Iterator<Point> iterator() {
-        return null;
-    }
-
-/*    @Override
-    public Iterator<Point> iterator() {
         Iterator<Point> iterator = new Iterator<>() {
-            private Node node = last;
-            //boolean isFirst = true;
+            boolean isFirst = true;
+            private Node node = head;
 
             public boolean hasNext() {
-                return node != null;
+                return node != null && ((node.prev != last) ^ isFirst);
             }
 
             public Point next() {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
+                Point point = new Point(node.x, node.y);
                 node = hasNext() ? node.next : null;
-                //isFirst = false;
-                return new Point(node.x, node.y);
+                isFirst = false;
+                return point;
             }
         };
         return iterator;
-    }*/
+    }
 
     private static class Node {
         Node next;
