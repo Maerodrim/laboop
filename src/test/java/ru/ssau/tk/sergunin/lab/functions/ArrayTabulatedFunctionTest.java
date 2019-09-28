@@ -144,6 +144,7 @@ public class ArrayTabulatedFunctionTest {
         for (int i = 0; i < secondArray.getCount(); i++) {
             assertEquals(secondArray.indexOfY(i * i), i, ACCURACY);
         }
+        assertEquals(secondArray.indexOfY(50), -1);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
