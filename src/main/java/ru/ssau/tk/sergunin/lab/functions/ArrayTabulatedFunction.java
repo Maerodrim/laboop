@@ -1,5 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
@@ -13,7 +14,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     private double[] yValues;
     private int count;
 
-    ArrayTabulatedFunction(double[] xValues, double[] yValues) throws DifferentLengthOfArraysException, ArrayIsNotSortedException {
+    public ArrayTabulatedFunction(double[] xValues, double[] yValues) throws DifferentLengthOfArraysException, ArrayIsNotSortedException {
         checkLengthIsTheSame(xValues, yValues);
         checkSorted(xValues);
         if (xValues.length < 2) {
@@ -24,7 +25,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         this.yValues = Arrays.copyOf(yValues, count);
     }
 
-    ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws DifferentLengthOfArraysException, ArrayIsNotSortedException {
+    public ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws DifferentLengthOfArraysException, ArrayIsNotSortedException {
         if (count < 2) {
             throw new IllegalArgumentException("Count less than minimum length");
         }
@@ -193,8 +194,9 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
+    @NotNull
     public Iterator<Point> iterator() {
-        Iterator<Point> iterator = new Iterator<>() {
+        return new Iterator<>() {
             int i = 0;
 
             public boolean hasNext() {
@@ -208,6 +210,5 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
                 return new Point(xValues[i], yValues[i++]);
             }
         };
-        return iterator;
     }
 }

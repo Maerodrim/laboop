@@ -1,5 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
@@ -13,7 +14,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private Node last;
     private int count;
 
-    LinkedListTabulatedFunction(double[] xValues, double[] yValues) throws IllegalArgumentException, DifferentLengthOfArraysException, ArrayIsNotSortedException {
+    public LinkedListTabulatedFunction(double[] xValues, double[] yValues) throws IllegalArgumentException, DifferentLengthOfArraysException, ArrayIsNotSortedException {
         checkLengthIsTheSame(xValues, yValues);
         checkSorted(xValues);
         if (xValues.length < 2) {
@@ -25,7 +26,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
     }
 
-    LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws IllegalArgumentException, DifferentLengthOfArraysException, ArrayIsNotSortedException {
+    public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws IllegalArgumentException, DifferentLengthOfArraysException, ArrayIsNotSortedException {
         if (count < 2) {
             throw new IllegalArgumentException("The count of points is less than the minimum count (2)");
         }
@@ -281,8 +282,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     @Override
+    @NotNull
     public Iterator<Point> iterator() {
-        Iterator<Point> iterator = new Iterator<>() {
+        return new Iterator<>() {
             boolean isFirst = true;
             private Node node = head;
 
@@ -300,7 +302,6 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 return point;
             }
         };
-        return iterator;
     }
 
     private static class Node {
