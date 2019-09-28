@@ -1,32 +1,34 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
 public class StrictTabulatedFunction implements TabulatedFunction {
     TabulatedFunction tabulatedFunction;
-    StrictTabulatedFunction(TabulatedFunction function){
-        this.tabulatedFunction=function;
+
+    public StrictTabulatedFunction(TabulatedFunction tabulatedFunction) {
+        this.tabulatedFunction = tabulatedFunction;
+
     }
+
     @Override
     public int getCount() {
         return tabulatedFunction.getCount();
     }
 
     @Override
-    public double getX(int index) throws RuntimeException {
+    public double getX(int index){
         return tabulatedFunction.getX(index);
     }
 
     @Override
-    public double getY(int index) throws RuntimeException {
+    public double getY(int index){
         return tabulatedFunction.getY(index);
     }
 
     @Override
-    public void setY(int index, double value){
-       tabulatedFunction.setY(index, value);
+    public void setY(int index, double value) {
+        tabulatedFunction.setY(index, value);
     }
 
     @Override
@@ -71,9 +73,12 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
-    public double apply(double x) {
-        if(tabulatedFunction.indexOfX(x)==-1)
-        return tabulatedFunction.apply(x);
-        throw new UnsupportedOperationException();
+    public double apply(double x) throws RuntimeException {
+        if (tabulatedFunction.indexOfX(x) == -1) {
+            throw new UnsupportedOperationException();
+        } else {
+            return tabulatedFunction.apply(x);
+        }
+
     }
 }
