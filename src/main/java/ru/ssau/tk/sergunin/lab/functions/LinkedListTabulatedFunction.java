@@ -11,7 +11,6 @@ import java.util.NoSuchElementException;
 
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
     private Node head;
-    private Node last;
     private int count;
 
     public LinkedListTabulatedFunction(double[] xValues, double[] yValues) throws IllegalArgumentException, DifferentLengthOfArraysException, ArrayIsNotSortedException {
@@ -52,15 +51,14 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             newNode.prev = head;
             newNode.x = x;
             newNode.y = y;
-            last = newNode;
+            head.prev = newNode;
         } else {
             newNode.next = head;
-            newNode.prev = last;
-            head.prev = newNode;
-            last.next = newNode;
+            newNode.prev = head.prev;
             newNode.x = x;
             newNode.y = y;
-            last = newNode;
+            head.prev.next = newNode;
+            head.prev = newNode;
         }
     }
 
@@ -73,14 +71,14 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     }
 
     public double rightBound() {
-        return last.x;
+        return head.prev.x;
     }
 
     @Nullable
     private Node getNode(int index) {
         Node buff;
         if (index > (count / 2)) {
-            buff = last;
+            buff = head.prev;
             for (int i = count - 1; i > 0; i--) {
                 if (i == index) {
                     return buff;
@@ -170,7 +168,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     @Override
     protected double extrapolateRight(double x) {
-        return last.prev.y + (last.y - last.prev.y) * (x - last.prev.x) / (last.x - last.prev.x);
+        return head.prev.prev.y + (head.prev.y - head.prev.prev.y) * (x - head.prev.prev.x) / (head.prev.x - head.prev.prev.x);
     }
 
     @Override
@@ -211,7 +209,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 return buff.prev;
             }
         }
-        return last;
+        return head.prev;
     }
 
     @Nullable
@@ -242,15 +240,15 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             Node newNode = new Node();
             if (index == 0 || index == count) {
                 newNode.next = head;
-                newNode.prev = last;
+                newNode.prev = head.prev;
                 newNode.x = x;
                 newNode.y = y;
+                head.prev.next = newNode;
                 head.prev = newNode;
-                last.next = newNode;
                 if (index == 0) {
                     head = newNode;
                 } else {
-                    last = newNode;
+                    head.prev = newNode;
                 }
                 count++;
             } else {
@@ -285,11 +283,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     @NotNull
     public Iterator<Point> iterator() {
         return new Iterator<>() {
-            boolean isFirst = true;
             private Node node = head;
 
             public boolean hasNext() {
-                return (node.prev != last) ^ isFirst;
+                return (node.next != head);
             }
 
             public Point next() {
@@ -298,7 +295,6 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 }
                 Point point = new Point(node.x, node.y);
                 node = node.next;
-                isFirst = false;
                 return point;
             }
         };
