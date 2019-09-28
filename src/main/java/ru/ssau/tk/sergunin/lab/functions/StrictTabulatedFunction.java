@@ -17,12 +17,12 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
-    public double getX(int index){
+    public double getX(int index) {
         return tabulatedFunction.getX(index);
     }
 
     @Override
-    public double getY(int index){
+    public double getY(int index) {
         return tabulatedFunction.getY(index);
     }
 
