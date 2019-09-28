@@ -85,10 +85,10 @@ public class ArrayTabulatedFunctionTest {
     public void testGetX() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        for (int i = 0; i < firstArray.getCount();) {
+        for (int i = 0; i < firstArray.getCount(); ) {
             assertEquals(firstArray.getX(i), ++i, ACCURACY);
         }
-        for (int i = 0; i < secondArray.getCount();) {
+        for (int i = 0; i < secondArray.getCount(); ) {
             assertEquals(secondArray.getX(i), i++, ACCURACY);
         }
         assertEquals(secondArray.getX(-1), 0, ACCURACY);
@@ -98,11 +98,11 @@ public class ArrayTabulatedFunctionTest {
     public void testGetY() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        for (int i = 0; i < firstArray.getCount();) {
-            assertEquals(firstArray.getY(i), 2*(++i), ACCURACY);
+        for (int i = 0; i < firstArray.getCount(); ) {
+            assertEquals(firstArray.getY(i), 2 * (++i), ACCURACY);
         }
-        for (int i = 0; i < secondArray.getCount();) {
-            assertEquals(secondArray.getY(i), i*i++, ACCURACY);
+        for (int i = 0; i < secondArray.getCount(); ) {
+            assertEquals(secondArray.getY(i), i * i++, ACCURACY);
         }
         assertEquals(secondArray.getY(-1), 0, ACCURACY);
     }
@@ -127,7 +127,7 @@ public class ArrayTabulatedFunctionTest {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         for (int i = 1; i <= firstArray.getCount(); i++) {
-            assertEquals(firstArray.indexOfX(i), i-1, ACCURACY);
+            assertEquals(firstArray.indexOfX(i), i - 1, ACCURACY);
         }
         for (int i = 0; i < secondArray.getCount(); i++) {
             assertEquals(secondArray.indexOfX(i), i, ACCURACY);
@@ -139,10 +139,10 @@ public class ArrayTabulatedFunctionTest {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         for (int i = 0; i < firstArray.getCount(); i++) {
-            assertEquals(firstArray.indexOfY(2*(i+1)), i, ACCURACY);
+            assertEquals(firstArray.indexOfY(2 * (i + 1)), i, ACCURACY);
         }
         for (int i = 0; i < secondArray.getCount(); i++) {
-            assertEquals(secondArray.indexOfY(i*i), i, ACCURACY);
+            assertEquals(secondArray.indexOfY(i * i), i, ACCURACY);
         }
     }
 
@@ -191,7 +191,7 @@ public class ArrayTabulatedFunctionTest {
         firstArray.insert(7, 5);
         assertEquals(firstArray.getY(0), 5, ACCURACY);
         assertEquals(firstArray.getY(1), 10, ACCURACY);
-        assertEquals(firstArray.indexOfX(3.5), 3, ACCURACY);
+        assertEquals(firstArray.indexOfX(3.5), 4, ACCURACY);
         assertEquals(firstArray.indexOfX(7), 7, ACCURACY);
     }
 
@@ -205,7 +205,7 @@ public class ArrayTabulatedFunctionTest {
         assertEquals(secondArray.getY(0), 5, ACCURACY);
         assertEquals(secondArray.getY(2), 10, ACCURACY);
         assertEquals(secondArray.indexOfX(3.5), 5, ACCURACY);
-        //assertEquals(secondArray.indexOfX(7), 7, ACCURACY);
+        assertEquals(secondArray.indexOfX(7), 9, ACCURACY);
     }
 
     @Test

@@ -136,7 +136,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         if (indexOfX(x) != -1) {
             setY(indexOfX(x), y);
         } else {
-            int index;
+            int index = 0;
             try {
                 index = floorIndexOfX(x);
             } catch (IllegalArgumentException e) {
@@ -157,12 +157,12 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
                 yTmp[count] = y;
                 count++;
             } else {
-                System.arraycopy(xValues, 0, xTmp, 0, index);
-                System.arraycopy(yValues, 0, yTmp, 0, index);
-                xTmp[index] = x;
-                yTmp[index] = y;
-                System.arraycopy(xValues, index, xTmp, index + 1, (count - index));
-                System.arraycopy(yValues, index, yTmp, index + 1, (count - index));
+                System.arraycopy(xValues, 0, xTmp, 0, index + 1);
+                System.arraycopy(yValues, 0, yTmp, 0, index + 1);
+                xTmp[index + 1] = x;
+                yTmp[index + 1] = y;
+                System.arraycopy(xValues, index + 1, xTmp, index + 2, (count - index - 1));
+                System.arraycopy(yValues, index + 1, yTmp, index + 2, (count - index - 1));
                 count++;
             }
             this.xValues = xTmp;

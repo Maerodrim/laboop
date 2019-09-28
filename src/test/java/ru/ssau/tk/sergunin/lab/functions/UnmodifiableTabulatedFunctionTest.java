@@ -20,10 +20,10 @@ public class UnmodifiableTabulatedFunctionTest {
         assertEquals(list.leftBound(), 1);
         assertEquals(list.rightBound(), 5);
         assertEquals(list.iterator().next().x, 1);
-        assertEquals(((UnmodifiableTabulatedFunction)list).floorIndexOfX(1.5), 0);
-        assertEquals(((UnmodifiableTabulatedFunction)list).extrapolateLeft(0), 0);
-        assertEquals(((UnmodifiableTabulatedFunction)list).extrapolateRight(6), 12);
-        assertEquals(((UnmodifiableTabulatedFunction)list).interpolate(1.5, 0), 3);
+        assertEquals(((UnmodifiableTabulatedFunction) list).floorIndexOfX(1.5), 0);
+        assertEquals(((UnmodifiableTabulatedFunction) list).extrapolateLeft(0), 0);
+        assertEquals(((UnmodifiableTabulatedFunction) list).extrapolateRight(6), 12);
+        assertEquals(((UnmodifiableTabulatedFunction) list).interpolate(1.5, 0), 3);
         list.setY(1, 0);
     }
 }
