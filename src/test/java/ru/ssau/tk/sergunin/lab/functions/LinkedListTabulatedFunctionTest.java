@@ -203,7 +203,7 @@ public class LinkedListTabulatedFunctionTest {
         secondList.remove(-1);
     }
 
-/*    @Test(expectedExceptions = NoSuchElementException.class)
+    @Test(expectedExceptions = NoSuchElementException.class)
     public void testIterator() {
         LinkedListTabulatedFunction firstArray = initializeLinkedListThroughTwoArrays();
         Iterator<Point> iterator = firstArray.iterator();
@@ -219,7 +219,7 @@ public class LinkedListTabulatedFunctionTest {
             assertEquals(point.x, firstArray.getX(i), 0.0001);
             assertEquals(point.y, firstArray.getY(i++), 0.0001);
         }
-        iterator.hasNext();
-    }*/
+        iterator.next();
+    }
 
 }
