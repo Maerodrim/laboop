@@ -132,6 +132,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     @Override
     public void insert(double x, double y) {
+        int i = indexOfX(x);
         if (indexOfX(x) != -1) {
             setY(indexOfX(x), y);
         } else {

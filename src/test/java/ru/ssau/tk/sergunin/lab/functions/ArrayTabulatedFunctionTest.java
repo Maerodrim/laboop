@@ -81,46 +81,69 @@ public class ArrayTabulatedFunctionTest {
     }
 
 
-    @Test
+    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void testGetX() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.getX(0), 1, ACCURACY);
-        assertEquals(secondArray.getX(0), 0, ACCURACY);
+        for (int i = 0; i < firstArray.getCount();) {
+            assertEquals(firstArray.getX(i), ++i, ACCURACY);
+        }
+        for (int i = 0; i < secondArray.getCount();) {
+            assertEquals(secondArray.getX(i), i++, ACCURACY);
+        }
+        assertEquals(secondArray.getX(-1), 0, ACCURACY);
     }
 
-    @Test
+    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void testGetY() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.getY(0), 2, ACCURACY);
-        assertEquals(secondArray.getY(0), 0, ACCURACY);
+        for (int i = 0; i < firstArray.getCount();) {
+            assertEquals(firstArray.getY(i), 2*(++i), ACCURACY);
+        }
+        for (int i = 0; i < secondArray.getCount();) {
+            assertEquals(secondArray.getY(i), i*i++, ACCURACY);
+        }
+        assertEquals(secondArray.getY(-1), 0, ACCURACY);
     }
 
-    @Test
+    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void testSetY() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         firstArray.setY(4, 13);
         assertEquals(firstArray.getY(4), 13, ACCURACY);
+        firstArray.setY(2, 5);
+        assertEquals(firstArray.getY(2), 5, ACCURACY);
         secondArray.setY(7, 25);
         assertEquals(secondArray.getY(7), 25, ACCURACY);
+        secondArray.setY(5, 10);
+        assertEquals(secondArray.getY(5), 10, ACCURACY);
+        secondArray.setY(-1, 0);
     }
 
     @Test
     public void testIndexOfX() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.indexOfX(5), 4, ACCURACY);
-        assertEquals(secondArray.indexOfX(0), 0, ACCURACY);
+        for (int i = 1; i <= firstArray.getCount(); i++) {
+            assertEquals(firstArray.indexOfX(i), i-1, ACCURACY);
+        }
+        for (int i = 0; i < secondArray.getCount(); i++) {
+            assertEquals(secondArray.indexOfX(i), i, ACCURACY);
+        }
     }
 
     @Test
     public void testIndexOfY() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
-        assertEquals(firstArray.indexOfY(13), -1, ACCURACY);
-        assertEquals(secondArray.indexOfY(0), 0, ACCURACY);
+        for (int i = 0; i < firstArray.getCount(); i++) {
+            assertEquals(firstArray.indexOfY(2*(i+1)), i, ACCURACY);
+        }
+        for (int i = 0; i < secondArray.getCount(); i++) {
+            assertEquals(secondArray.indexOfY(i*i), i, ACCURACY);
+        }
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -160,9 +183,8 @@ public class ArrayTabulatedFunctionTest {
     }
 
     @Test
-    public void testInsert() {
+    public void testInsertWithInitializeArrayThroughTwoArrays() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
-        ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         firstArray.insert(-2, 5);
         firstArray.insert(1, 10);
         firstArray.insert(3.5, 5);
@@ -171,6 +193,19 @@ public class ArrayTabulatedFunctionTest {
         assertEquals(firstArray.getY(1), 10, ACCURACY);
         assertEquals(firstArray.indexOfX(3.5), 3, ACCURACY);
         assertEquals(firstArray.indexOfX(7), 7, ACCURACY);
+    }
+
+    @Test
+    public void testInsertWithInitializeArrayThroughMathFunction() {
+        ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
+        secondArray.insert(-2, 5);
+        secondArray.insert(1, 10);
+        secondArray.insert(3.5, 5);
+        secondArray.insert(7, 5);
+        assertEquals(secondArray.getY(0), 5, ACCURACY);
+        assertEquals(secondArray.getY(2), 10, ACCURACY);
+        assertEquals(secondArray.indexOfX(3.5), 5, ACCURACY);
+        //assertEquals(secondArray.indexOfX(7), 7, ACCURACY);
     }
 
     @Test

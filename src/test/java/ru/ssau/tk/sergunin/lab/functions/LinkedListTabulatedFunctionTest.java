@@ -87,13 +87,16 @@ public class LinkedListTabulatedFunctionTest {
         assertEquals(secondList.rightBound(), 10, ACCURACY);
     }
 
-
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testGetX() {
         LinkedListTabulatedFunction firstList = initializeLinkedListThroughTwoArrays();
         LinkedListTabulatedFunction secondList = initializeLinkedListThroughMathFunction();
-        assertEquals(firstList.getX(0), 1, ACCURACY);
-        assertEquals(secondList.getX(0), 0, ACCURACY);
+        for (int i = 0; i < firstList.getCount();) {
+            assertEquals(firstList.getX(i), ++i, ACCURACY);
+        }
+        for (int i = 0; i < secondList.getCount();) {
+            assertEquals(secondList.getX(i), i++, ACCURACY);
+        }
         assertEquals(secondList.getX(-1), 0, ACCURACY);
     }
 
@@ -101,8 +104,12 @@ public class LinkedListTabulatedFunctionTest {
     public void testGetY() {
         LinkedListTabulatedFunction firstList = initializeLinkedListThroughTwoArrays();
         LinkedListTabulatedFunction secondList = initializeLinkedListThroughMathFunction();
-        assertEquals(firstList.getY(0), 2, ACCURACY);
-        assertEquals(secondList.getY(0), 0, ACCURACY);
+        for (int i = 0; i < firstList.getCount();) {
+            assertEquals(firstList.getY(i), 2*(++i), ACCURACY);
+        }
+        for (int i = 0; i < secondList.getCount();) {
+            assertEquals(secondList.getY(i), i*i++, ACCURACY);
+        }
         assertEquals(secondList.getY(-1), 0, ACCURACY);
     }
 
@@ -112,8 +119,12 @@ public class LinkedListTabulatedFunctionTest {
         LinkedListTabulatedFunction secondList = initializeLinkedListThroughMathFunction();
         firstList.setY(4, 13);
         assertEquals(firstList.getY(4), 13, ACCURACY);
+        firstList.setY(2, 5);
+        assertEquals(firstList.getY(2), 5, ACCURACY);
         secondList.setY(7, 25);
         assertEquals(secondList.getY(7), 25, ACCURACY);
+        secondList.setY(5, 10);
+        assertEquals(secondList.getY(5), 10, ACCURACY);
         secondList.setY(-1, 0);
     }
 
@@ -121,18 +132,26 @@ public class LinkedListTabulatedFunctionTest {
     public void testIndexOfX() {
         LinkedListTabulatedFunction firstList = initializeLinkedListThroughTwoArrays();
         LinkedListTabulatedFunction secondList = initializeLinkedListThroughMathFunction();
-        assertEquals(firstList.indexOfX(5), 4, ACCURACY);
-        assertEquals(secondList.indexOfX(0), 0, ACCURACY);
+        for (int i = 1; i <= firstList.getCount(); i++) {
+            assertEquals(firstList.indexOfX(i), i-1, ACCURACY);
+        }
+        for (int i = 0; i < secondList.getCount(); i++) {
+            assertEquals(secondList.indexOfX(i), i, ACCURACY);
+        }
     }
 
     @Test
     public void testIndexOfY() {
         LinkedListTabulatedFunction firstList = initializeLinkedListThroughTwoArrays();
         LinkedListTabulatedFunction secondList = initializeLinkedListThroughMathFunction();
-        assertEquals(firstList.indexOfY(13), -1, ACCURACY);
-        assertEquals(secondList.indexOfY(0), 0, ACCURACY);
+        for (int i = 0; i < firstList.getCount(); i++) {
+            assertEquals(firstList.indexOfY(2*(i+1)), i, ACCURACY);
+        }
+        for (int i = 0; i < secondList.getCount(); i++) {
+            assertEquals(secondList.indexOfY(i*i), i, ACCURACY);
+        }
     }
-
+    
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testFloorIndexOfX() {
         LinkedListTabulatedFunction firstList = initializeLinkedListThroughTwoArrays();
@@ -170,7 +189,7 @@ public class LinkedListTabulatedFunctionTest {
     }
 
     @Test
-    public void testInsert() {
+    public void testInsertWithInitializeLinkedListThroughTwoArrays() {
         LinkedListTabulatedFunction firstList = initializeLinkedListThroughTwoArrays();
         firstList.insert(-2, 5);
         firstList.insert(1, 10);
@@ -180,6 +199,19 @@ public class LinkedListTabulatedFunctionTest {
         assertEquals(firstList.getY(1), 10, ACCURACY);
         assertEquals(firstList.indexOfX(3.5), 4, ACCURACY);
         assertEquals(firstList.indexOfX(7), 7, ACCURACY);
+    }
+
+    @Test
+    public void testInsertWithInitializeLinkedListThroughMathFunction() {
+        LinkedListTabulatedFunction secondList = initializeLinkedListThroughMathFunction();
+        secondList.insert(-2, 5);
+        secondList.insert(1, 10);
+        secondList.insert(3.5, 5);
+        secondList.insert(7, 5);
+        assertEquals(secondList.getY(0), 5, ACCURACY);
+        assertEquals(secondList.getY(2), 10, ACCURACY);
+        assertEquals(secondList.indexOfX(3.5), 5, ACCURACY);
+        //assertEquals(secondList.indexOfX(7), 7, ACCURACY);
     }
 
     @Test
