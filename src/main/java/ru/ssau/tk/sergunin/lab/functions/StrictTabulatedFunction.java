@@ -56,22 +56,6 @@ public class StrictTabulatedFunction implements TabulatedFunction {
         return tabulatedFunction.iterator();
     }
 
-    protected int floorIndexOfX(double x) throws IllegalArgumentException {
-        return ((AbstractTabulatedFunction) tabulatedFunction).floorIndexOfX(x);
-    }
-
-    protected double extrapolateLeft(double x) {
-        return ((AbstractTabulatedFunction) tabulatedFunction).extrapolateLeft(x);
-    }
-
-    protected double extrapolateRight(double x) {
-        return ((AbstractTabulatedFunction) tabulatedFunction).extrapolateRight(x);
-    }
-
-    protected double interpolate(double x, int floorIndex) {
-        return ((AbstractTabulatedFunction) tabulatedFunction).interpolate(x, floorIndex);
-    }
-
     @Override
     public double apply(double x) throws RuntimeException {
         if (tabulatedFunction.indexOfX(x) == -1) {

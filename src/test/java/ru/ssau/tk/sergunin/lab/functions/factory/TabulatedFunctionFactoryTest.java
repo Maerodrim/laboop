@@ -1,4 +1,4 @@
-package ru.ssau.tk.sergunin.lab.factory;
+package ru.ssau.tk.sergunin.lab.functions.factory;
 
 import org.testng.annotations.Test;
 import ru.ssau.tk.sergunin.lab.functions.ArrayTabulatedFunction;
