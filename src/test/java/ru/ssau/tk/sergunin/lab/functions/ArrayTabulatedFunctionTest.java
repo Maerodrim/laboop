@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 
 public class ArrayTabulatedFunctionTest {
     private final double[] xValues = new double[]{1., 2., 3., 4., 5.};
@@ -174,13 +175,13 @@ public class ArrayTabulatedFunctionTest {
         assertEquals(secondArray.extrapolateRight(11), 119, ACCURACY);
     }
 
-    @Test(expectedExceptions = InterpolationException.class)
+    @Test
     public void testInterpolate() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         assertEquals(firstArray.interpolate(2.5, 1), 5, ACCURACY);
-        assertEquals(secondArray.interpolate(1.5, 2), 2.5, ACCURACY);
-        assertEquals(secondArray.interpolate(1.5, 2), 2.5, ACCURACY);
+        assertEquals(secondArray.interpolate(1.5, 1), 2.5, ACCURACY);
+        assertThrows(InterpolationException.class, () -> secondArray.interpolate(1.5, 2));
     }
 
     @Test

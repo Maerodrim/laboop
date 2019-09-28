@@ -6,7 +6,7 @@ public interface DifferentialOperator<T extends MathFunction> extends MathFuncti
     T derive(T function);
 
     @Override
-    default double apply(double x){
+    default double apply(double x) {
         return 0;
     }
 }

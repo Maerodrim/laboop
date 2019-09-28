@@ -3,10 +3,11 @@ package ru.ssau.tk.sergunin.lab.functions;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 
 public class UnmodifiableTabulatedFunctionTest {
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
+    @Test
     public void test() {
         UnmodifiableTabulatedFunction list = new UnmodifiableTabulatedFunction(new LinkedListTabulatedFunction(new double[]{1., 2., 3., 4., 5.}, new double[]{2., 4., 6., 8., 10.}));
         assertEquals(list.apply(2), 4);
@@ -18,6 +19,6 @@ public class UnmodifiableTabulatedFunctionTest {
         assertEquals(list.leftBound(), 1);
         assertEquals(list.rightBound(), 5);
         assertEquals(list.iterator().next().x, 1);
-        list.setY(1, 0);
+        assertThrows(UnsupportedOperationException.class, () -> list.setY(1, 0));
     }
 }

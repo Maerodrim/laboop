@@ -4,11 +4,10 @@ package ru.ssau.tk.sergunin.lab.functions;
 import java.util.Iterator;
 
 public class StrictTabulatedFunction implements TabulatedFunction {
-    TabulatedFunction tabulatedFunction;
+    private TabulatedFunction tabulatedFunction;
 
     public StrictTabulatedFunction(TabulatedFunction tabulatedFunction) {
         this.tabulatedFunction = tabulatedFunction;
-
     }
 
     @Override
@@ -59,7 +58,7 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     @Override
     public double apply(double x) throws RuntimeException {
         if (tabulatedFunction.indexOfX(x) == -1) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Apply don't support");
         } else {
             return tabulatedFunction.apply(x);
         }
