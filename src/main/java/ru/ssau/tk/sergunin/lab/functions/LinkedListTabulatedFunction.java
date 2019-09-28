@@ -57,6 +57,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             newNode.prev = head.prev;
             newNode.x = x;
             newNode.y = y;
+            head.prev.next = newNode;
             head.prev = newNode;
         }
     }
@@ -242,8 +243,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 newNode.prev = head.prev;
                 newNode.x = x;
                 newNode.y = y;
-                head.prev = newNode;
                 head.prev.next = newNode;
+                head.prev = newNode;
                 if (index == 0) {
                     head = newNode;
                 } else {
@@ -282,11 +283,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     @NotNull
     public Iterator<Point> iterator() {
         return new Iterator<>() {
-            boolean isFirst = true;
             private Node node = head;
 
             public boolean hasNext() {
-                return (node.prev != head.prev) ^ isFirst;
+                return (node.next != head);
             }
 
             public Point next() {
@@ -295,7 +295,6 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 }
                 Point point = new Point(node.x, node.y);
                 node = node.next;
-                isFirst = false;
                 return point;
             }
         };
