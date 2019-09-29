@@ -16,12 +16,12 @@ public class TabulatedDifferentialOperator implements DifferentialOperator<Tabul
         this.factory = factory;
     }
 
-    public void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
-    }
-
     public TabulatedFunctionFactory getFactory() {
         return factory;
+    }
+
+    public void setFactory(TabulatedFunctionFactory factory) {
+        this.factory = factory;
     }
 
     @Override

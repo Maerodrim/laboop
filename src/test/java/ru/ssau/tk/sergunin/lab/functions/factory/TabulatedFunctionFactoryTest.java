@@ -4,7 +4,6 @@ import org.testng.annotations.Test;
 import ru.ssau.tk.sergunin.lab.functions.*;
 
 import static org.testng.Assert.*;
-import static org.testng.Assert.assertThrows;
 
 public class TabulatedFunctionFactoryTest {
     private final double[] xValues = new double[]{1., 2., 3., 4., 5.};
@@ -23,13 +22,35 @@ public class TabulatedFunctionFactoryTest {
 
     @Test
     public void testCreateStrict() {
-        TabulatedFunctionFactory arrayTabulatedFunctionFactory = new ArrayTabulatedFunctionFactory();
-        TabulatedFunctionFactory linkedListTabulatedFunctionFactory = new LinkedListTabulatedFunctionFactory();
+        TabulatedFunction array = (new ArrayTabulatedFunctionFactory()).createStrict(xValues, yValues);
+        TabulatedFunction list = (new LinkedListTabulatedFunctionFactory()).createStrict(xValues, yValues);
+        assertTrue(array instanceof StrictTabulatedFunction);
+        assertEquals(array.apply(2), 4);
+        assertEquals(array.getCount(), 5);
+        assertEquals(array.getX(0), 1);
+        assertEquals(array.getY(0), 2);
+        assertEquals(array.indexOfX(1), 0);
+        assertEquals(array.indexOfY(2), 0);
+        assertEquals(array.leftBound(), 1);
+        assertEquals(array.rightBound(), 5);
+        assertEquals(array.iterator().next().x, 1);
+        array.setY(1, 0);
+        assertEquals(array.getY(1), 0);
+        assertThrows(UnsupportedOperationException.class, () -> array.apply(2.5));
 
-        TabulatedFunction func = arrayTabulatedFunctionFactory.createStrict(xValues, yValues);
-        assertTrue(func instanceof StrictTabulatedFunction);
-        func = linkedListTabulatedFunctionFactory.createStrict(xValues, yValues);
-        assertTrue(func instanceof StrictTabulatedFunction);
+        assertTrue(list instanceof StrictTabulatedFunction);
+        assertEquals(list.apply(2), 4);
+        assertEquals(list.getCount(), 5);
+        assertEquals(list.getX(0), 1);
+        assertEquals(list.getY(0), 2);
+        assertEquals(list.indexOfX(1), 0);
+        assertEquals(list.indexOfY(2), 0);
+        assertEquals(list.leftBound(), 1);
+        assertEquals(list.rightBound(), 5);
+        assertEquals(list.iterator().next().x, 1);
+        list.setY(1, 0);
+        assertEquals(list.getY(1), 0);
+        assertThrows(UnsupportedOperationException.class, () -> list.apply(2.5));
     }
 
     @Test
@@ -48,5 +69,36 @@ public class TabulatedFunctionFactoryTest {
         assertEquals(func.iterator().next().x, 1);
         assertThrows(UnsupportedOperationException.class, () -> func.setY(1, 0));
         assertThrows(UnsupportedOperationException.class, () -> func.apply(2.5));
+    }
+
+    @Test
+    public void testCreateUnmodifiable() {
+        TabulatedFunction array = (new ArrayTabulatedFunctionFactory()).createUnmodifiable(xValues, yValues);
+        TabulatedFunction list = (new LinkedListTabulatedFunctionFactory()).createUnmodifiable(xValues, yValues);
+        assertTrue(array instanceof UnmodifiableTabulatedFunction);
+        assertEquals(array.apply(2), 4);
+        assertEquals(array.getCount(), 5);
+        assertEquals(array.getX(0), 1);
+        assertEquals(array.getY(0), 2);
+        assertEquals(array.indexOfX(1), 0);
+        assertEquals(array.indexOfY(2), 0);
+        assertEquals(array.leftBound(), 1);
+        assertEquals(array.rightBound(), 5);
+        assertEquals(array.iterator().next().x, 1);
+        assertEquals(array.apply(2.5), 5);
+        assertThrows(UnsupportedOperationException.class, () -> array.setY(1, 0));
+
+        assertTrue(list instanceof UnmodifiableTabulatedFunction);
+        assertEquals(list.apply(2), 4);
+        assertEquals(list.getCount(), 5);
+        assertEquals(list.getX(0), 1);
+        assertEquals(list.getY(0), 2);
+        assertEquals(list.indexOfX(1), 0);
+        assertEquals(list.indexOfY(2), 0);
+        assertEquals(list.leftBound(), 1);
+        assertEquals(list.rightBound(), 5);
+        assertEquals(list.iterator().next().x, 1);
+        assertEquals(list.apply(2.5), 5);
+        assertThrows(UnsupportedOperationException.class, () -> list.setY(1, 0));
     }
 }
