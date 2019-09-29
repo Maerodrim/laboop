@@ -4,7 +4,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 import java.util.Iterator;
 
 public class UnmodifiableTabulatedFunction implements TabulatedFunction {
-    TabulatedFunction tabulatedFunction;
+    private TabulatedFunction tabulatedFunction;
 
     public UnmodifiableTabulatedFunction(TabulatedFunction tabulatedFunction) {
         this.tabulatedFunction = tabulatedFunction;
@@ -27,7 +27,7 @@ public class UnmodifiableTabulatedFunction implements TabulatedFunction {
 
     @Override
     public void setY(int index, double value) throws RuntimeException {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Change values of Y don't support");
     }
 
     @Override

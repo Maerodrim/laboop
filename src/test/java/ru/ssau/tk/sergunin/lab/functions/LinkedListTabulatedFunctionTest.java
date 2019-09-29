@@ -242,6 +242,7 @@ public class LinkedListTabulatedFunctionTest {
         int i = 0;
         while (iterator.hasNext()) {
             Point point = iterator.next();
+            System.out.println(point.x);
             assertEquals(point.x, firstArray.getX(i), 0.0001);
             assertEquals(point.y, firstArray.getY(i++), 0.0001);
         }
