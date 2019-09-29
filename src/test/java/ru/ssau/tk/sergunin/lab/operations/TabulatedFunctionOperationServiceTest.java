@@ -93,4 +93,50 @@ public class TabulatedFunctionOperationServiceTest {
         }
         operationServiceThroughLinkedList.subtract(a, arrayFactory.create(thirdXValues, thirdYValues));
     }
+
+    @Test(expectedExceptions = InconsistentFunctionsException.class)
+    public void testMultiplication() {
+        TabulatedFunctionFactory arrayFactory = new ArrayTabulatedFunctionFactory();
+        TabulatedFunctionFactory linkedListFactory = new LinkedListTabulatedFunctionFactory();
+        TabulatedFunctionOperationService operationServiceThroughArray = new TabulatedFunctionOperationService(arrayFactory);
+        TabulatedFunctionOperationService operationServiceThroughLinkedList = new TabulatedFunctionOperationService(linkedListFactory);
+        TabulatedFunction a = arrayFactory.create(firstXValues, firstYValues);
+        TabulatedFunction b = linkedListFactory.create(firstXValues, secondYValues);
+        TabulatedFunction resultSubtractThroughArray = operationServiceThroughArray.multiplication(a, b);
+        TabulatedFunction resultSubtractThroughLinkedList = operationServiceThroughLinkedList.multiplication(a, b);
+        int i = 0;
+        for (Point point : resultSubtractThroughArray) {
+            assertEquals(point.x, firstXValues[i]);
+            assertEquals(point.y, firstYValues[i] * secondYValues[i++]);
+        }
+        i = 0;
+        for (Point point : resultSubtractThroughLinkedList) {
+            assertEquals(point.x, firstXValues[i]);
+            assertEquals(point.y, firstYValues[i] * secondYValues[i++]);
+        }
+        operationServiceThroughLinkedList.subtract(a, arrayFactory.create(thirdXValues, thirdYValues));
+    }
+
+    @Test(expectedExceptions = InconsistentFunctionsException.class)
+    public void testDivision() {
+        TabulatedFunctionFactory arrayFactory = new ArrayTabulatedFunctionFactory();
+        TabulatedFunctionFactory linkedListFactory = new LinkedListTabulatedFunctionFactory();
+        TabulatedFunctionOperationService operationServiceThroughArray = new TabulatedFunctionOperationService(arrayFactory);
+        TabulatedFunctionOperationService operationServiceThroughLinkedList = new TabulatedFunctionOperationService(linkedListFactory);
+        TabulatedFunction a = arrayFactory.create(firstXValues, firstYValues);
+        TabulatedFunction b = linkedListFactory.create(firstXValues, secondYValues);
+        TabulatedFunction resultSubtractThroughArray = operationServiceThroughArray.division(a, b);
+        TabulatedFunction resultSubtractThroughLinkedList = operationServiceThroughLinkedList.division(a, b);
+        int i = 0;
+        for (Point point : resultSubtractThroughArray) {
+            assertEquals(point.x, firstXValues[i]);
+            assertEquals(point.y, firstYValues[i] / secondYValues[i++]);
+        }
+        i = 0;
+        for (Point point : resultSubtractThroughLinkedList) {
+            assertEquals(point.x, firstXValues[i]);
+            assertEquals(point.y, firstYValues[i] / secondYValues[i++]);
+        }
+        operationServiceThroughLinkedList.subtract(a, arrayFactory.create(thirdXValues, thirdYValues));
+    }
 }
