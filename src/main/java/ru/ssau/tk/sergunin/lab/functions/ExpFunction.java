@@ -1,13 +1,13 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-public class Exp implements MathFunction {
+public class ExpFunction implements MathFunction {
     private final double exp;
 
-    public Exp(double exp) {
+    public ExpFunction(double exp) {
         this.exp = exp;
     }
 
-    public Exp() {
+    public ExpFunction() {
         this(Math.E);
     }
 

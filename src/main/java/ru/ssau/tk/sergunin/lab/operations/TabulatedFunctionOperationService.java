@@ -7,6 +7,7 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 public class TabulatedFunctionOperationService {
 
+    private static final double ACCURACY = 1E-12;
     private TabulatedFunctionFactory factory;
 
     public TabulatedFunctionOperationService(TabulatedFunctionFactory factory) {
@@ -43,7 +44,7 @@ public class TabulatedFunctionOperationService {
         double[] xValues = new double[a.getCount()];
         double[] yValues = new double[a.getCount()];
         for (int i = 0; i < a.getCount(); i++) {
-            if (aPoints[i].x != bPoints[i].x) {
+            if (Math.abs((aPoints[i].x - bPoints[i].x)) > ACCURACY) {
                 throw new InconsistentFunctionsException("The corresponding x values don't match");
             }
             xValues[i] = aPoints[i].x;

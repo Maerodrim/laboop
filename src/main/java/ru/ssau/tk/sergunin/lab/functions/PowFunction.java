@@ -3,7 +3,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 public class PowFunction implements MathFunction {
     private final double pow;
 
-    PowFunction(double pow) {
+    public PowFunction(double pow) {
         this.pow = pow;
     }
 
