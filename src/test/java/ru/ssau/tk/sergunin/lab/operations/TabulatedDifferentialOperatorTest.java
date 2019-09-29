@@ -22,11 +22,12 @@ public class TabulatedDifferentialOperatorTest {
         TabulatedFunction a = arrayFactory.create(firstXValues, firstYValues);
         TabulatedFunction b = linkedListFactory.create(firstXValues, firstYValues);
         TabulatedDifferentialOperator differentialOperator = new TabulatedDifferentialOperator();
+        TabulatedDifferentialOperator differentialOperatorThroughLinkedList = new TabulatedDifferentialOperator(linkedListFactory);
         TabulatedFunction deriveAThroughArray = differentialOperator.derive(a);
         for (Point point : deriveAThroughArray) {
             assertEquals(point.y, 2);
         }
-        TabulatedFunction deriveBThroughLinkedList = differentialOperator.derive(b);
+        TabulatedFunction deriveBThroughLinkedList = differentialOperatorThroughLinkedList.derive(b);
         for (Point point : deriveBThroughLinkedList) {
             assertEquals(point.y, 2);
         }

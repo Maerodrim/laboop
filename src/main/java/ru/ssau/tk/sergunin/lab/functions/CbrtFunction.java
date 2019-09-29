@@ -1,7 +1,9 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-public class CbrtFunction implements MathFunction {
-    public double apply(double x) throws ArrayIndexOutOfBoundsException, IllegalArgumentException {
-        return Math.pow(x, 1. / 3);
+public class CbrtFunction extends PowFunction {
+
+    public CbrtFunction() {
+        super(1 / 3.);
     }
+
 }

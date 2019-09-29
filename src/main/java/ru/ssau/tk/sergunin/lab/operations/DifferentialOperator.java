@@ -4,4 +4,9 @@ import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 
 public interface DifferentialOperator<T extends MathFunction> extends MathFunction {
     T derive(T function);
+
+    @Override
+    default double apply(double x) {
+        return 0;
+    }
 }
