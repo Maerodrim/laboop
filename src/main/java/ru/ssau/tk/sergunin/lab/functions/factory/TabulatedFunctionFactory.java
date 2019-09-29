@@ -10,4 +10,7 @@ public interface TabulatedFunctionFactory {
     default  TabulatedFunction createStrict(double[] xValues, double[] yValues) {
         return new StrictTabulatedFunction(TabulatedFunctionFactory.this.create(xValues,yValues));
     }
+    default  TabulatedFunction createStrictUnmodifiable(double[] xValues, double[] yValues) {
+        return new UnmodifiableTabulatedFunction(new StrictTabulatedFunction(TabulatedFunctionFactory.this.create(xValues,yValues)));
+    }
 }
