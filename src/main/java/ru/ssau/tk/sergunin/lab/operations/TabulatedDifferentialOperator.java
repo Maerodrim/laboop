@@ -13,6 +13,14 @@ public class TabulatedDifferentialOperator extends TabulatedOperator implements 
         super(factory);
     }
 
+    protected TabulatedFunctionFactory getFactory() {
+        return factory;
+    }
+
+    protected void setFactory(TabulatedFunctionFactory factory) {
+        this.factory = factory;
+    }
+
     @Override
     public TabulatedFunction derive(TabulatedFunction function) {
         return super.derive(function);

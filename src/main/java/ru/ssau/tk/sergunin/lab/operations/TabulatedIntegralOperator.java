@@ -13,8 +13,16 @@ public class TabulatedIntegralOperator extends TabulatedOperator implements Inte
         super(factory);
     }
 
+    protected TabulatedFunctionFactory getFactory() {
+        return factory;
+    }
+
+    protected void setFactory(TabulatedFunctionFactory factory) {
+        this.factory = factory;
+    }
+
     @Override
     public TabulatedFunction integrate(TabulatedFunction function) {
-        return new TabulatedFunctionOperationService(new ArrayTabulatedFunctionFactory()).subtract(super.integrate(function), super.shift);
+        return new TabulatedFunctionOperationService(new ArrayTabulatedFunctionFactory()).subtract(super.integrate(function), shift);
     }
 }

@@ -12,10 +12,10 @@ public class TabulatedIntegralOperatorTest {
 
     @Test
     public void testIntegrate() {
-        TabulatedFunction actual = new ArrayTabulatedFunction(new ExpFunction(), -2, 5, 10001);
-        TabulatedFunction expected = new ArrayTabulatedFunction(new ExpFunction(), -2, 5, 10001);
-        TabulatedFunction actualThroughLinkedList = new LinkedListTabulatedFunction(new PowFunction(-2/3.), 1, 5, 1001);
-        TabulatedFunction expectedThroughLinkedList = new LinkedListTabulatedFunction(new CbrtFunction(), 1, 5, 1001);
+        TabulatedFunction actual = new ArrayTabulatedFunction(new ExpFunction(), -2, 5, 5001);
+        TabulatedFunction expected = new ArrayTabulatedFunction(new ExpFunction(), -2, 5, 5001);
+        TabulatedFunction actualThroughLinkedList = new LinkedListTabulatedFunction(new PowFunction(-2 / 3.), 1, 5, 5001);
+        TabulatedFunction expectedThroughLinkedList = new LinkedListTabulatedFunction(new CbrtFunction(), 1, 5, 5001);
         TabulatedIntegralOperator integralOperator = new TabulatedIntegralOperator();
         TabulatedIntegralOperator integralOperatorThroughLinkedList = new TabulatedIntegralOperator(new LinkedListTabulatedFunctionFactory());
         TabulatedFunction integrateActual = integralOperator.integrate(actual);
@@ -23,21 +23,16 @@ public class TabulatedIntegralOperatorTest {
         Iterator<Point> iteratorOfIntegrateActual = integrateActual.iterator();
         Iterator<Point> iteratorOfExpected = expected.iterator();
 
-        iteratorOfExpected.next(); // TODO
-
-        while (iteratorOfExpected.hasNext()) {
+        for (Point point : expected) {
             assertEquals(iteratorOfIntegrateActual.next().y + 1, iteratorOfExpected.next().y, 0.001); // Converges to within a constant
         }
 
         TabulatedFunction integrateActualThroughLinkedList = integralOperatorThroughLinkedList.integrate(actualThroughLinkedList);
 
         Iterator<Point> iteratorOfIntegrateActualThroughLinkedList = integrateActualThroughLinkedList.iterator();
-        Iterator<Point> iteratorOfExpectedThroughLinkedList = expectedThroughLinkedList.iterator();
 
-        iteratorOfExpectedThroughLinkedList.next(); // TODO
-
-        while (iteratorOfExpectedThroughLinkedList.hasNext()) {
-            assertEquals(iteratorOfIntegrateActualThroughLinkedList.next().y + 3, iteratorOfExpectedThroughLinkedList.next().y*3, 0.001); // Converges to within a constant
+        for (Point point : expectedThroughLinkedList) {
+            assertEquals(iteratorOfIntegrateActualThroughLinkedList.next().y + 3, point.y * 3, 0.001); // Converges to within a constant
         }
     }
 }
