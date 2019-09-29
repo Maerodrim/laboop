@@ -28,14 +28,14 @@ public class TabulatedDifferentialOperator implements DifferentialOperator<Tabul
     public TabulatedFunction derive(TabulatedFunction function) {
         double[] xValues = new double[function.getCount()];
         double[] yValues = new double[function.getCount()];
-        Point[] ArrayPoint = TabulatedFunctionOperationService.asPoints(function);
+        Point[] arrayPoint = TabulatedFunctionOperationService.asPoints(function);
         for (int i = 0; i < xValues.length; i++) {
             if (i < (xValues.length - 1)) {
-                yValues[i] = (ArrayPoint[i + 1].y - ArrayPoint[i].y) / (ArrayPoint[i + 1].x - ArrayPoint[i].x);
-                xValues[i] = ArrayPoint[i].x;
+                yValues[i] = (arrayPoint[i + 1].y - arrayPoint[i].y) / (arrayPoint[i + 1].x - arrayPoint[i].x);
+                xValues[i] = arrayPoint[i].x;
             } else {
                 yValues[i] = yValues[i - 1];
-                xValues[i] = ArrayPoint[i].x;
+                xValues[i] = arrayPoint[i].x;
             }
         }
 
