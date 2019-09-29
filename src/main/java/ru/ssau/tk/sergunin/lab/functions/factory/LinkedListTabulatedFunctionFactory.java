@@ -6,7 +6,7 @@ import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 public class LinkedListTabulatedFunctionFactory implements TabulatedFunctionFactory {
 
     @Override
-    public TabulatedFunction create(double[] xValues, double[] yValues) {
-        return new LinkedListTabulatedFunction(xValues, yValues);
+    public  TabulatedFunction create(double[] xValues, double[] yValues) {
+       return new LinkedListTabulatedFunction(xValues, yValues);
     }
 }

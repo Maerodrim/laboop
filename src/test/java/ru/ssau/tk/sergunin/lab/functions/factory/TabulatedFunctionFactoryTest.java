@@ -3,6 +3,7 @@ package ru.ssau.tk.sergunin.lab.functions.factory;
 import org.testng.annotations.Test;
 import ru.ssau.tk.sergunin.lab.functions.ArrayTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.LinkedListTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.StrictTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 
 import static org.testng.Assert.assertTrue;
@@ -20,5 +21,16 @@ public class TabulatedFunctionFactoryTest {
         assertTrue(func instanceof ArrayTabulatedFunction);
         func = linkedListTabulatedFunctionFactory.create(xValues, yValues);
         assertTrue(func instanceof LinkedListTabulatedFunction);
+    }
+
+    @Test
+    public void testCreateStrict() {
+        TabulatedFunctionFactory arrayTabulatedFunctionFactory = new ArrayTabulatedFunctionFactory();
+        TabulatedFunctionFactory linkedListTabulatedFunctionFactory = new LinkedListTabulatedFunctionFactory();
+
+        TabulatedFunction func = arrayTabulatedFunctionFactory.createStrict(xValues, yValues);
+        assertTrue(func instanceof StrictTabulatedFunction);
+        func = linkedListTabulatedFunctionFactory.createStrict(xValues, yValues);
+        assertTrue(func instanceof StrictTabulatedFunction);
     }
 }
