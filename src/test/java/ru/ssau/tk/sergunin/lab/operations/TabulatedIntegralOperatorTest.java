@@ -12,10 +12,10 @@ public class TabulatedIntegralOperatorTest {
 
     @Test
     public void testIntegrate() {
-        TabulatedFunction actual = new ArrayTabulatedFunction(new ExpFunction(), -2, 5, 5001);
-        TabulatedFunction expected = new ArrayTabulatedFunction(new ExpFunction(), -2, 5, 5001);
-        TabulatedFunction actualThroughLinkedList = new LinkedListTabulatedFunction(new PowFunction(-2 / 3.), 1, 5, 5001);
-        TabulatedFunction expectedThroughLinkedList = new LinkedListTabulatedFunction(new CbrtFunction(), 1, 5, 5001);
+        TabulatedFunction actual = new ArrayTabulatedFunction(new ExpFunction(), -5, 5, 5001);
+        TabulatedFunction expected = new ArrayTabulatedFunction(new ExpFunction(), -5, 5, 5001);
+        TabulatedFunction actualThroughLinkedList = new LinkedListTabulatedFunction(new PowFunction(-2 / 3.), 1, 10, 10001);
+        TabulatedFunction expectedThroughLinkedList = new LinkedListTabulatedFunction(new CbrtFunction(), 1, 10, 10001);
         TabulatedIntegralOperator integralOperator = new TabulatedIntegralOperator();
         TabulatedIntegralOperator integralOperatorThroughLinkedList = new TabulatedIntegralOperator(new LinkedListTabulatedFunctionFactory());
         TabulatedFunction integrateActual = integralOperator.integrate(actual);

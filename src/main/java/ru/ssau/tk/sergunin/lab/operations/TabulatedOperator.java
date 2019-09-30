@@ -29,7 +29,7 @@ public abstract class TabulatedOperator {
         double[] yValues = new double[function.getCount()];
         Point[] arrayPoint = TabulatedFunctionOperationService.asPoints(function);
         for (int i = 0; i < xValues.length; i++) {
-            yValues[i] = operation.apply(i != 0 ? arrayPoint[i - 1] : arrayPoint[i + 1], arrayPoint[i]);
+            yValues[i] = operation.apply(i != 0 ? arrayPoint[i - 1] : new Point(2 * arrayPoint[i].x - arrayPoint[i + 1].x, function.apply(2 * arrayPoint[i].x - arrayPoint[i + 1].x)), arrayPoint[i]);
             xValues[i] = arrayPoint[i].x;
         }
         return factory.create(xValues, yValues);
