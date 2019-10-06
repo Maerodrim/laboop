@@ -14,11 +14,11 @@ public class TabulatedIntegralOperator extends TabulatedOperator implements Inte
     }
 
     protected TabulatedFunctionFactory getFactory() {
-        return factory;
+        return super.getFactory();
     }
 
     protected void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
+        super.setFactory(factory);
     }
 
     @Override

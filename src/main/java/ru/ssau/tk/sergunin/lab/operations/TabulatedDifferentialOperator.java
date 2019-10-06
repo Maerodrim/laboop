@@ -14,11 +14,11 @@ public class TabulatedDifferentialOperator extends TabulatedOperator implements 
     }
 
     protected TabulatedFunctionFactory getFactory() {
-        return factory;
+        return super.getFactory();
     }
 
     protected void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
+        super.setFactory(factory);
     }
 
     @Override

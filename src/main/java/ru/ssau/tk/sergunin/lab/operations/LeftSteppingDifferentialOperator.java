@@ -12,5 +12,4 @@ public class LeftSteppingDifferentialOperator extends SteppingDifferentialOperat
     public MathFunction derive(MathFunction function) {
         return x -> (function.apply(x) - function.apply(x - step)) / step;
     }
-
 }

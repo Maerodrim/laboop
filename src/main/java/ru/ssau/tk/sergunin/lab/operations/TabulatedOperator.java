@@ -36,7 +36,7 @@ public abstract class TabulatedOperator {
     }
 
     protected TabulatedFunction derive(TabulatedFunction function) {
-        return doOperation(function, ((u, v) -> (v.y - u.y) / (v.x - u.x)));
+        return doOperation(function, (u, v) -> (v.y - u.y) / (v.x - u.x));
     }
 
     protected TabulatedFunction integrate(TabulatedFunction function) {

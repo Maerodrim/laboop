@@ -45,12 +45,12 @@ public abstract class AbstractTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
-   public String toString(){
-        StringBuilder string = new StringBuilder;
+    public String toString() {
+        StringBuilder string = new StringBuilder();
         string.append(getClass().getSimpleName());
         //for (StringBuilder buff : this){
-            string.append(getClass().getSimpleName());
-       // }
+        string.append(getClass().getSimpleName());
+        // }
         return StringBuilder.class.toString();
     }
 }

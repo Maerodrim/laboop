@@ -7,7 +7,7 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 public class TabulatedFunctionOperationService {
 
-    private static final double ACCURACY = 1E-12;
+    private static final double ACCURACY = 1E-6;
     private TabulatedFunctionFactory factory;
 
     public TabulatedFunctionOperationService(TabulatedFunctionFactory factory) {
