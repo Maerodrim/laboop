@@ -14,7 +14,7 @@ public class TabulatedFunctionFileWriter {
         ArrayTabulatedFunction arrayTabulatedFunction = new ArrayTabulatedFunction(new PowFunction(2.5), 0, 10, 11);
         LinkedListTabulatedFunction linkedListTabulatedFunction = new LinkedListTabulatedFunction(new ExpFunction(1.5), 0, 10, 11);
 
-        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter("output/array_function.txt"))){
+        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter("output/array_function.txt"))) {
             FunctionsIO.writeTabulatedFunction(fileWriter, arrayTabulatedFunction);
         } catch (IOException e) {
             e.printStackTrace();
@@ -23,7 +23,7 @@ public class TabulatedFunctionFileWriter {
         try {
             fileWriter = new BufferedWriter(new FileWriter("output/linked_list_function.txt"));
             FunctionsIO.writeTabulatedFunction(fileWriter, linkedListTabulatedFunction);
-        } catch (IOException e){
+        } catch (IOException e) {
             try {
                 fileWriter.close();
             } catch (IOException ex) {
@@ -31,6 +31,6 @@ public class TabulatedFunctionFileWriter {
             }
             e.printStackTrace();
         }
-
+        System.out.println(Math.pow(1, Double.NaN));
     }
 }

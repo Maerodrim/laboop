@@ -26,4 +26,10 @@ public class AbstractTabulatedFunctionTest {
         assertEquals(mockObj.apply(1), 10, ACCURACY);
         assertEquals(mockObj.apply(1.5), 12.5, ACCURACY);
     }
+
+    @Test
+    public void testToString() {
+        TabulatedFunction function = new LinkedListTabulatedFunction(new PowFunction(2), 0, 1, 3);
+        assertEquals(function.toString(), "LinkedListTabulatedFunction size = 3\n[0.0; 0.0]\n[0.5; 0.25]\n[1.0; 1.0]");
+    }
 }
