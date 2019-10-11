@@ -3,6 +3,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 import java.io.*;
 
 public interface MathFunction extends Serializable {
+
     double apply(double x);
 
     default CompositeFunction andThen(MathFunction afterFunction) {

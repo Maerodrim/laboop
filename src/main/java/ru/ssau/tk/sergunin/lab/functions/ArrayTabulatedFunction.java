@@ -5,11 +5,13 @@ import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable {
+public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable, Serializable {
+    private static final long serialVersionUID = 3990511369369675738L;
     private double[] xValues;
     private double[] yValues;
     private int count;
@@ -136,7 +138,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         if (indexOfX(x) != -1) {
             setY(indexOfX(x), y);
         } else {
-            int index = 0;
+            int index;
             try {
                 index = floorIndexOfX(x);
             } catch (IllegalArgumentException e) {

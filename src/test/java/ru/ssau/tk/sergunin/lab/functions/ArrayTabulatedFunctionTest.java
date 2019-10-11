@@ -234,7 +234,7 @@ public class ArrayTabulatedFunctionTest {
         secondArray.remove(-1);
     }
 
-    @Test(expectedExceptions = NoSuchElementException.class)
+    @Test
     public void testIterator() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         Iterator<Point> iterator = firstArray.iterator();
@@ -249,6 +249,6 @@ public class ArrayTabulatedFunctionTest {
             assertEquals(point.x, firstArray.getX(i), 0.0001);
             assertEquals(point.y, firstArray.getY(i++), 0.0001);
         }
-        iterator.next();
+        assertThrows(NoSuchElementException.class, iterator::next);
     }
 }
