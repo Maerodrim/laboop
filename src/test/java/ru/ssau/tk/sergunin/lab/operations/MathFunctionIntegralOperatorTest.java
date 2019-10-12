@@ -10,7 +10,7 @@ public class MathFunctionIntegralOperatorTest {
     @Test
     public void testIntegrate() {
         MathFunction sqr = new SqrFunction();
-        IntegralOperator<MathFunction> integralOperator = new MathFunctionIntegralOperator(0);
+        IntegralOperator<MathFunction> integralOperator = new MathFunctionIntegralOperator(1);
         MathFunction cube = integralOperator.integrate(sqr.andThen(new IdentityFunction().subtract(new UnitFunction())));
         assertEquals(cube.apply(4), 9, 0.01);
 

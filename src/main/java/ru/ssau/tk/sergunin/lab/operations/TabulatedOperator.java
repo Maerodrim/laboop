@@ -28,15 +28,19 @@ public abstract class TabulatedOperator {
         double[] xValues = new double[function.getCount()];
         double[] yValues = new double[function.getCount()];
         Point[] arrayPoint = TabulatedFunctionOperationService.asPoints(function);
-        for (int i = 0; i < xValues.length; i++) {
-            yValues[i] = operation.apply(i != 0 ? arrayPoint[i - 1] : new Point(2 * arrayPoint[i].x - arrayPoint[i + 1].x, function.apply(2 * arrayPoint[i].x - arrayPoint[i + 1].x)), arrayPoint[i]);
-            xValues[i] = arrayPoint[i].x;
+        for (int i = 0; i < xValues.length - 2; i++) {
+            yValues[i + 1] = operation.apply(arrayPoint[i], arrayPoint[i + 1], arrayPoint[i + 2]);
+            xValues[i + 1] = arrayPoint[i + 1].x;
         }
+        xValues[0] = arrayPoint[0].x;
+        yValues[0] = yValues[1];
+        xValues[xValues.length - 1] = arrayPoint[xValues.length - 1].x;
+        yValues[xValues.length - 1] = yValues[xValues.length - 2];
         return factory.create(xValues, yValues);
     }
 
     protected TabulatedFunction derive(TabulatedFunction function) {
-        return doOperation(function, (u, v) -> (v.y - u.y) / (v.x - u.x));
+        return doOperation(function, (u, v, z) -> (z.y - u.y) / (z.x - u.x));
     }
 
     protected TabulatedFunction integrate(TabulatedFunction function) {
@@ -45,7 +49,7 @@ public abstract class TabulatedOperator {
             boolean isFirst = true;
 
             @Override
-            public double apply(Point u, Point v) {
+            public double apply(Point u, Point v, Point z) {
                 if (isFirst) {
                     sum += v.y * (u.x - v.x);
                     shift = new ArrayTabulatedFunction(new ZeroFunction(), function.getX(0), function.getX(function.getCount() - 1), function.getCount());
@@ -63,6 +67,6 @@ public abstract class TabulatedOperator {
 
     @FunctionalInterface
     private interface BiOperation {
-        double apply(Point u, Point v);
+        double apply(Point u, Point v, Point z);
     }
 }

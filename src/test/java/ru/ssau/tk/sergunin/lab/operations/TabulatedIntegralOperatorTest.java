@@ -5,41 +5,41 @@ import ru.ssau.tk.sergunin.lab.functions.*;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.LinkedListTabulatedFunctionFactory;
 
-import java.util.Iterator;
+import java.util.function.Function;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import static ru.ssau.tk.sergunin.lab.operations.TabulatedFunctionOperationService.asPoints;
 
 public class TabulatedIntegralOperatorTest {
 
     @Test
     public void testIntegrate() {
-        TabulatedFunction actual = new ArrayTabulatedFunction(new PowFunction(5), -5, 5, 1000001);
-        TabulatedFunction expected = new ArrayTabulatedFunction(new PowFunction(5), -5, 5, 1000001);
-        TabulatedFunction actualThroughLinkedList = new LinkedListTabulatedFunction(new PowFunction(-2 / 3.), 1, 10, 10001);
-        TabulatedFunction expectedThroughLinkedList = new LinkedListTabulatedFunction(new CbrtFunction(), 1, 10, 10001);
+        TabulatedFunction actual = new ArrayTabulatedFunction(new PowFunction(2), -5, 5, 100001);
+        TabulatedFunction expected = new ArrayTabulatedFunction(new PowFunction(2), -5, 5, 100001);
         TabulatedIntegralOperator integralOperator = new TabulatedIntegralOperator();
-
         integralOperator.setFactory(new ArrayTabulatedFunctionFactory());
         assertTrue(integralOperator.getFactory() instanceof ArrayTabulatedFunctionFactory);
-
         TabulatedDifferentialOperator differentialOperator = new TabulatedDifferentialOperator();
-        TabulatedIntegralOperator integralOperatorThroughLinkedList = new TabulatedIntegralOperator(new LinkedListTabulatedFunctionFactory());
         TabulatedFunction integrateActual = differentialOperator.derive(integralOperator.integrate(actual));
 
-        Iterator<Point> iteratorOfIntegrateActual = integrateActual.iterator();
-        Iterator<Point> iteratorOfExpected = expected.iterator();
+        Point[] actualPoint = asPoints(integrateActual);
+        Point[] expectedPoint = asPoints(expected);
 
-        for (Point point : expected) {
-            assertEquals(iteratorOfIntegrateActual.next().y, iteratorOfExpected.next().y, 0.02); // Converges to within a constant
+        for (int i = 2; i < integrateActual.getCount() - 2; i++) {
+            assertEquals(actualPoint[i].y, expectedPoint[i].y, 0.0002); // Converges to within a constant
         }
 
+        TabulatedFunction actualThroughLinkedList = new LinkedListTabulatedFunction(new PowFunction(2), -5, 5, 10001);
+        TabulatedFunction expectedThroughLinkedList = new LinkedListTabulatedFunction(new PowFunction(3), -5, 5, 10001);
+        TabulatedIntegralOperator integralOperatorThroughLinkedList = new TabulatedIntegralOperator(new LinkedListTabulatedFunctionFactory());
         TabulatedFunction integrateActualThroughLinkedList = integralOperatorThroughLinkedList.integrate(actualThroughLinkedList);
 
-        Iterator<Point> iteratorOfIntegrateActualThroughLinkedList = integrateActualThroughLinkedList.iterator();
+        Point[] actualPointThroughLinkedList = asPoints(integrateActualThroughLinkedList);
+        Point[] expectedPointThroughLinkedList = asPoints(expectedThroughLinkedList);
 
-        for (Point point : expectedThroughLinkedList) {
-            assertEquals(iteratorOfIntegrateActualThroughLinkedList.next().y + 3, point.y * 3, 0.001); // Converges to within a constant
+        for (int i = 3; i < integrateActualThroughLinkedList.getCount() - 3; i++) {
+            assertEquals(actualPointThroughLinkedList[i].y * 3, expectedPointThroughLinkedList[i].y, 0.05); // Converges to within a constant
         }
 
     }
