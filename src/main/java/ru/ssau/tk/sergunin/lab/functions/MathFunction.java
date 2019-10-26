@@ -2,7 +2,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 
 import java.io.*;
 
-public interface MathFunction extends Serializable {
+public interface MathFunction{
 
     double apply(double x);
 
@@ -31,21 +31,5 @@ public interface MathFunction extends Serializable {
             throw new IllegalArgumentException();
         }
         return x -> this.apply(x) / afterFunction.apply(x);
-    }
-
-    default MathFunction copy() {
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream ous;
-            ous = new ObjectOutputStream(baos);
-            ous.writeObject(this);
-            ous.close();
-            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            return (MathFunction) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }
