@@ -1,5 +1,7 @@
 package ru.ssau.tk.sergunin.lab.io;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.XStream;
 import ru.ssau.tk.sergunin.lab.functions.ArrayTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
@@ -99,6 +101,24 @@ public final class FunctionsIO {
         stream.toXML(function, writer);
         writer.flush();
     }
+    public static void serializeJson(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException{
+        ObjectMapper stream = new ObjectMapper();
+        try {
+            writer.write(stream.writeValueAsString(function));
+        }
+        catch (JsonMappingException e) {
+            throw new IOException(e);
+        }
+    }
+   public static ArrayTabulatedFunction deserializeJson(BufferedReader reader) throws IOException{
+       ObjectMapper stream = new ObjectMapper();
+       try {
+           return stream.readerFor(ArrayTabulatedFunction.class).readValue(reader);
+       }
+       catch (JsonMappingException e) {
+           throw new IOException(e);
+       }
+   }
 
     public static ArrayTabulatedFunction deserializeXml(BufferedReader reader) {
         XStream stream = new XStream();

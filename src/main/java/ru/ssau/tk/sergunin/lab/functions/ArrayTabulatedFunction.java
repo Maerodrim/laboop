@@ -1,5 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
@@ -12,11 +15,13 @@ import java.util.NoSuchElementException;
 
 public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable, Serializable {
     private static final long serialVersionUID = 3990511369369675738L;
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     private double[] xValues;
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     private double[] yValues;
     private int count;
-
-    public ArrayTabulatedFunction(double[] xValues, double[] yValues) throws DifferentLengthOfArraysException, ArrayIsNotSortedException {
+    @JsonCreator
+    public ArrayTabulatedFunction(@JsonProperty(value = "xValues") double[] xValues,@JsonProperty(value = "yValues") double[] yValues) throws DifferentLengthOfArraysException, ArrayIsNotSortedException {
         checkLengthIsTheSame(xValues, yValues);
         checkSorted(xValues);
         if (xValues.length < 2) {
