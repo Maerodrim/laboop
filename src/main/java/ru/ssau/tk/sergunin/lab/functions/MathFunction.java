@@ -1,5 +1,35 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-public interface MathFunction {
-    double  apply(double x);
+import java.io.*;
+
+public interface MathFunction{
+
+    double apply(double x);
+
+    default CompositeFunction andThen(MathFunction afterFunction) {
+        return new CompositeFunction(this, afterFunction);
+    }
+
+    default MathFunction sum(MathFunction afterFunction) {
+        return x -> this.apply(x) + afterFunction.apply(x);
+    }
+
+    default MathFunction subtract(MathFunction afterFunction) {
+        return x -> this.apply(x) - afterFunction.apply(x);
+    }
+
+    default MathFunction multiply(double number) {
+        return x -> number * this.apply(x);
+    }
+
+    default MathFunction multiply(MathFunction afterFunction) {
+        return x -> this.apply(x) * afterFunction.apply(x);
+    }
+
+    default MathFunction divide(MathFunction afterFunction) {
+        if (afterFunction instanceof ZeroFunction) {
+            throw new IllegalArgumentException();
+        }
+        return x -> this.apply(x) / afterFunction.apply(x);
+    }
 }

@@ -1,9 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-public final class IdentityFunction implements MathFunction {
-    public double apply(double x) {
-        return x;
+public final class IdentityFunction extends PowFunction implements MathFunction {
+    public IdentityFunction() {
+        super(1);
     }
-
-    ;
 }
