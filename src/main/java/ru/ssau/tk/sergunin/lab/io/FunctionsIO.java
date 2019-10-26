@@ -1,5 +1,6 @@
 package ru.ssau.tk.sergunin.lab.io;
 
+import com.thoughtworks.xstream.XStream;
 import ru.ssau.tk.sergunin.lab.functions.ArrayTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
@@ -50,6 +51,7 @@ public final class FunctionsIO {
         }
         return factory.create(xValues, yValues);
     }
+
     public static TabulatedFunction readTabulatedFunction(BufferedInputStream inputStream, TabulatedFunctionFactory factory) throws IOException {
         int count;
         DataInputStream dataInputStream = new DataInputStream(inputStream);
@@ -74,21 +76,34 @@ public final class FunctionsIO {
         ous.flush();
     }
 
-   public static TabulatedFunction deserialize(BufferedInputStream stream) throws IOException, ClassNotFoundException {
+    public static TabulatedFunction deserialize(BufferedInputStream stream) throws IOException, ClassNotFoundException {
         return (TabulatedFunction) new ObjectInputStream(stream).readObject();
     }
+
     public static void writeTabulatedFunction(BufferedOutputStream outputStream, TabulatedFunction function) throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
         dataOutputStream.writeInt(function.getCount());
         for (Point point : function) {
-            dataOutputStream.writeDouble ( point.x );
-            dataOutputStream.writeDouble ( point.y );
+            dataOutputStream.writeDouble(point.x);
+            dataOutputStream.writeDouble(point.y);
         }
         try {
             dataOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void serializeXml(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
+        XStream stream = new XStream();
+        stream.toXML(function, writer);
+        writer.flush();
+    }
+
+    public static ArrayTabulatedFunction deserializeXml(BufferedReader reader) {
+        XStream stream = new XStream();
+        Object function = stream.fromXML(reader);
+        return (ArrayTabulatedFunction) function;
     }
 
 }

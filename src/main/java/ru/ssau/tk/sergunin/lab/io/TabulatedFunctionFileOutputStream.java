@@ -5,7 +5,10 @@ import ru.ssau.tk.sergunin.lab.functions.ExpFunction;
 import ru.ssau.tk.sergunin.lab.functions.LinkedListTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.PowFunction;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class TabulatedFunctionFileOutputStream {
     public static void main(String[] args) {
