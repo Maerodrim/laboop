@@ -14,20 +14,18 @@ public class TabulatedIntegralOperatorTest {
     @Test
     public void testIntegrate() {
         TabulatedFunction actual = new ArrayTabulatedFunction(new PowFunction(2), 1, 5, 1001);
-        TabulatedFunction expected = new ArrayTabulatedFunction(new PowFunction(3), 1, 5, 1001);
+        TabulatedFunction expected = new ArrayTabulatedFunction(new PowFunction(2), 1, 5, 1001);
         TabulatedIntegralOperator integralOperator = new TabulatedIntegralOperator();
         integralOperator.setFactory(new ArrayTabulatedFunctionFactory());
         assertTrue(integralOperator.getFactory() instanceof ArrayTabulatedFunctionFactory);
         TabulatedDifferentialOperator differentialOperator = new TabulatedDifferentialOperator();
-        TabulatedFunction integrateActual = /*differentialOperator.derive(*/integralOperator.integrate(actual)/*)*/;
-        System.out.println(integrateActual.toString());
-
+        TabulatedFunction integrateActual = differentialOperator.derive(integralOperator.integrate(actual));
 
         Point[] actualPoint = asPoints(integrateActual);
         Point[] expectedPoint = asPoints(expected);
 
         for (int i = 2; i < integrateActual.getCount() - 2; i++) {
-            assertEquals(actualPoint[i].y * 3, expectedPoint[i].y, 0.0002); // Converges to within a constant
+            assertEquals(actualPoint[i].y, expectedPoint[i].y, 0.0002); // Converges to within a constant
         }
 
         TabulatedFunction actualThroughLinkedList = new LinkedListTabulatedFunction(new PowFunction(2), -5, 5, 10001);

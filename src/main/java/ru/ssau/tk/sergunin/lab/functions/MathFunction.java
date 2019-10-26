@@ -2,7 +2,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 
 import java.io.*;
 
-public interface MathFunction extends Serializable {
+public interface MathFunction{
 
     double apply(double x);
 

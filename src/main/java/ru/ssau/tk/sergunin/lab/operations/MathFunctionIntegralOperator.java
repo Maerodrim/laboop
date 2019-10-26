@@ -16,14 +16,15 @@ public class MathFunctionIntegralOperator implements IntegralOperator<MathFuncti
     public MathFunction integrate(MathFunction function) {
         SteppingDifferentialOperator differentialOperator = new MiddleSteppingDifferentialOperator(STEP);
         MathFunction resultFunction = new ZeroFunction();
-        MathFunction tempFunction = function.copy();
+        MathFunction tempFunction = function;
         double k = 1;
         boolean isUnmodifiableTempFunction = false;
         int n = 0;
         double temp;
         for (int i = 0; i < LIMIT_NUMBER_OF_ITERATIONS; i++) {
             k *= i != 0 ? i : 1;
-            resultFunction = resultFunction.sum((new PowFunction(i).andThen(new IdentityFunction().subtract(new ConstantFunction(AROUND)))).multiply(tempFunction.apply(AROUND) / k));
+            resultFunction = resultFunction.sum((new PowFunction(i).andThen(
+                    new IdentityFunction().subtract(new ConstantFunction(AROUND)))).multiply(tempFunction.apply(AROUND) / k));
             if (!isUnmodifiableTempFunction) {
                 temp = tempFunction.apply(1);
                 tempFunction = differentialOperator.derive(tempFunction);

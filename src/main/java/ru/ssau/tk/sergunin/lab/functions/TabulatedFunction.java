@@ -3,11 +3,11 @@ package ru.ssau.tk.sergunin.lab.functions;
 public interface TabulatedFunction extends MathFunction, Iterable<Point> {
     int getCount();
 
-    double getX(int index) throws RuntimeException;
+    double getX(int index);
 
-    double getY(int index) throws RuntimeException;
+    double getY(int index);
 
-    void setY(int index, double value) throws RuntimeException;
+    void setY(int index, double value);
 
     int indexOfX(double x);
 

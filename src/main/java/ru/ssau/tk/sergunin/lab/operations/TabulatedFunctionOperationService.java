@@ -3,6 +3,7 @@ package ru.ssau.tk.sergunin.lab.operations;
 import ru.ssau.tk.sergunin.lab.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 public class TabulatedFunctionOperationService {
@@ -15,7 +16,7 @@ public class TabulatedFunctionOperationService {
     }
 
     public TabulatedFunctionOperationService() {
-        factory = (xValues, yValues) -> null;
+        factory = new ArrayTabulatedFunctionFactory();
     }
 
     public static Point[] asPoints(TabulatedFunction tabulatedFunction) {
