@@ -15,14 +15,14 @@ public class TabulatedFunctionFileOutputStream {
         ArrayTabulatedFunction arrayTabulatedFunction = new ArrayTabulatedFunction(new PowFunction(2.5), 0, 10, 11);
         LinkedListTabulatedFunction linkedListTabulatedFunction = new LinkedListTabulatedFunction(new ExpFunction(1.5), 0, 10, 11);
 
-        try (BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(String.valueOf(new FileWriter("output/array_function.txt"))))) {
+        try (BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(String.valueOf(new FileWriter("output/binary_function.bin"))))) {
             FunctionsIO.writeTabulatedFunction(fileWriter, arrayTabulatedFunction);
         } catch (IOException e) {
             e.printStackTrace();
         }
         BufferedOutputStream fileWriter = null;
         try {
-            fileWriter = new BufferedOutputStream(new FileOutputStream(String.valueOf(new FileWriter("output/linked_list_function.txt"))));
+            fileWriter = new BufferedOutputStream(new FileOutputStream(String.valueOf(new FileWriter("output/linked_list_function.bin"))));
             FunctionsIO.writeTabulatedFunction(fileWriter, linkedListTabulatedFunction);
         } catch (IOException e) {
             try {

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jetbrains.annotations.NotNull;
-import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
-import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
 
 import java.io.Serializable;
@@ -20,8 +18,9 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     private double[] yValues;
     private int count;
+
     @JsonCreator
-    public ArrayTabulatedFunction(@JsonProperty(value = "xValues") double[] xValues,@JsonProperty(value = "yValues") double[] yValues) throws DifferentLengthOfArraysException, ArrayIsNotSortedException {
+    public ArrayTabulatedFunction(@JsonProperty(value = "xValues") double[] xValues, @JsonProperty(value = "yValues") double[] yValues) {
         checkLengthIsTheSame(xValues, yValues);
         checkSorted(xValues);
         if (xValues.length < 2) {
@@ -32,7 +31,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         this.yValues = Arrays.copyOf(yValues, count);
     }
 
-    public ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws DifferentLengthOfArraysException, ArrayIsNotSortedException {
+    public ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
         if (count < 2) {
             throw new IllegalArgumentException("Count less than minimum length");
         }
@@ -55,11 +54,10 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     @Override
     protected int floorIndexOfX(double x) {
-        int i;
         if (x < xValues[0]) {
             throw new IllegalArgumentException("Argument x less than minimal x in tabulated function");
         }
-        for (i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             if (xValues[i] > x) {
                 return i - 1;
             }
@@ -140,15 +138,10 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @Override
     public void insert(double x, double y) {
         int i = indexOfX(x);
-        if (indexOfX(x) != -1) {
-            setY(indexOfX(x), y);
+        if (i != -1) {
+            setY(i, y);
         } else {
-            int index;
-            try {
-                index = floorIndexOfX(x);
-            } catch (IllegalArgumentException e) {
-                index = 0;
-            }
+            int index = x < xValues[0] ? 0 : floorIndexOfX(x);
             double[] xTmp = new double[count + 1];
             double[] yTmp = new double[count + 1];
             if (index == 0) {

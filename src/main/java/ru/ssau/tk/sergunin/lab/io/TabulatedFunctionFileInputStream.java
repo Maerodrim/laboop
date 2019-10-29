@@ -10,14 +10,14 @@ import java.io.IOException;
 
 public class TabulatedFunctionFileInputStream {
     public static void main(String[] args) {
-        try (BufferedInputStream reader = new BufferedInputStream(new FileInputStream(String.valueOf(new FileReader("input/binary_function.txt"))))) {
+        try (BufferedInputStream reader = new BufferedInputStream(new FileInputStream("input/binary_function.bin"))) {
             System.out.println(FunctionsIO.readTabulatedFunction(reader, new LinkedListTabulatedFunctionFactory()).toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
         BufferedInputStream reader = null;
         try {
-            reader = new BufferedInputStream(new FileInputStream(String.valueOf(new FileReader("input/binary_function.txt"))));
+            reader = new BufferedInputStream(new FileInputStream("input/binary_function.bin"));
             System.out.println(FunctionsIO.readTabulatedFunction(reader, new ArrayTabulatedFunctionFactory()).toString());
         } catch (IOException e) {
             try {

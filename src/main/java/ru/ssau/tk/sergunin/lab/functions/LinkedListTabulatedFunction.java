@@ -15,7 +15,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private Node head;
     private int count;
 
-    public LinkedListTabulatedFunction(double[] xValues, double[] yValues) throws IllegalArgumentException, DifferentLengthOfArraysException, ArrayIsNotSortedException {
+    public LinkedListTabulatedFunction(double[] xValues, double[] yValues){
         checkLengthIsTheSame(xValues, yValues);
         checkSorted(xValues);
         if (xValues.length < 2) {
@@ -27,7 +27,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
     }
 
-    public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) throws IllegalArgumentException, DifferentLengthOfArraysException, ArrayIsNotSortedException {
+    public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count){
         if (count < 2) {
             throw new IllegalArgumentException("The count of points is less than the minimum count (2)");
         }
@@ -75,7 +75,6 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return head.prev.x;
     }
 
-    @Nullable
     private Node getNode(int index) {
         Node buff;
         if (index > (count / 2)) {
@@ -97,7 +96,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 }
             }
         }
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public double getX(int index) throws IllegalArgumentException {
@@ -213,7 +212,6 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return head.prev;
     }
 
-    @Nullable
     private Node nodeOfX(double x) {
         Node buff;
         buff = head;
@@ -224,7 +222,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 buff = buff.next;
             }
         }
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -232,12 +230,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         if (indexOfX(x) != -1) {
             setY(indexOfX(x), y);
         } else {
-            int index;
-            try {
-                index = floorIndexOfX(x);
-            } catch (IllegalArgumentException e) {
-                index = 0;
-            }
+            int index = x < head.x ? 0 : floorIndexOfX(x);
             Node newNode = new Node();
             if (index == 0 || index == count) {
                 newNode.next = head;
@@ -299,7 +292,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         };
     }
 
-    private static class Node {
+    private static class Node implements Serializable{
         Node next;
         Node prev;
         double x;
