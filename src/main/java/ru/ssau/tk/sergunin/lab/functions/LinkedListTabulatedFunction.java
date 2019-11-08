@@ -1,9 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
-import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
 
 import java.io.Serializable;
@@ -15,7 +12,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private Node head;
     private int count;
 
-    public LinkedListTabulatedFunction(double[] xValues, double[] yValues){
+    public LinkedListTabulatedFunction(double[] xValues, double[] yValues) {
         checkLengthIsTheSame(xValues, yValues);
         checkSorted(xValues);
         if (xValues.length < 2) {
@@ -27,7 +24,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
     }
 
-    public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count){
+    public LinkedListTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
         if (count < 2) {
             throw new IllegalArgumentException("The count of points is less than the minimum count (2)");
         }
@@ -96,7 +93,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
                 }
             }
         }
-        throw new UnsupportedOperationException();
+        throw new IllegalArgumentException();
     }
 
     public double getX(int index) throws IllegalArgumentException {
@@ -187,9 +184,9 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             return extrapolateLeft(x);
         } else if (x > rightBound()) {
             return extrapolateRight(x);
-        } else if (nodeOfX(x) != null) {
+        } else try {
             return nodeOfX(x).y;
-        } else {
+        } catch (UnsupportedOperationException e) {
             Node left = floorNodeOfX(x);
             Node right = left.next;
             return left.y + (right.y - left.y) * (x - left.x) / (right.x - left.x);
@@ -292,7 +289,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         };
     }
 
-    private static class Node implements Serializable{
+    private static class Node implements Serializable {
+        private static final long serialVersionUID = -1467915199737523461L;
         Node next;
         Node prev;
         double x;

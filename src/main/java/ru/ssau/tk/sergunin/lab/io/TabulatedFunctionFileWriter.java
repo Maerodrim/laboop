@@ -31,6 +31,5 @@ public class TabulatedFunctionFileWriter {
             }
             e.printStackTrace();
         }
-        System.out.println(Math.pow(1, Double.NaN));
     }
 }

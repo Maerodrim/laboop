@@ -1,8 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import java.io.*;
-
-public interface MathFunction{
+public interface MathFunction {
 
     double apply(double x);
 

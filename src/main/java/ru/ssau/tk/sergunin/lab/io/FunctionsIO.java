@@ -24,11 +24,17 @@ public final class FunctionsIO {
         for (Point point : function) {
             printWriter.printf("%f %f\n", point.x, point.y);
         }
-        try {
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        writer.flush();
+    }
+
+    public static void writeTabulatedFunction(BufferedOutputStream outputStream, TabulatedFunction function) throws IOException {
+        DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+        dataOutputStream.writeInt(function.getCount());
+        for (Point point : function) {
+            dataOutputStream.writeDouble(point.x);
+            dataOutputStream.writeDouble(point.y);
         }
+        dataOutputStream.flush();
     }
 
     public static TabulatedFunction readTabulatedFunction(BufferedReader reader, TabulatedFunctionFactory factory) throws IOException {
@@ -55,16 +61,10 @@ public final class FunctionsIO {
     }
 
     public static TabulatedFunction readTabulatedFunction(BufferedInputStream inputStream, TabulatedFunctionFactory factory) throws IOException {
-        int count;
         DataInputStream dataInputStream = new DataInputStream(inputStream);
-        try {
-            count = dataInputStream.readInt();
-        } catch (NumberFormatException nfe) {
-            throw new IOException(nfe);
-        }
+        int count = dataInputStream.readInt();
         double[] xValues = new double[count];
         double[] yValues = new double[count];
-        NumberFormat formatter = NumberFormat.getInstance(Locale.forLanguageTag("ru"));
         for (int i = 0; i < count; i++) {
             xValues[i] = dataInputStream.readDouble();
             yValues[i] = dataInputStream.readDouble();
@@ -82,48 +82,34 @@ public final class FunctionsIO {
         return (TabulatedFunction) new ObjectInputStream(stream).readObject();
     }
 
-    public static void writeTabulatedFunction(BufferedOutputStream outputStream, TabulatedFunction function) throws IOException {
-        DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-        dataOutputStream.writeInt(function.getCount());
-        for (Point point : function) {
-            dataOutputStream.writeDouble(point.x);
-            dataOutputStream.writeDouble(point.y);
-        }
-        try {
-            dataOutputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void serializeXml(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
         XStream stream = new XStream();
         stream.toXML(function, writer);
         writer.flush();
     }
-    public static void serializeJson(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException{
-        ObjectMapper stream = new ObjectMapper();
-        try {
-            writer.write(stream.writeValueAsString(function));
-        }
-        catch (JsonMappingException e) {
-            throw new IOException(e);
-        }
-    }
-   public static ArrayTabulatedFunction deserializeJson(BufferedReader reader) throws IOException{
-       ObjectMapper stream = new ObjectMapper();
-       try {
-           return stream.readerFor(ArrayTabulatedFunction.class).readValue(reader);
-       }
-       catch (JsonMappingException e) {
-           throw new IOException(e);
-       }
-   }
 
     public static ArrayTabulatedFunction deserializeXml(BufferedReader reader) {
         XStream stream = new XStream();
         Object function = stream.fromXML(reader);
         return (ArrayTabulatedFunction) function;
+    }
+
+    public static void serializeJson(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
+        ObjectMapper stream = new ObjectMapper();
+        try {
+            writer.write(stream.writeValueAsString(function));
+        } catch (JsonMappingException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public static ArrayTabulatedFunction deserializeJson(BufferedReader reader) throws IOException {
+        ObjectMapper stream = new ObjectMapper();
+        try {
+            return stream.readerFor(ArrayTabulatedFunction.class).readValue(reader);
+        } catch (JsonMappingException e) {
+            throw new IOException(e);
+        }
     }
 
 }
