@@ -70,6 +70,7 @@ public class TabulatedFunctionOperationService {
         return doOperation(a, b, (u, v) -> u / v);
     }
 
+    @FunctionalInterface
     private interface BiOperation {
         double apply(double u, double v);
     }
