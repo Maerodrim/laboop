@@ -1,5 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
@@ -39,22 +40,22 @@ public class ArrayTabulatedFunctionTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testIllegalArgumentExceptionInArrayInitializeThroughTwoArrays() {
-        ArrayTabulatedFunction array = new ArrayTabulatedFunction(new double[]{1}, new double[]{2});
+        new ArrayTabulatedFunction(new double[]{1}, new double[]{2});
     }
 
     @Test(expectedExceptions = DifferentLengthOfArraysException.class)
     public void testDifferentLengthOfArraysExceptionInArrayInitializeThroughTwoArrays() {
-        ArrayTabulatedFunction array = new ArrayTabulatedFunction(new double[]{1, 2}, new double[]{2});
+        new ArrayTabulatedFunction(new double[]{1, 2}, new double[]{2});
     }
 
     @Test(expectedExceptions = ArrayIsNotSortedException.class)
     public void testArrayIsNotSortedExceptionInArrayInitializeThroughTwoArrays() {
-        ArrayTabulatedFunction array = new ArrayTabulatedFunction(new double[]{2, 1}, new double[]{1, 1});
+        new ArrayTabulatedFunction(new double[]{2, 1}, new double[]{1, 1});
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testIllegalArgumentExceptionInArrayInitializeThroughMathFunction() {
-        ArrayTabulatedFunction array = new ArrayTabulatedFunction(funcF, 0, 0, 1);
+        new ArrayTabulatedFunction(funcF, 0, 0, 1);
     }
 
     @Test
@@ -82,7 +83,7 @@ public class ArrayTabulatedFunctionTest {
     }
 
 
-    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testGetX() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
@@ -92,10 +93,10 @@ public class ArrayTabulatedFunctionTest {
         for (int i = 0; i < secondArray.getCount(); ) {
             assertEquals(secondArray.getX(i), i++, ACCURACY);
         }
-        assertEquals(secondArray.getX(-1), 0, ACCURACY);
+        Assert.assertThrows(ArrayIndexOutOfBoundsException.class, () -> secondArray.getX(-1));
     }
 
-    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testGetY() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
@@ -105,10 +106,10 @@ public class ArrayTabulatedFunctionTest {
         for (int i = 0; i < secondArray.getCount(); ) {
             assertEquals(secondArray.getY(i), i * i++, ACCURACY);
         }
-        assertEquals(secondArray.getY(-1), 0, ACCURACY);
+        Assert.assertThrows(ArrayIndexOutOfBoundsException.class, () -> secondArray.getY(-1));
     }
 
-    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testSetY() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
@@ -120,7 +121,7 @@ public class ArrayTabulatedFunctionTest {
         assertEquals(secondArray.getY(7), 25, ACCURACY);
         secondArray.setY(5, 10);
         assertEquals(secondArray.getY(5), 10, ACCURACY);
-        secondArray.setY(-1, 0);
+        Assert.assertThrows(ArrayIndexOutOfBoundsException.class, () -> secondArray.setY(-1, 0));
     }
 
     @Test
@@ -148,7 +149,7 @@ public class ArrayTabulatedFunctionTest {
         assertEquals(secondArray.indexOfY(50), -1);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void testFloorIndexOfX() {
         ArrayTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
@@ -156,7 +157,7 @@ public class ArrayTabulatedFunctionTest {
         assertEquals(firstArray.floorIndexOfX(6), 5, ACCURACY);
         assertEquals(secondArray.floorIndexOfX(5.5), 5, ACCURACY);
         assertEquals(secondArray.floorIndexOfX(11), 11, ACCURACY);
-        assertEquals(firstArray.floorIndexOfX(0), 0, ACCURACY);
+        Assert.assertThrows(IllegalArgumentException.class, () -> firstArray.floorIndexOfX(0));
     }
 
     @Test
@@ -222,7 +223,7 @@ public class ArrayTabulatedFunctionTest {
         }
     }
 
-    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testRemove() {
         ArrayTabulatedFunction secondArray = initializeArrayThroughMathFunction();
         secondArray.remove(secondArray.getCount() - 2);
@@ -231,7 +232,7 @@ public class ArrayTabulatedFunctionTest {
         assertEquals(secondArray.leftBound(), 1, ACCURACY);
         secondArray.remove(8);
         assertEquals(secondArray.getCount(), 8, ACCURACY);
-        secondArray.remove(-1);
+        Assert.assertThrows(ArrayIndexOutOfBoundsException.class, () -> secondArray.remove(-1));
     }
 
     @Test

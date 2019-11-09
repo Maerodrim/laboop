@@ -1,5 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
@@ -9,6 +10,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 
 public class LinkedListTabulatedFunctionTest {
     private final double[] xValues = new double[]{1., 2., 3., 4., 5.};
@@ -48,6 +50,7 @@ public class LinkedListTabulatedFunctionTest {
 
     @Test(expectedExceptions = DifferentLengthOfArraysException.class)
     public void testDifferentLengthOfArraysExceptionInLinkedListInitializeThroughTwoArrays() {
+
         LinkedListTabulatedFunction list = new LinkedListTabulatedFunction(new double[]{1, 2}, new double[]{2});
     }
 
@@ -87,7 +90,7 @@ public class LinkedListTabulatedFunctionTest {
         assertEquals(secondList.rightBound(), 10, ACCURACY);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void testGetX() {
         LinkedListTabulatedFunction firstList = initializeLinkedListThroughTwoArrays();
         LinkedListTabulatedFunction secondList = initializeLinkedListThroughMathFunction();
@@ -97,10 +100,10 @@ public class LinkedListTabulatedFunctionTest {
         for (int i = 0; i < secondList.getCount(); ) {
             assertEquals(secondList.getX(i), i++, ACCURACY);
         }
-        assertEquals(secondList.getX(-1), 0, ACCURACY);
+        assertThrows(IllegalArgumentException.class, () -> secondList.getX(-1));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void testGetY() {
         LinkedListTabulatedFunction firstList = initializeLinkedListThroughTwoArrays();
         LinkedListTabulatedFunction secondList = initializeLinkedListThroughMathFunction();
@@ -110,10 +113,10 @@ public class LinkedListTabulatedFunctionTest {
         for (int i = 0; i < secondList.getCount(); ) {
             assertEquals(secondList.getY(i), i * i++, ACCURACY);
         }
-        assertEquals(secondList.getY(-1), 0, ACCURACY);
+        assertThrows(IllegalArgumentException.class, () -> secondList.getY(-1));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void testSetY() {
         LinkedListTabulatedFunction firstList = initializeLinkedListThroughTwoArrays();
         LinkedListTabulatedFunction secondList = initializeLinkedListThroughMathFunction();
@@ -125,7 +128,8 @@ public class LinkedListTabulatedFunctionTest {
         assertEquals(secondList.getY(7), 25, ACCURACY);
         secondList.setY(5, 10);
         assertEquals(secondList.getY(5), 10, ACCURACY);
-        secondList.setY(-1, 0);
+        assertThrows(IllegalArgumentException.class, () -> secondList.setY(-1, 0));
+        assertThrows(IllegalArgumentException.class, () -> secondList.setY(-1, 0));
     }
 
     @Test
@@ -152,7 +156,7 @@ public class LinkedListTabulatedFunctionTest {
         }
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void testFloorIndexOfX() {
         LinkedListTabulatedFunction firstList = initializeLinkedListThroughTwoArrays();
         LinkedListTabulatedFunction secondList = initializeLinkedListThroughMathFunction();
@@ -160,7 +164,7 @@ public class LinkedListTabulatedFunctionTest {
         assertEquals(firstList.floorIndexOfX(6), 5, ACCURACY);
         assertEquals(secondList.floorIndexOfX(5.5), 5, ACCURACY);
         assertEquals(secondList.floorIndexOfX(11), 11, ACCURACY);
-        assertEquals(firstList.floorIndexOfX(0), 0, ACCURACY);
+        assertThrows(IllegalArgumentException.class, () -> firstList.floorIndexOfX(0));
     }
 
     @Test
@@ -227,15 +231,15 @@ public class LinkedListTabulatedFunctionTest {
         assertEquals(firstList.apply(1.5), 3);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void testRemove() {
         LinkedListTabulatedFunction secondList = initializeLinkedListThroughMathFunction();
         secondList.remove(secondList.getCount() - 2);
         assertEquals(secondList.rightBound(), 10, ACCURACY);
-        secondList.remove(-1);
+        assertThrows(IllegalArgumentException.class, () -> secondList.remove(-1));
     }
 
-    @Test(expectedExceptions = NoSuchElementException.class)
+    @Test
     public void testIterator() {
         LinkedListTabulatedFunction firstArray = initializeLinkedListThroughTwoArrays();
         Iterator<Point> iterator = firstArray.iterator();
@@ -251,7 +255,7 @@ public class LinkedListTabulatedFunctionTest {
             assertEquals(point.x, firstArray.getX(i), 0.0001);
             assertEquals(point.y, firstArray.getY(i++), 0.0001);
         }
-        iterator.next();
+        assertThrows(NoSuchElementException.class, iterator::next);
     }
 
 }
