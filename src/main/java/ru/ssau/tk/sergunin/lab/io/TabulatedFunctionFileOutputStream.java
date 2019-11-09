@@ -32,6 +32,5 @@ public class TabulatedFunctionFileOutputStream {
             }
             e.printStackTrace();
         }
-        System.out.println(Math.pow(1, Double.NaN));
     }
 }
