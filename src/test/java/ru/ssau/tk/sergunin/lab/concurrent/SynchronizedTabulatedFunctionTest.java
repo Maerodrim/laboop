@@ -134,7 +134,7 @@ public class SynchronizedTabulatedFunctionTest {
         }
     }
 
-  /*  @Test
+    @Test
     public void testIterator() {
         SynchronizedTabulatedFunction firstArray = initializeArrayThroughTwoArrays();
         Iterator<Point> iterator = firstArray.iterator();
@@ -150,5 +150,5 @@ public class SynchronizedTabulatedFunctionTest {
             assertEquals(point.y, firstArray.getY(i++), 0.0001);
         }
         assertThrows(NoSuchElementException.class, iterator::next);
-    }*/
+    }
 }
