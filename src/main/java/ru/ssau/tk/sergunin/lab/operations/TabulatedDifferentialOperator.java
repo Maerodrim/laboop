@@ -1,5 +1,6 @@
 package ru.ssau.tk.sergunin.lab.operations;
 
+import ru.ssau.tk.sergunin.lab.concurrent.SynchronizedTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
@@ -24,5 +25,10 @@ public class TabulatedDifferentialOperator extends TabulatedOperator implements 
     @Override
     public TabulatedFunction derive(TabulatedFunction function) {
         return super.derive(function);
+    }
+
+    public TabulatedFunction deriveSynchronously(TabulatedFunction function) {
+        if (!(function instanceof SynchronizedTabulatedFunction)) function = new SynchronizedTabulatedFunction(function);
+        return ((SynchronizedTabulatedFunction)function).doSynchronously(this::derive);
     }
 }

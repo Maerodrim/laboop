@@ -18,10 +18,7 @@ public class MultiplyingTaskExecutor {
         for (int i = 0; i < NUMBER_OF_THREADS; i++) {
             MultiplyingTask task = new MultiplyingTask(function);
             collection.add(task);
-        }
-        for (MultiplyingTask task : collection) {
-            Thread thread = new Thread(task);
-            threads.add(thread);
+            threads.add(new Thread(task));
         }
         for (Thread thread : threads) {
             thread.start();
