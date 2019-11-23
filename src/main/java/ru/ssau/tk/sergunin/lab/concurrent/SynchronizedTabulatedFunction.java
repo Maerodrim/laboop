@@ -5,10 +5,8 @@ import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.operations.TabulatedFunctionOperationService;
 
-import java.sql.Array;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SynchronizedTabulatedFunction implements TabulatedFunction {
     private TabulatedFunction func;
@@ -20,7 +18,7 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
     @NotNull
     @Override
     public synchronized Iterator<Point> iterator() {
-       Point[] copy = TabulatedFunctionOperationService.asPoints(func);
+        Point[] copy = TabulatedFunctionOperationService.asPoints(func);
         return new Iterator<>() {
             int i = 0;
 
