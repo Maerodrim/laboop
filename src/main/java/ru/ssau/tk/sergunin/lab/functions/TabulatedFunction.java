@@ -17,4 +17,6 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point> {
 
     double rightBound();
 
+    void deletePoint(int indexOfX);
+
 }
