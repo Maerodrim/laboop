@@ -38,4 +38,28 @@ public class TabulatedDifferentialOperatorTest {
         }
         assertTrue(differentialOperator.getFactory() instanceof LinkedListTabulatedFunctionFactory);
     }
+
+    @Test
+    public void testDeriveSynchronously() {
+        TabulatedFunctionFactory arrayFactory = new ArrayTabulatedFunctionFactory();
+        TabulatedFunctionFactory linkedListFactory = new LinkedListTabulatedFunctionFactory();
+        TabulatedFunction a = arrayFactory.create(firstXValues, firstYValues);
+        TabulatedFunction b = linkedListFactory.create(firstXValues, firstYValues);
+        TabulatedDifferentialOperator differentialOperator = new TabulatedDifferentialOperator();
+        TabulatedDifferentialOperator differentialOperatorThroughLinkedList = new TabulatedDifferentialOperator(linkedListFactory);
+        TabulatedFunction deriveAThroughArray = differentialOperator.deriveSynchronously(a);
+        for (Point point : deriveAThroughArray) {
+            assertEquals(point.y, 2);
+        }
+        TabulatedFunction deriveBThroughLinkedList = differentialOperatorThroughLinkedList.deriveSynchronously(b);
+        for (Point point : deriveBThroughLinkedList) {
+            assertEquals(point.y, 2);
+        }
+        differentialOperator.setFactory(linkedListFactory);
+        deriveBThroughLinkedList = differentialOperator.deriveSynchronously(b);
+        for (Point point : deriveBThroughLinkedList) {
+            assertEquals(point.y, 2);
+        }
+        assertTrue(differentialOperator.getFactory() instanceof LinkedListTabulatedFunctionFactory);
+    }
 }

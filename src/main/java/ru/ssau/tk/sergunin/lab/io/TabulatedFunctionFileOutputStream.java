@@ -7,7 +7,6 @@ import ru.ssau.tk.sergunin.lab.functions.PowFunction;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 
 public class TabulatedFunctionFileOutputStream {
