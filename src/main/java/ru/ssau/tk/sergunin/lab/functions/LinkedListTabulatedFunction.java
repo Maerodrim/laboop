@@ -12,6 +12,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private Node head;
     private int count;
 
+    private LinkedListTabulatedFunction() {
+        head = null;
+    }
+
     public LinkedListTabulatedFunction(double[] xValues, double[] yValues) {
         checkLengthIsTheSame(xValues, yValues);
         checkSorted(xValues);
@@ -40,6 +44,10 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             this.addNode(buff, source.apply(buff));
             buff += step;
         }
+    }
+
+    public static TabulatedFunction getIdentity() {
+        return new LinkedListTabulatedFunction();
     }
 
     void addNode(double x, double y) {

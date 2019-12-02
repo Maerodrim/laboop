@@ -7,6 +7,8 @@ import ru.ssau.tk.sergunin.lab.functions.UnmodifiableTabulatedFunction;
 public interface TabulatedFunctionFactory {
     TabulatedFunction create(double[] xValues, double[] yValues);
 
+    TabulatedFunction getIdentity();
+
     default TabulatedFunction createStrict(double[] xValues, double[] yValues) {
         return new StrictTabulatedFunction(create(xValues, yValues));
     }

@@ -3,11 +3,7 @@ package ru.ssau.tk.sergunin.lab.concurrent;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
-import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
-import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
 import ru.ssau.tk.sergunin.lab.functions.*;
-import ru.ssau.tk.sergunin.lab.operations.TabulatedDifferentialOperator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -156,11 +152,12 @@ public class SynchronizedTabulatedFunctionTest {
     @Test
     public void testDoSynchronously() {
         SynchronizedTabulatedFunction firstFunction = initializeArrayThroughTwoArrays();
-        Assert.assertEquals((int)firstFunction.doSynchronously(SynchronizedTabulatedFunction::getCount), 5);
-        Assert.assertEquals((double)firstFunction.doSynchronously(SynchronizedTabulatedFunction::leftBound), 1.);
-        Assert.assertEquals((double)firstFunction.doSynchronously(SynchronizedTabulatedFunction::rightBound), 5.);
+        Assert.assertEquals((int) firstFunction.doSynchronously(SynchronizedTabulatedFunction::getCount), 5);
+        Assert.assertEquals((double) firstFunction.doSynchronously(SynchronizedTabulatedFunction::leftBound), 1.);
+        Assert.assertEquals((double) firstFunction.doSynchronously(SynchronizedTabulatedFunction::rightBound), 5.);
         Assert.assertNull(firstFunction.doSynchronously(x -> {
-            x.setY(1,2);
-            return null;}));
+            x.setY(1, 2);
+            return null;
+        }));
     }
 }

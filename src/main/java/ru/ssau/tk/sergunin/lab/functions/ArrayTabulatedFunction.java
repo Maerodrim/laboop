@@ -19,6 +19,12 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     private double[] yValues;
     private int count;
 
+    private ArrayTabulatedFunction() {
+        xValues = new double[]{};
+        yValues = new double[]{};
+        count = 0;
+    }
+
     @JsonCreator
     public ArrayTabulatedFunction(@JsonProperty(value = "xValues") double[] xValues, @JsonProperty(value = "yValues") double[] yValues) {
         checkLengthIsTheSame(xValues, yValues);
@@ -50,6 +56,10 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             yValues[i] = source.apply(buff);
             buff += step;
         }
+    }
+
+    public static TabulatedFunction getIdentity() {
+        return new ArrayTabulatedFunction();
     }
 
     @Override

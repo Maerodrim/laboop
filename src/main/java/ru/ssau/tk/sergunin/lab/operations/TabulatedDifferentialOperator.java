@@ -28,7 +28,8 @@ public class TabulatedDifferentialOperator extends TabulatedOperator implements 
     }
 
     public TabulatedFunction deriveSynchronously(TabulatedFunction function) {
-        if (!(function instanceof SynchronizedTabulatedFunction)) function = new SynchronizedTabulatedFunction(function);
-        return ((SynchronizedTabulatedFunction)function).doSynchronously(this::derive);
+        if (!(function instanceof SynchronizedTabulatedFunction))
+            function = new SynchronizedTabulatedFunction(function);
+        return ((SynchronizedTabulatedFunction) function).doSynchronously(this::derive);
     }
 }

@@ -7,6 +7,7 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 public abstract class TabulatedOperator {
     protected TabulatedFunctionFactory factory;
     protected TabulatedFunction shift;
+    private boolean isFirst = true;
 
     protected TabulatedOperator() {
         this.factory = new ArrayTabulatedFunctionFactory();
@@ -24,13 +25,10 @@ public abstract class TabulatedOperator {
         this.factory = factory;
     }
 
-    private TabulatedFunction doOperation(TabulatedFunction function, BiOperation operation) {
-        double[] xValues = new double[function.getCount()];
-        double[] yValues = new double[function.getCount()];
-        Point[] arrayPoint = TabulatedFunctionOperationService.asPoints(function);
-        for (int i = 0; i < xValues.length - 2; i++) {
-            yValues[i + 1] = operation.apply(arrayPoint[i], arrayPoint[i + 1], arrayPoint[i + 2]);
-            xValues[i + 1] = arrayPoint[i + 1].x;
+    private TabulatedFunction doOperation(int from, int to, double[] xValues, double[] yValues, Point[] arrayPoint, BiOperation operation) {
+        for (int i = from; i < to - 2; i++) {
+            yValues[i + 1 - from] = operation.apply(arrayPoint[i - from], arrayPoint[i + 1 - from], arrayPoint[i + 2 - from]);
+            xValues[i + 1 - from] = arrayPoint[i + 1 - from].x;
         }
         xValues[0] = arrayPoint[0].x;
         yValues[0] = yValues[1];
@@ -40,13 +38,12 @@ public abstract class TabulatedOperator {
     }
 
     protected TabulatedFunction derive(TabulatedFunction function) {
-        return doOperation(function, (u, v, z) -> (z.y - u.y) / (z.x - u.x));
+        return doOperation(0, function.getCount(), new double[function.getCount()], new double[function.getCount()], TabulatedFunctionOperationService.asPoints(function), (u, v, z) -> (z.y - u.y) / (z.x - u.x));
     }
 
-    protected TabulatedFunction integrate(TabulatedFunction function) {
-        return doOperation(function, new BiOperation() {
+    protected TabulatedFunction integrate(TabulatedFunction function, int from, int to, double[] xValues, double[] yValues, Point[] points) {
+        return doOperation(from, to, xValues, yValues, points, new BiOperation() {
             double sum = 0;
-            boolean isFirst = true;
 
             @Override
             public double apply(Point u, Point v, Point z) {

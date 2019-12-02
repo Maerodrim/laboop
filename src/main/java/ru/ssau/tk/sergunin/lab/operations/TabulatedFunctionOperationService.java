@@ -28,6 +28,20 @@ public class TabulatedFunctionOperationService {
         return points;
     }
 
+    public static Point[] asPoints(TabulatedFunction tabulatedFunction, int from, int to) {
+        Point[] points = new Point[to - from + 1];
+        int i = 0;
+        for (Point currentPoint : tabulatedFunction) {
+            if (i == to) break;
+            if (i >= from) {
+                points[i++ - from] = currentPoint;
+            } else {
+                i++;
+            }
+        }
+        return points;
+    }
+
     public TabulatedFunctionFactory getFactory() {
         return factory;
     }

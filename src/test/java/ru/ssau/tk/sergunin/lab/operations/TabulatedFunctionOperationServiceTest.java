@@ -8,9 +8,7 @@ import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.LinkedListTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertThrows;
+import static org.testng.Assert.*;
 
 public class TabulatedFunctionOperationServiceTest {
 

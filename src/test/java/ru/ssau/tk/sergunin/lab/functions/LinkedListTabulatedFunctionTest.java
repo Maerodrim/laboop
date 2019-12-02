@@ -1,6 +1,5 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
