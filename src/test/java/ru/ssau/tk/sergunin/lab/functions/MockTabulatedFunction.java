@@ -1,5 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Iterator;
 
 public class MockTabulatedFunction extends AbstractTabulatedFunction {
@@ -68,6 +70,9 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     @Override
+    public void setY(TabulatedFunction function) {}
+
+    @Override
     public int indexOfX(double x) {
         if (x == x0) {
             return 0;
@@ -99,6 +104,10 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
         return x1;
     }
 
+    @Override
+    public TabulatedFunction copy() { return null; }
+
+    @NotNull
     @Override
     public Iterator<Point> iterator() {
         return null;

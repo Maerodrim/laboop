@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jetbrains.annotations.NotNull;
+import ru.ssau.tk.sergunin.lab.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
 
 import java.io.Serializable;
@@ -114,6 +115,38 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
+    public void setY(TabulatedFunction function) {
+        if (function.getCount() > count || leftBound() > function.leftBound() || rightBound() < function.rightBound())
+            throw new InconsistentFunctionsException();
+        int index = indexOfTheBeginningOfTheProjectionOccurrence(function);
+        if (index == -1) throw new InconsistentFunctionsException();
+        int j = 0;
+        double shift = index == 0 ? 0 : yValues[index - 1];
+        for (Point point : function) {
+            yValues[j + index] = point.y + shift;
+            j++;
+        }
+    }
+
+    private int indexOfTheBeginningOfTheProjectionOccurrence(TabulatedFunction function) {
+        int i;
+        for (i = 0; i < count; i++) {
+            if (xValues[i] == function.leftBound()) {
+                break;
+            }
+            if (i == count - 1) {
+                return -1;
+            }
+        }
+        int j = 0;
+        for (Point point : function) {
+            if (point.x != xValues[j + i]) return -1;
+            j++;
+        }
+        return i;
+    }
+
+    @Override
     public int indexOfX(double x) {
         int i;
         for (i = 0; i < count; i++) {
@@ -143,6 +176,11 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @Override
     public double rightBound() {
         return xValues[count - 1];
+    }
+
+    @Override
+    public TabulatedFunction copy() {
+        return new ArrayTabulatedFunction(xValues, yValues);
     }
 
     @Override

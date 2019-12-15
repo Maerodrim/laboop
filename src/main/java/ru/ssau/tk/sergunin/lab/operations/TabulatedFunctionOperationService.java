@@ -42,6 +42,23 @@ public class TabulatedFunctionOperationService {
         return points;
     }
 
+    public static double[][][] asPoints(TabulatedFunction tabulatedFunction, int number) {
+        double[][][] points = new double[number][tabulatedFunction.getCount()/number + 1][2];
+        int step = tabulatedFunction.getCount() / number;
+        int remainder = tabulatedFunction.getCount() % number;
+        int i = 0;
+        int j = 0;
+        for (Point currentPoint : tabulatedFunction) {
+            points[i][j][0] = currentPoint.x;
+            points[i][j++][1] = currentPoint.y;
+            if (j == step + (i >= number - remainder ? 1 : 0)) {
+                i++;
+                j = 0;
+            }
+        }
+        return points;
+    }
+
     public TabulatedFunctionFactory getFactory() {
         return factory;
     }

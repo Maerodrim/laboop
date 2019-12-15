@@ -3,7 +3,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.operations.TabulatedFunctionOperationService;
 
-public interface TabulatedFunction extends MathFunction, Iterable<Point> {
+public interface TabulatedFunction extends MathFunction, Iterable<Point>{
     static TabulatedFunction join(TabulatedFunction firstFunction, TabulatedFunction secondFunction, TabulatedFunctionFactory factory) {
         if (firstFunction.getCount() == 0) return secondFunction;
         Point[] firstPoints = TabulatedFunctionOperationService.asPoints(firstFunction);
@@ -45,6 +45,8 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point> {
 
     void setY(int index, double value);
 
+    void setY(TabulatedFunction function);
+
     int indexOfX(double x);
 
     int indexOfY(double y);
@@ -52,4 +54,6 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point> {
     double leftBound();
 
     double rightBound();
+
+    TabulatedFunction copy();
 }

@@ -31,6 +31,11 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
+    public void setY(TabulatedFunction function) {
+        tabulatedFunction.setY(function);
+    }
+
+    @Override
     public int indexOfX(double x) {
         return tabulatedFunction.indexOfX(x);
     }
@@ -48,6 +53,11 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     @Override
     public double rightBound() {
         return tabulatedFunction.rightBound();
+    }
+
+    @Override
+    public TabulatedFunction copy() {
+        return tabulatedFunction.copy();
     }
 
     @Override

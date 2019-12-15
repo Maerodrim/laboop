@@ -1,11 +1,14 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import org.jetbrains.annotations.NotNull;
+import ru.ssau.tk.sergunin.lab.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
+import ru.ssau.tk.sergunin.lab.operations.TabulatedFunctionOperationService;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable, Serializable {
     private static final long serialVersionUID = -8102232408974120402L;
@@ -14,6 +17,14 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     private LinkedListTabulatedFunction() {
         head = null;
+    }
+
+    private LinkedListTabulatedFunction(LinkedListTabulatedFunction function) {
+        Point[] points = TabulatedFunctionOperationService.asPoints(function);
+        this.count = points.length;
+        for (int i = 0; i < count; i++) {
+            this.addNode(points[i].x, points[i].y);
+        }
     }
 
     public LinkedListTabulatedFunction(double[] xValues, double[] yValues) {
@@ -80,6 +91,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return head.prev.x;
     }
 
+    @Override
+    public LinkedListTabulatedFunction copy() {
+        return new LinkedListTabulatedFunction(this);
+    }
+
     private Node getNode(int index) {
         Node buff;
         if (index > (count / 2)) {
@@ -123,6 +139,38 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             throw new IllegalArgumentException("Index is out of bounds");
         }
         getNode(index).y = value;
+    }
+
+    @Override
+    public void setY(TabulatedFunction function) {
+        if (function.getCount() > count || leftBound() > function.leftBound() || rightBound() < function.rightBound())
+            throw new InconsistentFunctionsException();
+        Node node = nodeOfTheBeginningOfTheProjectionOccurrence(function);
+        if (Objects.equals(null, node)) throw new InconsistentFunctionsException();
+        double shift = node == head ? 0 : node.prev.y;
+        for (Point point : function) {
+            node.y = point.y + shift;
+            node = node.next;
+        }
+    }
+
+    private Node nodeOfTheBeginningOfTheProjectionOccurrence(TabulatedFunction function) {
+        Node node = head;
+        while (true) {
+            if (node.x == function.leftBound()) {
+                break;
+            }
+            if (node == head.prev) {
+                return null;
+            }
+            node = node.next;
+        }
+        Node result = node;
+        for (Point point : function) {
+            if (point.x != node.x) return null;
+            node = node.next;
+        }
+        return result;
     }
 
     public int indexOfX(double x) {

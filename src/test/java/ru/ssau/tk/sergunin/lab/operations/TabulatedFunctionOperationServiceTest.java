@@ -2,7 +2,9 @@ package ru.ssau.tk.sergunin.lab.operations;
 
 import org.testng.annotations.Test;
 import ru.ssau.tk.sergunin.lab.exceptions.InconsistentFunctionsException;
+import ru.ssau.tk.sergunin.lab.functions.ArrayTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
+import ru.ssau.tk.sergunin.lab.functions.PowFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.LinkedListTabulatedFunctionFactory;
@@ -138,4 +140,12 @@ public class TabulatedFunctionOperationServiceTest {
         }
         assertThrows(InconsistentFunctionsException.class, () -> operationServiceThroughLinkedList.division(a, arrayFactory.create(thirdXValues, thirdYValues)));
     }
+
+    @Test
+    public void testOverrideAsPoints() {
+        TabulatedFunction actual = new ArrayTabulatedFunction(new PowFunction(2), 1, 5, 5000001);
+        double[][][] points = TabulatedFunctionOperationService.asPoints(actual, 10);
+        int n = 5;
+    }
+
 }

@@ -71,6 +71,13 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
+    public void setY(TabulatedFunction function) {
+        synchronized (func) {
+            func.setY(function);
+        }
+    }
+
+    @Override
     public int indexOfX(double x) {
         synchronized (func) {
             return func.indexOfX(x);
@@ -95,6 +102,13 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
     public double rightBound() {
         synchronized (func) {
             return func.rightBound();
+        }
+    }
+
+    @Override
+    public TabulatedFunction copy() {
+        synchronized (func) {
+            return func.copy();
         }
     }
 
