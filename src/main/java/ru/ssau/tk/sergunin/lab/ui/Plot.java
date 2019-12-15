@@ -1,36 +1,21 @@
-package model_javafx;
+package ru.ssau.tk.sergunin.lab.ui;
 
-import functions.*;
-import functions.basic.*;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import javafx.util.Duration;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 
-public class Graf {
+public class Plot {
 
-    public void grafFunction(Stage stage, TabulatedFunction tabulatedFunction) {
+    public void plotFunction(Stage stage, TabulatedFunction tabulatedFunction) {
 
         // New window (Stage)
         Stage newWindow = new Stage();
-        newWindow.setTitle("Add Function");
+        newWindow.setTitle("Add");
 
         // Specifies the modality for new window.
         newWindow.initModality(Modality.WINDOW_MODAL);
@@ -44,19 +29,19 @@ public class Graf {
         newWindow.setY(stage.getY() + 150);
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
-        final AreaChart<Number, Number> areaChart = new AreaChart<Number, Number>(xAxis, yAxis);
+        final AreaChart<Number, Number> areaChart = new AreaChart<>(xAxis, yAxis);
         areaChart.setTitle("Function");
 
         areaChart.setLegendSide(Side.LEFT);
 
         // Series
-        XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
-        series.setName("graf");
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.setName("");
 
         for (int i = 0; i < tabulatedFunction.getCount(); i++) {
-            series.getData().add(new XYChart.Data<Number, Number>(tabulatedFunction.getX(i), tabulatedFunction.getY(i)));
+            series.getData().add(new XYChart.Data<>(tabulatedFunction.getX(i), tabulatedFunction.getY(i)));
         }
-        newWindow.setTitle("Grafik");
+        newWindow.setTitle("Plot");
         Scene scene = new Scene(areaChart, 400, 300);
         areaChart.getData().addAll(series);
         newWindow.setScene(scene);

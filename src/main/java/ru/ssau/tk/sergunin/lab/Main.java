@@ -1,36 +1,25 @@
 package ru.ssau.tk.sergunin.lab;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import model_javafx.Dialog;
-import model_javafx.ErrorWindows;
-import model_javafx.MadeFunction;
-import model_javafx.ModelFunction;
-import model_javafx.TableWindows;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
-
-import java.io.IOException;
-import java.io.InputStream;
+import ru.ssau.tk.sergunin.lab.ui.TableWindows;
+import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 
 
 public class Main extends Application {
-    private Label label;
-    private TabulatedFunction function;
-    private String fileName;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
-    public void start(final Stage primaryStage) throws Exception {
+    public void start(Stage stage){
+        new TableWindows(stage, new ArrayTabulatedFunctionFactory());
+    }
+
+    /*@Override
+    public void start(final Stage primaryStage) {
+
         MenuBar menuBar = new MenuBar();
         Label label = new Label("");
         Label label2 = new Label("Здесь могла быть ваша реклама!!!");
@@ -64,44 +53,25 @@ public class Main extends Application {
         // Add Menus to the MenuBar
         menuBar.getMenus().addAll(fileMenu, tableMenu);
 
-        newItem.setOnAction(new EventHandler<ActionEvent>() {
+        newItem.setOnAction(event -> functions.newFunction(primaryStage));
 
-            @Override
-            public void handle(ActionEvent event) {
-                MadeFunction madeFunction = new MadeFunction();
-                madeFunction.newFunction(primaryStage);
+        openFileItem.setOnAction(event -> {
+            try {
+                TableWindows tableFunction = new TableWindows();
+                tableFunction.table(primaryStage, functions.loadFunctionAs(Dialog.showInputTextDialog()));
+            } catch (Exception e) {
+                ErrorWindows errorWindows = new ErrorWindows();
+                errorWindows.showError(e);
             }
         });
 
-        openFileItem.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    model_javafx.Dialog dialog = new Dialog();
-                    MadeFunction madeFunction = new MadeFunction();
-                    ModelFunction modelFunction = new ModelFunction(madeFunction.loadFunctionAs(dialog.showInputTextDialog()));
-                    TableWindows tableFunction = new TableWindows();
-                    tableFunction.table(primaryStage, modelFunction);
-                } catch (Exception e) {
-                    ErrorWindows errorWindows = new ErrorWindows();
-                    errorWindows.showError(e);
-                }
-            }
-        });
-
-        table.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    ModelFunction modelFunction = new ModelFunction(new MadeFunction().loadFunction());
-                    TableWindows tableWindows = new TableWindows();
-                    tableWindows.table(primaryStage, modelFunction);
-                } catch (Exception e) {
-                    ErrorWindows errorWindows = new ErrorWindows();
-                    errorWindows.showError(e);
-                }
+        table.setOnAction(event -> {
+            try {
+                TableWindows tableWindows = new TableWindows();
+                tableWindows.table(primaryStage, functions.loadFunction());
+            } catch (Exception e) {
+                ErrorWindows errorWindows = new ErrorWindows();
+                errorWindows.showError(e);
             }
         });
 
@@ -117,10 +87,6 @@ public class Main extends Application {
         primaryStage.setTitle("Main");
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
+    }*/
 
 }

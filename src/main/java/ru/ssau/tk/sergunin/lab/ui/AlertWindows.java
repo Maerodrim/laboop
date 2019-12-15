@@ -1,4 +1,4 @@
-package model_javafx;
+package ru.ssau.tk.sergunin.lab.ui;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -8,17 +8,17 @@ import javafx.scene.layout.VBox;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class ErrorWindows {
-    public void showError(Exception e) {
+public class AlertWindows {
+    public static void showError(Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error alert");
         alert.setHeaderText(e.getMessage());
 
         VBox dialogPaneContent = new VBox();
 
-        Label label = new Label("Stack Trace:");
+        Label label = new Label("Stack trace:");
 
-        String stackTrace = this.getStackTrace(e);
+        String stackTrace = getStackTrace(e);
         TextArea textArea = new TextArea();
         textArea.setText(stackTrace);
 
@@ -30,11 +30,17 @@ public class ErrorWindows {
         alert.showAndWait();
     }
 
-    private String getStackTrace(Exception e) {
+    private static String getStackTrace(Exception e) {
         StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-        String s = sw.toString();
-        return s;
+        e.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
+    }
+
+    public static void showWarning(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

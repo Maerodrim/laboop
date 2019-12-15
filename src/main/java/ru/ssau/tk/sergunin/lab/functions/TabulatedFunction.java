@@ -3,7 +3,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.operations.TabulatedFunctionOperationService;
 
-public interface TabulatedFunction extends MathFunction, Iterable<Point> {
+public interface TabulatedFunction extends MathFunction, Iterable<Point>{
     static TabulatedFunction join(TabulatedFunction firstFunction, TabulatedFunction secondFunction, TabulatedFunctionFactory factory) {
         if (firstFunction.getCount() == 0) return secondFunction;
         Point[] firstPoints = TabulatedFunctionOperationService.asPoints(firstFunction);
