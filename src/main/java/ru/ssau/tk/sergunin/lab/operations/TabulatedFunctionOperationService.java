@@ -42,6 +42,16 @@ public class TabulatedFunctionOperationService {
         return points;
     }
 
+   /* public static double[][] toTwoDoubleArrays(TabulatedFunction tabulatedFunction) {
+        double[][] points = new double[tabulatedFunction.getCount()][2];
+        int i = 0;
+        for (Point currentPoint : tabulatedFunction) {
+            points[i][0] = currentPoint.x;
+            points[i++][1] = currentPoint.y;
+        }
+        return points;
+    }*/
+
     public static double[][][] asPoints(TabulatedFunction tabulatedFunction, int number) {
         double[][][] points = new double[number][tabulatedFunction.getCount()/number + 1][2];
         int step = tabulatedFunction.getCount() / number;
@@ -58,6 +68,7 @@ public class TabulatedFunctionOperationService {
         }
         return points;
     }
+
 
     public TabulatedFunctionFactory getFactory() {
         return factory;

@@ -1,13 +1,12 @@
 package ru.ssau.tk.sergunin.lab.functions.factory;
 
+import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.StrictTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.UnmodifiableTabulatedFunction;
 
 public interface TabulatedFunctionFactory {
     TabulatedFunction create(double[] xValues, double[] yValues);
-
-    TabulatedFunction getIdentity();
 
     default TabulatedFunction createStrict(double[] xValues, double[] yValues) {
         return new StrictTabulatedFunction(create(xValues, yValues));
@@ -21,4 +20,19 @@ public interface TabulatedFunctionFactory {
         return new UnmodifiableTabulatedFunction(new StrictTabulatedFunction(create(xValues, yValues)));
     }
 
+    TabulatedFunction create(MathFunction source, double xFrom, double xTo, int count);
+
+    default TabulatedFunction createStrict(MathFunction source, double xFrom, double xTo, int count) {
+        return new StrictTabulatedFunction(create(source, xFrom, xTo, count));
+    }
+
+    default TabulatedFunction createUnmodifiable(MathFunction source, double xFrom, double xTo, int count) {
+        return new UnmodifiableTabulatedFunction(create(source, xFrom, xTo, count));
+    }
+
+    default TabulatedFunction createStrictUnmodifiable(MathFunction source, double xFrom, double xTo, int count) {
+        return new UnmodifiableTabulatedFunction(new StrictTabulatedFunction(create(source, xFrom, xTo, count)));
+    }
+
+    TabulatedFunction getIdentity();
 }
