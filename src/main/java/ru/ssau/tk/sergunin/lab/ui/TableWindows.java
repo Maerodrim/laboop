@@ -59,7 +59,6 @@ public class TableWindows {
 
         MenuBar menuBar = new MenuBar();
 
-        // Create menus
         Menu fileMenu = new Menu("File");
         Menu tableMenu = new Menu("Table");
         Menu tabulatedMenu = new Menu("Tabulated");
