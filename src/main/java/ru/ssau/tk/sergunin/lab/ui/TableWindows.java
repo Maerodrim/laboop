@@ -2,7 +2,6 @@ package ru.ssau.tk.sergunin.lab.ui;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,7 +10,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
@@ -24,6 +22,7 @@ import java.util.Objects;
 
 public class TableWindows {
 
+    ObservableList<Point> list;
     TableView<Point> table = new TableView<>();
     TabulatedFunctionFactory factory;
     TabulatedFunction function;
@@ -56,7 +55,7 @@ public class TableWindows {
         function = tabulatedFunction;
 
         Functions functions = new Functions(factory);
-        ru.ssau.tk.sergunin.lab.ui.Dialog dialog = new ru.ssau.tk.sergunin.lab.ui.Dialog(functions);
+        Dialog dialog = new Dialog(functions);
 
         MenuBar menuBar = new MenuBar();
 
@@ -248,8 +247,9 @@ public class TableWindows {
         x.setCellValueFactory(new PropertyValueFactory<>("X"));
         y.setCellValueFactory(new PropertyValueFactory<>("Y"));
 
+        list = getModelFunctionList(function);
         // Display row data
-        table.setItems(getModelFunctionList(function));
+        table.setItems(list);
 
         table.getColumns().addAll(x, y);
 

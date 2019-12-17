@@ -7,7 +7,7 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 public abstract class TabulatedOperator {
     protected TabulatedFunctionFactory factory;
     protected TabulatedFunction shift;
-    private boolean isFirst = true;
+    private Boolean isFirst = true;
 
     protected TabulatedOperator() {
         this.factory = new ArrayTabulatedFunctionFactory();
@@ -65,5 +65,47 @@ public abstract class TabulatedOperator {
     @FunctionalInterface
     private interface BiOperation {
         double apply(Point u, Point v, Point z);
+    }
+
+
+   /* private Point[] doOperation(Point[] points, BiOperationTest operation){
+        Point[] buffer = new Point[2];
+        for (int i = 0; i < points.length - 2; i++) {
+            points[i] = operation.apply(points[i], points[i+1]);
+        }
+        xValues[0] = arrayPoint[0].x;
+        yValues[0] = yValues[1];
+        xValues[xValues.length - 1] = arrayPoint[xValues.length - 1].x;
+        yValues[xValues.length - 1] = yValues[xValues.length - 2];
+        return points;
+    }
+
+
+    protected Point[] integrate(Point[] points) {
+        return doOperation(points, new BiOperationTest() {
+            double sum = 0;
+
+            @Override
+            public double apply(Point u, Point v) {
+                synchronized (isFirst) {
+                    if (isFirst) {
+                        sum += v.y * (u.x - v.x);
+                        //shift = new ArrayTabulatedFunction(new ZeroFunction(), function.getX(0), function.getX(function.getCount() - 1), function.getCount());
+                        isFirst = false;
+                        return sum;
+                    }
+                }
+                *//*if (v.x > 0 && u.x < 0) {
+                    shift = new ArrayTabulatedFunction(new ConstantFunction(sum), function.getX(0), function.getX(function.getCount() - 1), function.getCount());
+                }*//*
+                sum += (v.y + u.y) * (v.x - u.x) / 2;
+                return sum;
+            }
+        });
+    }*/
+
+    @FunctionalInterface
+    private interface BiOperationTest {
+        double apply(Point u, Point v);
     }
 }

@@ -5,23 +5,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.FlowPane;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
 
 public class Dialog {
 
     private Functions functions;
-    //private TabulatedFunction function;
 
     Dialog() {
         functions = new Functions(new ArrayTabulatedFunctionFactory());
@@ -119,9 +113,9 @@ public class Dialog {
         // Add
         Button buttonAdd = new Button("Ok");
         buttonAdd.setOnAction(event ->
-            window.setFunction(functions.insert(
-                    Double.parseDouble(textField.getText()),
-                    Double.parseDouble(textField2.getText())))
+                window.setFunction(functions.insert(
+                        Double.parseDouble(textField.getText()),
+                        Double.parseDouble(textField2.getText())))
         );
 
         // Clear
