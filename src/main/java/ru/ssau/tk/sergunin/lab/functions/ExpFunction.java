@@ -1,5 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
+
+@Selectable(name = "Экспонента", priority = 9, parameter = true)
 public class ExpFunction implements MathFunction {
     private final double exp;
 

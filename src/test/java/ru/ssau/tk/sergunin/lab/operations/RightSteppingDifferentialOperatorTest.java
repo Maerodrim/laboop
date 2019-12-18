@@ -9,12 +9,11 @@ import static org.testng.Assert.assertThrows;
 
 public class RightSteppingDifferentialOperatorTest {
 
-    private final double STEP = 1E-6;
-    private final double ACCURACY = 1E-3;
-
     @Test
     public void testDerive() {
+        double STEP = 1E-6;
         SteppingDifferentialOperator differentialOperator = new RightSteppingDifferentialOperator(STEP);
+        double ACCURACY = 1E-3;
         assertEquals(differentialOperator.derive(new SqrFunction()).apply(1), 2, ACCURACY);
         assertEquals(differentialOperator.derive(new ExpFunction(2)).apply(5), 32 * Math.log(2), ACCURACY);
         differentialOperator.setStep(2 * STEP);

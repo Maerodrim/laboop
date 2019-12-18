@@ -5,7 +5,6 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
 public class MathFunctionTest {
-    final private double ACCURACY = 0.0001;
     private MathFunction sinh = new SinhFunction();
     private MathFunction id = new IdentityFunction();
     private MathFunction cbrt = new CbrtFunction();
@@ -14,6 +13,7 @@ public class MathFunctionTest {
 
     @Test
     public void testAndThen() {
+        double ACCURACY = 0.0001;
         assertEquals(composite.apply(8), Math.sinh(4), ACCURACY);
         assertEquals(composite.andThen(id).apply(8), Math.sinh(4), ACCURACY);
     }

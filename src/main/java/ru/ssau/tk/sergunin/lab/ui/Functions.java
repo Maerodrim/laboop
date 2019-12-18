@@ -184,14 +184,13 @@ public class Functions {
         if (functionClassName.equals("ArrayTabulatedFunction") || functionClassName.equals("LinkedListTabulatedFunction")) {
             ((ArrayTabulatedFunction) function).remove(function.indexOfX(x));
         } else {
-            AlertWindows alertWindows = new AlertWindows();
             AlertWindows.showError(new UnsupportedOperationException());
         }
         saveFunction(function);
         return function;
     }
 
-    private class Converter extends StringConverter<Integer> {
+    private static class Converter extends StringConverter<Integer> {
 
         @Override
         public String toString(Integer object) {

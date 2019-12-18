@@ -1,5 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
+
+@Selectable(name = "Константа", priority = 3, parameter = true)
 public class ConstantFunction implements MathFunction {
     final private double constant;
 

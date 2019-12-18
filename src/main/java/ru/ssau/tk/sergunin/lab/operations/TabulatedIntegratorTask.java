@@ -4,12 +4,10 @@ import ru.ssau.tk.sergunin.lab.functions.Point;
 
 public class TabulatedIntegratorTask implements Runnable {
     Point[] points;
-    private TabulatedIntegralOperator operator;
     private boolean isCompleted;
 
     TabulatedIntegratorTask(Point[] points, TabulatedIntegralOperator operator) {
         this.points = points;
-        this.operator = operator;
     }
 
     @Override

@@ -1,8 +1,5 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 public class Point {
     final public double x;
     final public double y;

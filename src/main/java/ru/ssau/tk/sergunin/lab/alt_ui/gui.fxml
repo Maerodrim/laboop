@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+            fx:controller="ru.ssau.tk.sergunin.lab.alt_ui.TableController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <Menu mnemonicParsing="false" text="File">
+                <MenuItem mnemonicParsing="false" text="New"/>
+                <MenuItem mnemonicParsing="false" text="Load"/>
+                <MenuItem mnemonicParsing="false" text="Save"/>
+                <MenuItem mnemonicParsing="false" text="Save as"/>
+                <MenuItem mnemonicParsing="false" text="Exit"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Change">
+                <MenuItem mnemonicParsing="false" text="Add point"/>
+                <MenuItem mnemonicParsing="false" text="Delete point"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Plot"/>
+            <Menu mnemonicParsing="false" text="Operation">
+                <MenuItem mnemonicParsing="false" text="+"/>
+                <MenuItem mnemonicParsing="false" text="-"/>
+                <MenuItem mnemonicParsing="false" text="*"/>
+                <MenuItem mnemonicParsing="false" text="/"/>
+                <MenuItem mnemonicParsing="false" text="d/dx"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Settings"/>
+            <Menu mnemonicParsing="false" text="About"/>
+        </MenuBar>
+    </top>
+    <center>
+        <TabPane fx:id="tabPane" prefHeight="328.0" prefWidth="600.0" tabClosingPolicy="ALL_TABS"/>
+    </center>
+    <bottom>
+        <HBox prefHeight="60.0" spacing="30.0" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets left="40.0"/>
+            </BorderPane.margin>
+            <padding>
+                <Insets bottom="5.0" left="10.0" right="5.0" top="15.0"/>
+            </padding>
+            <Button mnemonicParsing="false" onAction="#newFunctionButtonEvent" text="New function"/>
+            <Button mnemonicParsing="false" text="Add point"/>
+            <Button mnemonicParsing="false" text="Delete point"/>
+            <Button fx:id="addFunction" mnemonicParsing="false" onAction="#join" text="Join function"/>
+        </HBox>
+    </bottom>
+</BorderPane>
