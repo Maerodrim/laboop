@@ -2,7 +2,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 
 import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
 
-@Selectable(name = "Логарифм", priority = 11, parameter = true)
+@Selectable(name = "Логарифм", priority = 12, parameter = true)
 public class LogFunction implements MathFunction {
     private final double log;
 

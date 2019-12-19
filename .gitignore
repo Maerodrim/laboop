@@ -5,3 +5,5 @@ input
 output
 temp
 *.txt
+*.json
+*.xml

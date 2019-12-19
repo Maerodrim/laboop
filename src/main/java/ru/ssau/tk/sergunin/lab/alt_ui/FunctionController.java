@@ -113,7 +113,7 @@ public class FunctionController implements Initializable {
         }*/
     }
 
-    public void createTab(TabulatedFunction function) {
+    void createTab(TabulatedFunction function) {
         Tab tab = new Tab();
         tab.setText("Function" + numberId);
         tab.setId("function" + numberId++);
