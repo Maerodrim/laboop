@@ -30,6 +30,8 @@ public final class FunctionsIO {
     public static void writeTabulatedFunction(BufferedOutputStream outputStream, TabulatedFunction function) throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
         dataOutputStream.writeInt(function.getCount());
+        dataOutputStream.writeBoolean(function.isStrict());
+        dataOutputStream.writeBoolean(function.isUnmodifiable());
         for (Point point : function) {
             dataOutputStream.writeDouble(point.x);
             dataOutputStream.writeDouble(point.y);
@@ -63,13 +65,18 @@ public final class FunctionsIO {
     public static TabulatedFunction readTabulatedFunction(BufferedInputStream inputStream, TabulatedFunctionFactory factory) throws IOException {
         DataInputStream dataInputStream = new DataInputStream(inputStream);
         int count = dataInputStream.readInt();
+        boolean isStrict = dataInputStream.readBoolean();
+        boolean isUnmodifiable = dataInputStream.readBoolean();
         double[] xValues = new double[count];
         double[] yValues = new double[count];
         for (int i = 0; i < count; i++) {
             xValues[i] = dataInputStream.readDouble();
             yValues[i] = dataInputStream.readDouble();
         }
-        return factory.create(xValues, yValues);
+        TabulatedFunction function = factory.create(xValues, yValues);
+        function.offerStrict(isStrict);
+        function.offerUnmodifiable(isUnmodifiable);
+        return function;
     }
 
     public static void serialize(BufferedOutputStream stream, TabulatedFunction function) throws IOException {
@@ -82,19 +89,20 @@ public final class FunctionsIO {
         return (TabulatedFunction) new ObjectInputStream(stream).readObject();
     }
 
-    public static void serializeXml(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
+    public static void serializeXml(BufferedWriter writer, TabulatedFunction function) throws IOException {
         XStream stream = new XStream();
         stream.toXML(function, writer);
         writer.flush();
     }
 
-    public static ArrayTabulatedFunction deserializeXml(BufferedReader reader) {
+    public static <T extends TabulatedFunction> T deserializeXml(BufferedReader reader, Class<?> clazz) {
         XStream stream = new XStream();
         Object function = stream.fromXML(reader);
-        return (ArrayTabulatedFunction) function;
+        clazz.cast(function);
+        return (T) function;
     }
 
-    public static void serializeJson(BufferedWriter writer, ArrayTabulatedFunction function) throws IOException {
+    public static void serializeJson(BufferedWriter writer, TabulatedFunction function) throws IOException {
         ObjectMapper stream = new ObjectMapper();
         try {
             writer.write(stream.writeValueAsString(function));
@@ -103,10 +111,10 @@ public final class FunctionsIO {
         }
     }
 
-    public static ArrayTabulatedFunction deserializeJson(BufferedReader reader) throws IOException {
+    public static <T extends TabulatedFunction> T deserializeJson(BufferedReader reader, Class<?> clazz) throws IOException {
         ObjectMapper stream = new ObjectMapper();
         try {
-            return stream.readerFor(ArrayTabulatedFunction.class).readValue(reader);
+            return stream.readerFor(clazz).readValue(reader);
         } catch (JsonMappingException e) {
             throw new IOException(e);
         }

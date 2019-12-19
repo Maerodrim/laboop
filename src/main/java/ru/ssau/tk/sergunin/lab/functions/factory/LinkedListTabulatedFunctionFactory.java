@@ -1,5 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions.factory;
 
+import ru.ssau.tk.sergunin.lab.functions.ArrayTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.LinkedListTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
@@ -19,5 +20,10 @@ public class LinkedListTabulatedFunctionFactory implements TabulatedFunctionFact
     @Override
     public TabulatedFunction getIdentity() {
         return LinkedListTabulatedFunction.getIdentity();
+    }
+
+    @Override
+    public Class<?> getTabulatedFunctionClass() {
+        return LinkedListTabulatedFunction.class;
     }
 }

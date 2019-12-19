@@ -18,7 +18,7 @@ public class XmlSerialization {
             e.printStackTrace();
         }
         try (BufferedReader inputStream = new BufferedReader(new FileReader("output/array_function.xml"))) {
-            System.out.println(deserializeXml(inputStream).toString());
+            System.out.println(deserializeXml(inputStream, ArrayTabulatedFunction.class).toString());
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

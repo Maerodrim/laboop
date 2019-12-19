@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 
 public class InputParameterController {
     Stage stage;
+    double value;
 
     @FXML
     Label label;
@@ -16,8 +17,8 @@ public class InputParameterController {
     @FXML
     Button button;
 
-    public String getTextFieldValue() {
-        return textField.getText();
+    public double getParameter() {
+        return value;
     }
 
     public Stage getStage() {
@@ -30,7 +31,13 @@ public class InputParameterController {
 
     @FXML
     public void apply() {
-        stage.close();
+        try {
+            value = Double.parseDouble(textField.getText());
+            stage.close();
+        } catch (NullPointerException | NumberFormatException nfe) {
+            textField.clear();
+            AlertWindows.showWarning("Введите корректное значение");
+        }
     }
 
 }

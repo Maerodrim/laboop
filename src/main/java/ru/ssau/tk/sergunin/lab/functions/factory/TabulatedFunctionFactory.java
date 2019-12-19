@@ -40,11 +40,13 @@ public interface TabulatedFunctionFactory {
         } else if (isUnmodifiable) {
             return createUnmodifiable(source, xFrom, xTo, count);
         } else if (isStrict) {
-            return createStrictUnmodifiable(source, xFrom, xTo, count);
+            return createStrict(source, xFrom, xTo, count);
         } else {
             return create(source, xFrom, xTo, count);
         }
     }
 
     TabulatedFunction getIdentity();
+
+    Class<?> getTabulatedFunctionClass();
 }

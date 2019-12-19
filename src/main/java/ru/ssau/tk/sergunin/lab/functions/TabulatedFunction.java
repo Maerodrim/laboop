@@ -1,5 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public interface TabulatedFunction extends MathFunction, Iterable<Point>{
 //    static TabulatedFunction join(TabulatedFunction firstFunction, TabulatedFunction secondFunction, TabulatedFunctionFactory factory) {
 //        if (firstFunction.getCount() == 0) return secondFunction;
@@ -56,4 +58,14 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point>{
     double rightBound();
 
     TabulatedFunction copy();
+
+    boolean isStrict();
+
+    boolean isUnmodifiable();
+
+    TabulatedFunction unwrap();
+
+    void offerStrict(boolean isStrict);
+
+    void offerUnmodifiable(boolean isUnmodifiable);
 }

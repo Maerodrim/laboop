@@ -9,16 +9,16 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class SynchronizedTabulatedFunction implements TabulatedFunction {
-    private TabulatedFunction func;
+    private TabulatedFunction function;
 
-    public SynchronizedTabulatedFunction(TabulatedFunction func) {
-        this.func = func;
+    public SynchronizedTabulatedFunction(TabulatedFunction function) {
+        this.function = function;
     }
 
     @NotNull
     @Override
     public synchronized Iterator<Point> iterator() {
-        Point[] copy = TabulatedFunctionOperationService.asPoints(func);
+        Point[] copy = TabulatedFunctionOperationService.asPoints(function);
         return new Iterator<>() {
             int i = 0;
 
@@ -37,79 +37,102 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
 
     @Override
     public double apply(double x) {
-        synchronized (func) {
-            return func.apply(x);
+        synchronized (function) {
+            return function.apply(x);
         }
     }
 
     @Override
     public int getCount() {
-        synchronized (func) {
-            return func.getCount();
+        synchronized (function) {
+            return function.getCount();
         }
     }
 
     @Override
     public double getX(int index) {
-        synchronized (func) {
-            return func.getX(index);
+        synchronized (function) {
+            return function.getX(index);
         }
     }
 
     @Override
     public double getY(int index) {
-        synchronized (func) {
-            return func.getY(index);
+        synchronized (function) {
+            return function.getY(index);
         }
     }
 
     @Override
     public void setY(int index, double value) {
-        synchronized (func) {
-            func.setY(index, value);
+        synchronized (function) {
+            function.setY(index, value);
         }
     }
 
     @Override
     public void setY(TabulatedFunction function) {
-        synchronized (func) {
-            func.setY(function);
+        synchronized (this.function) {
+            this.function.setY(function);
         }
     }
 
     @Override
     public int indexOfX(double x) {
-        synchronized (func) {
-            return func.indexOfX(x);
+        synchronized (function) {
+            return function.indexOfX(x);
         }
     }
 
     @Override
     public int indexOfY(double y) {
-        synchronized (func) {
-            return func.indexOfY(y);
+        synchronized (function) {
+            return function.indexOfY(y);
         }
     }
 
     @Override
     public double leftBound() {
-        synchronized (func) {
-            return func.leftBound();
+        synchronized (function) {
+            return function.leftBound();
         }
     }
 
     @Override
     public double rightBound() {
-        synchronized (func) {
-            return func.rightBound();
+        synchronized (function) {
+            return function.rightBound();
         }
     }
 
     @Override
     public TabulatedFunction copy() {
-        synchronized (func) {
-            return func.copy();
+        synchronized (function) {
+            return function.copy();
         }
+    }
+
+    @Override
+    public boolean isStrict() {
+        return false;
+    }
+
+    @Override
+    public boolean isUnmodifiable() {
+        return false;
+    }
+
+    @Override
+    public TabulatedFunction unwrap() {
+        return function;
+    }
+
+    @Override
+    public void offerStrict(boolean isStrict) {
+    }
+
+    @Override
+    public void offerUnmodifiable(boolean isUnmodifiable) {
     }
 
     public synchronized <T> T doSynchronously(Operation<? extends T> operation) {

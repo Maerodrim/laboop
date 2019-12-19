@@ -107,6 +107,29 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
     @Override
     public TabulatedFunction copy() { return null; }
 
+    @Override
+    public boolean isStrict() {
+        return false;
+    }
+
+    @Override
+    public boolean isUnmodifiable() {
+        return false;
+    }
+
+    @Override
+    public TabulatedFunction unwrap() {
+        return this;
+    }
+
+    @Override
+    public void offerStrict(boolean isStrict) {
+    }
+
+    @Override
+    public void offerUnmodifiable(boolean isUnmodifiable) {
+    }
+
     @NotNull
     @Override
     public Iterator<Point> iterator() {
