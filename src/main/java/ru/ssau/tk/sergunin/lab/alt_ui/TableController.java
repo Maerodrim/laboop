@@ -88,7 +88,7 @@ public class TableController implements Initializable, Openable {
         deletePoint = initializeWindowController(deletePoint,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/DeletePoint.fxml", "Delete Point.");
         calc = initializeWindowController(calc,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/Calc.fxml", "Вычислить");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/Calc.fxml", "...");
     }
 
     public <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {

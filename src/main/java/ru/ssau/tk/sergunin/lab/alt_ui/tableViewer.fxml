@@ -44,7 +44,11 @@
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Settings" />
-                <Menu mnemonicParsing="false" text="About" />
+                <Menu mnemonicParsing="false" text="About">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#about" text="Unspecified Action" />
+               </items>
+            </Menu>
             </menus>
         </MenuBar>
     </top>
