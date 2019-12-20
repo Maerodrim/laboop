@@ -37,6 +37,7 @@ public class TableController implements Initializable, Openable {
     private DeletePoint deletePoint = new DeletePoint();
     private Calc calc = new Calc();
     private About about = new About();
+    private Settings settings = new Settings();
 
     @FXML
     private TabPane tabPane;
