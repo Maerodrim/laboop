@@ -29,7 +29,7 @@ public class TableController implements Initializable {
     private int numberId = 1;
     private final TableColumn<Point, Double> y = new TableColumn<>("Y");
     private TabulatedFunctionFactory factory;
-    private Map<Tab, Map.Entry<ObservableList<Point>, TabulatedFunction>> map;
+    private Map<Tab, TabulatedFunction> map;
     private Tab currentTab;
     private FunctionController functionController;
     private Functions functions;
@@ -95,7 +95,7 @@ public class TableController implements Initializable {
         table.getColumns().addAll(x, y);
         tab.setContent(table);
         tabPane.getSelectionModel().select(tab);
-        map.put(tab, Map.entry(list, function));
+        map.put(tab, function);
         notifyAboutAccessibility(function);
         currentTab = tab;
         tab.setOnSelectionChanged(event -> {
@@ -202,11 +202,11 @@ public class TableController implements Initializable {
     }
 
     private TabulatedFunction getFunction() {
-        return map.get(currentTab).getValue();
+        return map.get(currentTab);
     }
 
     private ObservableList<Point> getObservableList() {
-        return map.get(currentTab).getKey();
+        return ((TableView<Point>) currentTab.getContent()).getItems();
     }
 
     @FXML
