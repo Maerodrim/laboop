@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.ssau.tk.sergunin.lab.alt_ui.Settings">
+   <children>
+      <ComboBox fx:id="comboBox" layoutX="22.0" layoutY="62.0" onAction="#doOnClickOnComboBox" prefHeight="31.0" prefWidth="201.0" />
+      <Button layoutX="503.0" layoutY="355.0" mnemonicParsing="false" onAction="#cancel" prefWidth="70.0" text="Cancel" />
+      <Button layoutX="396.0" layoutY="355.0" mnemonicParsing="false" onAction="#save" prefHeight="31.0" prefWidth="70.0" text="Save" />
+      <Button layoutX="22.0" layoutY="151.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="201.0" text="Button" />
+      <Button layoutX="22.0" layoutY="232.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="201.0" text="Button" />
+      <Label layoutX="22.0" layoutY="16.0" prefHeight="42.0" prefWidth="150.0" text="What fuck is this?">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="22.0" layoutY="120.0" prefHeight="21.0" prefWidth="150.0" text="In developing." />
+      <Label layoutX="22.0" layoutY="190.0" prefHeight="42.0" prefWidth="150.0" text="In developing." />
+      <WebView fx:id="webView" layoutX="235.0" layoutY="24.0" prefHeight="309.0" prefWidth="321.0" />
+   </children>
+</AnchorPane>

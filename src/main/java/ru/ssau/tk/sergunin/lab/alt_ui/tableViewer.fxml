@@ -43,7 +43,10 @@
                         <MenuItem fx:id="calculateItem" mnemonicParsing="false" onAction="#calculate" text="calculate" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Settings" />
+                <Menu mnemonicParsing="false" text="Settings">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#setting" text="Unspecified Action" />
+               </items></Menu>
                 <Menu mnemonicParsing="false" text="About">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#about" text="Unspecified Action" />

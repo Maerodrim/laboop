@@ -37,6 +37,7 @@ public class TableController implements Initializable, Openable {
     private DeletePoint deletePoint = new DeletePoint();
     private Calc calc = new Calc();
     private About about = new About();
+    private Settings settings = new Settings();
 
     @FXML
     private TabPane tabPane;
@@ -92,6 +93,8 @@ public class TableController implements Initializable, Openable {
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/Calc.fxml", "...");
         about = initializeWindowController(about,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/About.fxml", "About");
+        settings = initializeWindowController(settings,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/Settings.fxml", "Settings");
     }
 
     public <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {
@@ -330,6 +333,11 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void about() {
             about.play();
+    }
+
+    @FXML
+    private void setting() {
+        settings.start();
     }
 
     @FXML
