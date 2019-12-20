@@ -44,7 +44,7 @@ public class TableController implements Initializable, Openable {
     private Calc calc = new Calc();
     private About about = new About();
     private Settings settings = new Settings();
-
+    private CompositeFunctionController compositeFunctionController = new CompositeFunctionController();
     @FXML
     private TabPane tabPane;
     @FXML
@@ -73,7 +73,6 @@ public class TableController implements Initializable, Openable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         map = new LinkedHashMap<>();
-        functionController.setComboBoxMap(comboBoxMap);
         x.setCellValueFactory(new PropertyValueFactory<>("X"));
         y.setCellValueFactory(new PropertyValueFactory<>("Y"));
         x.setPrefWidth(300);
@@ -103,8 +102,12 @@ public class TableController implements Initializable, Openable {
                         e.printStackTrace();
                     }
                 });
+        functionController.setComboBoxMap(comboBoxMap);
+        compositeFunctionController.setComboBoxMap(comboBoxMap);
         functionController.getComboBox().getItems().addAll(comboBoxMap.keySet());
         functionController.getComboBox().setValue(functionController.getComboBox().getItems().get(0));
+        compositeFunctionController.getComboBox().getItems().addAll(comboBoxMap.keySet());
+        compositeFunctionController.getComboBox().setValue(compositeFunctionController.getComboBox().getItems().get(0));
     }
 
     private void initializeWindowControllers() {
@@ -122,6 +125,8 @@ public class TableController implements Initializable, Openable {
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/About.fxml", "About");
         settings = initializeWindowController(settings,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Settings.fxml", "Settings");
+        compositeFunctionController = initializeWindowController(compositeFunctionController,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/CompositeFunctionController.fxml", "Compose");
     }
 
     public <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {
@@ -354,7 +359,11 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void about() {
-            about.play();
+        about.play();
+    }
+    @FXML
+    private void compose() {
+        compositeFunctionController.getStage().show();
     }
 
     @FXML
