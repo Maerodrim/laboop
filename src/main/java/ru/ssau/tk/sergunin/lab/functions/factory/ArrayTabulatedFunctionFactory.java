@@ -6,6 +6,10 @@ import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 
 public class ArrayTabulatedFunctionFactory implements TabulatedFunctionFactory {
 
+    public Class<ArrayTabulatedFunction> getTabulatedFunctionClass() {
+        return ArrayTabulatedFunction.class;
+    }
+
     @Override
     public TabulatedFunction create(double[] xValues, double[] yValues) {
         return new ArrayTabulatedFunction(xValues, yValues);

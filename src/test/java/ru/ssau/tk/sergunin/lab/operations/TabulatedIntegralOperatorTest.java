@@ -3,11 +3,8 @@ package ru.ssau.tk.sergunin.lab.operations;
 import org.testng.annotations.Test;
 import ru.ssau.tk.sergunin.lab.functions.*;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
-import ru.ssau.tk.sergunin.lab.functions.factory.LinkedListTabulatedFunctionFactory;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static ru.ssau.tk.sergunin.lab.operations.TabulatedFunctionOperationService.asPoints;
 
 public class TabulatedIntegralOperatorTest {
 

@@ -1,6 +1,5 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-
 import java.util.Iterator;
 
 public class StrictTabulatedFunction implements TabulatedFunction {
@@ -61,6 +60,16 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
+    public boolean isStrict() {
+        return true;
+    }
+
+    @Override
+    public boolean isUnmodifiable() {
+        return tabulatedFunction.isUnmodifiable();
+    }
+
+    @Override
     public Iterator<Point> iterator() {
         return tabulatedFunction.iterator();
     }
@@ -73,5 +82,17 @@ public class StrictTabulatedFunction implements TabulatedFunction {
             return tabulatedFunction.apply(x);
         }
 
+    }
+
+    public TabulatedFunction unwrap() {
+        return tabulatedFunction;
+    }
+
+    @Override
+    public void offerStrict(boolean isStrict) {
+    }
+
+    @Override
+    public void offerUnmodifiable(boolean isUnmodifiable) {
     }
 }

@@ -4,5 +4,6 @@ target
 input
 output
 temp
-openjfx
 *.txt
+*.json
+*.xml

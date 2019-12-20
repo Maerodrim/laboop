@@ -19,6 +19,10 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     private double[] yValues;
     private int count;
+    @JsonProperty("strict")
+    private boolean isStrict = false;
+    @JsonProperty("unmodifiable")
+    private boolean isUnmodifiable = false;
 
     private ArrayTabulatedFunction() {
         xValues = new double[]{};
@@ -181,6 +185,29 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @Override
     public TabulatedFunction copy() {
         return new ArrayTabulatedFunction(xValues, yValues);
+    }
+
+    @Override
+    public boolean isStrict() {
+        return isStrict;
+    }
+
+    @Override
+    public boolean isUnmodifiable() {
+        return isUnmodifiable;
+    }
+
+    public void offerStrict(boolean strict) {
+        isStrict = strict;
+    }
+
+    public void offerUnmodifiable(boolean unmodifiable) {
+        isUnmodifiable = unmodifiable;
+    }
+
+    @Override
+    public TabulatedFunction unwrap() {
+        return this;
     }
 
     @Override

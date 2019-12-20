@@ -34,5 +34,19 @@ public interface TabulatedFunctionFactory {
         return new UnmodifiableTabulatedFunction(new StrictTabulatedFunction(create(source, xFrom, xTo, count)));
     }
 
+    default TabulatedFunction create(MathFunction source, double xFrom, double xTo, int count, boolean isStrict, boolean isUnmodifiable) {
+        if (isUnmodifiable && isStrict) {
+            return createStrictUnmodifiable(source, xFrom, xTo, count);
+        } else if (isUnmodifiable) {
+            return createUnmodifiable(source, xFrom, xTo, count);
+        } else if (isStrict) {
+            return createStrict(source, xFrom, xTo, count);
+        } else {
+            return create(source, xFrom, xTo, count);
+        }
+    }
+
     TabulatedFunction getIdentity();
+
+    Class<?> getTabulatedFunctionClass();
 }

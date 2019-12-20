@@ -5,7 +5,6 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
 public class CompositeFunctionTest {
-    final private double ACCURACY = 0.0001;
 
     @Test
     public void testApply() {
@@ -17,6 +16,7 @@ public class CompositeFunctionTest {
         MathFunction funcG = new CompositeFunction(sinh, sqr);
         MathFunction tabList = new LinkedListTabulatedFunction(xValues, yValues);
         MathFunction tabArray = new ArrayTabulatedFunction(xValues, yValues);
+        double ACCURACY = 0.0001;
         assertEquals(funcG.apply(5), Math.sinh(25), ACCURACY);
 
         assertEquals(tabArray.andThen(sqr).apply(2), 76, ACCURACY);

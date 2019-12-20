@@ -1,4 +1,4 @@
-package ru.ssau.tk.sergunin.lab.ui;
+package ru.ssau.tk.sergunin.lab.alt_ui;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -39,14 +39,6 @@ public class AlertWindows {
     public static void showWarning(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    public static void showNotification(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Notification");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

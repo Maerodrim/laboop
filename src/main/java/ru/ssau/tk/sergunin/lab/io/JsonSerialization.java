@@ -18,7 +18,7 @@ public class JsonSerialization {
             e.printStackTrace();
         }
         try (BufferedReader inputStream = new BufferedReader(new FileReader("output/array_function.json"))) {
-            System.out.println(deserializeJson(inputStream).toString());
+            System.out.println(deserializeJson(inputStream, ArrayTabulatedFunction.class).toString());
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

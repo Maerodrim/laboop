@@ -60,6 +60,33 @@ public class UnmodifiableTabulatedFunction implements TabulatedFunction {
         return tabulatedFunction.copy();
     }
 
+    public TabulatedFunction unwrapTabulatedFunction() {
+        return tabulatedFunction;
+    }
+
+    @Override
+    public boolean isStrict() {
+        return tabulatedFunction.isStrict();
+    }
+
+    @Override
+    public boolean isUnmodifiable() {
+        return true;
+    }
+
+    @Override
+    public TabulatedFunction unwrap() {
+        return tabulatedFunction;
+    }
+
+    @Override
+    public void offerStrict(boolean isStrict) {
+    }
+
+    @Override
+    public void offerUnmodifiable(boolean isUnmodifiable) {
+    }
+
     @Override
     public Iterator<Point> iterator() {
         return tabulatedFunction.iterator();

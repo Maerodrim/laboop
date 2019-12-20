@@ -1,21 +1,11 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-public class ExpFunction implements MathFunction {
-    private final double exp;
+import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
 
-    public ExpFunction(double exp) {
-        this.exp = exp;
-    }
+@Selectable(name = "Экспонента", priority = 10)
+public class ExpFunction extends ExponentialFunction {
 
     public ExpFunction() {
-        this(Math.E);
-    }
-
-    @Override
-    public double apply(double x) {
-        if (exp < 0 && (int) x != x) {
-            throw new UnsupportedOperationException();
-        }
-        return Math.pow(exp, x);
+        super(Math.E);
     }
 }

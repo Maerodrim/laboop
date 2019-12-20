@@ -21,4 +21,9 @@ public class LinkedListTabulatedFunctionFactory implements TabulatedFunctionFact
     public TabulatedFunction getIdentity() {
         return LinkedListTabulatedFunction.getIdentity();
     }
+
+    @Override
+    public Class<?> getTabulatedFunctionClass() {
+        return LinkedListTabulatedFunction.class;
+    }
 }

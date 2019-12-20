@@ -14,6 +14,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private static final long serialVersionUID = -8102232408974120402L;
     private Node head;
     private int count;
+    private boolean isStrict;
+    private boolean isUnmodifiable;
 
     private LinkedListTabulatedFunction() {
         head = null;
@@ -94,6 +96,29 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     @Override
     public LinkedListTabulatedFunction copy() {
         return new LinkedListTabulatedFunction(this);
+    }
+
+    @Override
+    public boolean isStrict() {
+        return false;
+    }
+
+    @Override
+    public boolean isUnmodifiable() {
+        return false;
+    }
+
+    public void offerStrict(boolean strict) {
+        isStrict = strict;
+    }
+
+    public void offerUnmodifiable(boolean unmodifiable) {
+        isUnmodifiable = unmodifiable;
+    }
+
+    @Override
+    public TabulatedFunction unwrap() {
+        return this;
     }
 
     private Node getNode(int index) {
