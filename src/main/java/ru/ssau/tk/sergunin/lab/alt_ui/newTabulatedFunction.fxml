@@ -10,7 +10,7 @@
    <top>
       <ScrollPane prefHeight="290.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <content>
-            <TableView fx:id="functionTable" prefHeight="291.0" prefWidth="581.0">
+             <TableView fx:id="functionTable" prefHeight="288.0" prefWidth="581.0">
               <columns>
                 <TableColumn prefWidth="305.0" text="X" fx:id="x" />
                 <TableColumn fx:id="y" prefWidth="275.0" text="Y" />

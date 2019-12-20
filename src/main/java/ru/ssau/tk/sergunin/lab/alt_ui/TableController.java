@@ -249,7 +249,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void loadFunction() {
         File file = Functions.load(stage, defaultDirectory);
-        if (file.exists()) {
+        if (!Objects.equals(file, null)) {
             createTab(functions.loadFunctionAs(file));
         }
     }
@@ -277,7 +277,7 @@ public class TableController implements Initializable, Openable {
             File file = toTempPath
                     ? new File(defaultDirectory + "\\" + currentTab.getText() + ".txt")
                     : Functions.save(stage);
-            if (file.exists()) {
+            if (!Objects.equals(file, null)) {
                 functions.saveFunctionAs(file, getFunction());
             }
         }
@@ -324,6 +324,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void newTabulatedFunction() {
         tabulatedFunctionController.getStage().show();
+        tabulatedFunctionController.getStage().setResizable(false);
     }
 
     private boolean isTabExist() {
@@ -347,5 +348,9 @@ public class TableController implements Initializable, Openable {
             valuesY[i++] = point.y;
         }
         return factory.create(valuesX, valuesY);
+    }
+
+    public void sort() {
+        getObservableList().sort(Comparator.comparingDouble(point1 -> point1.x));
     }
 }
