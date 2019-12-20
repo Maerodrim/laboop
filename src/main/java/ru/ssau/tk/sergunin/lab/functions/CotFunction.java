@@ -2,10 +2,10 @@ package ru.ssau.tk.sergunin.lab.functions;
 
 import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
 
-@Selectable(name = "Гиперболический косинус", priority = 17)
-public class CoshFunction implements MathFunction {
+@Selectable(name = "Котангенс", priority = 15)
+public class CotFunction implements MathFunction {
     @Override
     public double apply(double x) throws ArrayIndexOutOfBoundsException, IllegalArgumentException {
-        return java.lang.Math.cosh(x);
+        return 1 / java.lang.Math.tan(x);
     }
 }
