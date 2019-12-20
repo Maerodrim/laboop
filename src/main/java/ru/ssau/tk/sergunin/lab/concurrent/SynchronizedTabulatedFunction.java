@@ -17,22 +17,27 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
 
     @NotNull
     @Override
-    public synchronized Iterator<Point> iterator() {
-        Point[] copy = TabulatedFunctionOperationService.asPoints(function);
-        return new Iterator<>() {
-            int i = 0;
+    public Iterator<Point> iterator() {
+        synchronized (function) {
+            Point[] copy = TabulatedFunctionOperationService.asPoints(function);
+            return new Iterator<>() {
+                int i = 0;
 
-            public boolean hasNext() {
-                return i != copy.length;
-            }
-
-            public Point next() {
-                if (i == copy.length) {
-                    throw new NoSuchElementException();
+                @Override
+                public boolean hasNext() {
+                    return i != copy.length;
                 }
-                return new Point(copy[i].x, copy[i++].y);
-            }
-        };
+
+                @Override
+                public Point next() {
+                    if (!hasNext()) {
+                        throw new NoSuchElementException();
+                    } else {
+                        return new Point(copy[i].x, copy[i++].y);
+                    }
+                }
+            };
+        }
     }
 
     @Override

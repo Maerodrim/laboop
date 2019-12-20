@@ -12,7 +12,9 @@ public class ReadTask implements Runnable {
     @Override
     public void run() {
         for (int i = 0; func.getCount() > i; i++) {
-            System.out.println("After read:i =" + i + " x =" + func.getX(i) + " y =" + func.getY(i));
+            synchronized (func) {
+                System.out.println("After read:i =" + i + " x =" + func.getX(i) + " y =" + func.getY(i));
+            }
         }
     }
 }
