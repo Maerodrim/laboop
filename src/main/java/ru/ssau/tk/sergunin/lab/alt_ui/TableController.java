@@ -82,19 +82,19 @@ public class TableController implements Initializable, Openable {
 
     private void initializeWindowControllers() {
         functionController = initializeWindowController(functionController,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newFunction.fxml", "Create new function");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/newFunction.fxml", "Create new function");
         tabulatedFunctionController = initializeWindowController(tabulatedFunctionController,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newTabulatedFunction.fxml", "Create new function");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/newTabulatedFunction.fxml", "Create new function");
         addPoint = initializeWindowController(addPoint,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/addPoint.fxml", "Add Point.");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/addPoint.fxml", "Add Point.");
         deletePoint = initializeWindowController(deletePoint,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/DeletePoint.fxml", "Delete Point.");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/DeletePoint.fxml", "Delete Point.");
         calc = initializeWindowController(calc,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/Calc.fxml", "...");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Calc.fxml", "...");
         about = initializeWindowController(about,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/About.fxml", "About");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/About.fxml", "About");
         settings = initializeWindowController(settings,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/Settings.fxml", "Settings");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Settings.fxml", "Settings");
     }
 
     public <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {
