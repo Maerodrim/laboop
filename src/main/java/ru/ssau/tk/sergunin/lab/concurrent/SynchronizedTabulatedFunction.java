@@ -139,6 +139,20 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
         return operation.apply(this);
     }
 
+    @Override
+    public void insert(double x, double y) {
+        synchronized (function) {
+            function.insert(x,y);
+        }
+    }
+
+    @Override
+    public void remove(int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+        synchronized (function) {
+            function.remove(index);
+        }
+    }
+
     @FunctionalInterface
     public interface Operation<T> {
         T apply(SynchronizedTabulatedFunction function);

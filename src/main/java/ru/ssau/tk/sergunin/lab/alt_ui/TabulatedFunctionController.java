@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
-public class TabulatedFunctionController implements Initializable {
+public class TabulatedFunctionController implements Initializable, Openable {
     @FXML
     TextField textX;
     @FXML
@@ -31,7 +31,7 @@ public class TabulatedFunctionController implements Initializable {
     TableColumn<Point, Double> y;
 
     private Stage stage;
-    private TableController parentController;
+    private Openable parentController;
     private TabulatedFunctionFactory factory;
     private ObservableList<Point> list;
 
@@ -52,7 +52,7 @@ public class TabulatedFunctionController implements Initializable {
 
     @FXML
     private void save() {
-        parentController.createTab(functionTable);
+        ((TableController)parentController).createTab(functionTable);
         stage.close();
     }
 
@@ -72,12 +72,13 @@ public class TabulatedFunctionController implements Initializable {
         return stage;
     }
 
-    public void setParentController(TableController parentController) {
-        this.parentController = parentController;
-    }
-
     public void setFactory(TabulatedFunctionFactory factory) {
         this.factory = factory;
+    }
+
+    @Override
+    public void setParentController(Openable controller) {
+        parentController = controller;
     }
 
     public void setStage(Stage stage) {

@@ -96,4 +96,14 @@ public class UnmodifiableTabulatedFunction implements TabulatedFunction {
     public double apply(double x) {
         return tabulatedFunction.apply(x);
     }
+
+    @Override
+    public void insert(double x, double y) {
+        throw new UnsupportedOperationException("Insert don't support");
+    }
+
+    @Override
+    public void remove(int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+        throw new UnsupportedOperationException("Remove don't support");
+    }
 }

@@ -16,6 +16,7 @@ import ru.ssau.tk.sergunin.lab.ui.AlertWindows;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.nio.file.Paths;
 
 public class Functions {
@@ -48,26 +49,20 @@ public class Functions {
         return fileChooser.showSaveDialog(stage);
     }
 
-    public static <T> T initializeModalityWindow(String pathFXML, Class<T> controllerClass) {
+    public static <T extends Openable> T initializeModalityWindow(String pathFXML, T modalityWindow) {
         FXMLLoader loader;
         Parent createNewFunction = null;
-        T modalityWindow = null;
         try {
-            modalityWindow = controllerClass.getDeclaredConstructor().newInstance();
             loader = new FXMLLoader(Paths.get(pathFXML).toUri().toURL());
             createNewFunction = loader.load();
             modalityWindow = loader.getController();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         Stage createNewFunctionStage = new Stage();
         createNewFunctionStage.setScene(new Scene(createNewFunction));
         createNewFunctionStage.initModality(Modality.WINDOW_MODAL);
-        try {
-            controllerClass.getMethod("setStage", Stage.class).invoke(modalityWindow, createNewFunctionStage);
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        modalityWindow.setStage(createNewFunctionStage);
         return modalityWindow;
     }
 

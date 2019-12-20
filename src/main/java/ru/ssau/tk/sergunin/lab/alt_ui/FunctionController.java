@@ -21,8 +21,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.StreamSupport;
 
-public class FunctionController implements Initializable {
-
+public class FunctionController implements Initializable, Openable {
     @FXML
     ComboBox<String> comboBox;
     @FXML
@@ -38,8 +37,8 @@ public class FunctionController implements Initializable {
     @FXML
     Button create;
     private Stage stage;
-    private InputParameterController inputParameterController;
-    private TableController parentController;
+    private InputParameterController inputParameterController = new InputParameterController();
+    private Openable parentController;
     private TabulatedFunctionFactory factory;
     private Map<String, MathFunction> comboBoxMap;
 
@@ -66,7 +65,7 @@ public class FunctionController implements Initializable {
     }
 
     private void initializeWindowControllers() {
-        inputParameterController = Functions.initializeModalityWindow("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/inputParameter.fxml", InputParameterController.class);
+        inputParameterController = Functions.initializeModalityWindow("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/inputParameter.fxml", inputParameterController);
         inputParameterController.getStage().initOwner(stage);
         inputParameterController.getStage().setTitle("Input parameter");
     }
@@ -87,7 +86,7 @@ public class FunctionController implements Initializable {
                     Integer.parseInt(numberOfPoints.getText()),
                     isStrict.isSelected(),
                     isUnmodifiable.isSelected());
-            parentController.createTab(function);
+            ((TableController)parentController).createTab(function);
             stage.close();
         } catch (NullPointerException | NumberFormatException nfe) {
             AlertWindows.showWarning("Введите корректные значения");
@@ -107,16 +106,17 @@ public class FunctionController implements Initializable {
         this.factory = factory;
     }
 
+    @Override
+    public void setParentController(Openable controller) {
+        parentController = controller;
+    }
+
     public Stage getStage() {
         return stage;
     }
 
     public void setStage(Stage stage) {
         this.stage = stage;
-    }
-
-    void setParentController(TableController parentController) {
-        this.parentController = parentController;
     }
 
 }

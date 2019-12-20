@@ -95,4 +95,14 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     @Override
     public void offerUnmodifiable(boolean isUnmodifiable) {
     }
+
+    @Override
+    public void insert(double x, double y) {
+        tabulatedFunction.insert(x, y);
+    }
+
+    @Override
+    public void remove(int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+        tabulatedFunction.remove(index);
+    }
 }

@@ -20,7 +20,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 
-public class TableController implements Initializable {
+public class TableController implements Initializable, Openable {
 
     private Stage stage;
     private final TableColumn<Point, Double> x = new TableColumn<>("X");
@@ -30,9 +30,10 @@ public class TableController implements Initializable {
     private TabulatedFunctionFactory factory;
     private Map<Tab, TabulatedFunction> map;
     private Tab currentTab;
-    private FunctionController functionController;
-    private TabulatedFunctionController tabulatedFunctionController;
+    private FunctionController functionController = new FunctionController();
+    private TabulatedFunctionController tabulatedFunctionController = new TabulatedFunctionController();
     private Functions functions;
+    private AddPoint addPoint = new AddPoint();
 
     @FXML
     private TabPane tabPane;
@@ -76,17 +77,21 @@ public class TableController implements Initializable {
     }
 
     private void initializeWindowControllers() {
-        functionController = Functions.initializeModalityWindow("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newFunction.fxml", FunctionController.class);
-        functionController.getStage().initOwner(stage);
-        functionController.getStage().setTitle("Create new function");
-        functionController.setFactory(factory);
-        functionController.setParentController(this);
+        functionController = initializeWindowController(functionController,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newFunction.fxml", "Create new function" );
+        tabulatedFunctionController = initializeWindowController(tabulatedFunctionController,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newTabulatedFunction.fxml", "Create new function");
+        addPoint = initializeWindowController(addPoint,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/addPoint.fxml", "Add Point.");
+    }
 
-        tabulatedFunctionController = Functions.initializeModalityWindow("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newTabulatedFunction.fxml", TabulatedFunctionController.class);
-        tabulatedFunctionController.getStage().initOwner(stage);
-        tabulatedFunctionController.getStage().setTitle("Create new function");
-        tabulatedFunctionController.setFactory(factory);
-        tabulatedFunctionController.setParentController(this);
+    public  <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {
+        controller = Functions.initializeModalityWindow(path, controller);
+        controller.getStage().initOwner(stage);
+        controller.getStage().setTitle(windowName);
+        controller.setFactory(factory);
+        controller.setParentController(this);
+        return controller;
     }
 
     void createTab(TabulatedFunction function) {
@@ -196,6 +201,11 @@ public class TableController implements Initializable {
         pane.setBottom(null);
     }
 
+    @Override
+    public Stage getStage() {
+        return null;
+    }
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -210,8 +220,12 @@ public class TableController implements Initializable {
         functionController.getStage().show();
     }
 
-    private void setFactory(TabulatedFunctionFactory factory) {
+    public void setFactory(TabulatedFunctionFactory factory) {
         this.factory = factory;
+    }
+
+    @Override
+    public void setParentController(Openable controller) {
     }
 
     @FXML
@@ -234,11 +248,11 @@ public class TableController implements Initializable {
         }
     }
 
-    private TabulatedFunction getFunction() {
+    public TabulatedFunction getFunction() {
         return map.get(currentTab);
     }
 
-    private ObservableList<Point> getObservableList() {
+    public ObservableList<Point> getObservableList() {
         return ((TableView<Point>) currentTab.getContent()).getItems();
     }
 
@@ -283,7 +297,7 @@ public class TableController implements Initializable {
     private void addPoint() {
         if (isTabExist()) {
             if (!getFunction().isUnmodifiable()) {
-
+                addPoint.getStage().show();
             } else {
                 AlertWindows.showWarning("Function is unmodifiable");
             }
@@ -326,6 +340,6 @@ public class TableController implements Initializable {
             valuesX[i] = point.x;
             valuesY[i++] = point.y;
         }
-        return factory.create(valuesX,valuesY);
+        return factory.create(valuesX, valuesY);
     }
 }

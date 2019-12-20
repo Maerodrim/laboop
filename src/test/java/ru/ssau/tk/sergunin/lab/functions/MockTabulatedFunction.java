@@ -135,4 +135,14 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
     public Iterator<Point> iterator() {
         return null;
     }
+
+    @Override
+    public void insert(double x, double y) {
+        insert(x, y);
+    }
+
+    @Override
+    public void remove(int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+        remove(index);
+    }
 }

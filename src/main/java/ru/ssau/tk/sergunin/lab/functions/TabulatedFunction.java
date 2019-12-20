@@ -2,7 +2,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 
 import ru.ssau.tk.sergunin.lab.alt_ui.ExplicitAccessControllable;
 
-public interface TabulatedFunction extends MathFunction, Iterable<Point>, ExplicitAccessControllable {
+public interface TabulatedFunction extends MathFunction, Iterable<Point>, ExplicitAccessControllable, Insertable, Removable {
 
     int getCount();
 
