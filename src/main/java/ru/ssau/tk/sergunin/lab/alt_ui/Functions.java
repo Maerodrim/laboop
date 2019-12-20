@@ -15,8 +15,6 @@ import ru.ssau.tk.sergunin.lab.io.FunctionsIO;
 import ru.ssau.tk.sergunin.lab.ui.AlertWindows;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.nio.file.Paths;
 
 public class Functions {

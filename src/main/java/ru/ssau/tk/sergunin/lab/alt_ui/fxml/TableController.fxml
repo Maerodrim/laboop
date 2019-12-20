@@ -34,21 +34,17 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Operation">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="+" />
-                        <MenuItem mnemonicParsing="false" text="-" />
-                        <MenuItem mnemonicParsing="false" text="*" />
-                        <MenuItem mnemonicParsing="false" text="/" />
-                        <MenuItem mnemonicParsing="false" text="d/dx" />
+                        <MenuItem mnemonicParsing="false" text="apply"/>
                         <MenuItem fx:id="plot" mnemonicParsing="false" onAction="#plot" text="plot" />
                         <MenuItem fx:id="calculateItem" mnemonicParsing="false" onAction="#calculate" text="calculate" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Settings" />
                 <Menu mnemonicParsing="false" text="About">
-               <items>
-                   <MenuItem mnemonicParsing="false" onAction="#about" text="About"/>
-               </items>
-            </Menu>
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#about" text="About"/>
+                    </items>
+                </Menu>
             </menus>
         </MenuBar>
     </top>
