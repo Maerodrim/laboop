@@ -15,7 +15,7 @@ public class Init extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public  void start(Stage primaryStage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(Paths.get("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/view.fxml").toUri().toURL());
         Parent root = loader.load();
