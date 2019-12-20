@@ -52,7 +52,8 @@ public class TabulatedFunctionController implements Initializable {
 
     @FXML
     private void save() {
-
+        parentController.createTab(functionTable);
+        stage.close();
     }
 
     @FXML
