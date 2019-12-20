@@ -20,22 +20,33 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.StreamSupport;
 
-public class CompositeFunctionController implements Initializable, Openable{
+public class CompositeFunctionController implements Initializable, Openable {
     private Stage stage;
     private Openable parentController;
     private Map<String, MathFunction> comboBoxMap;
+
+    public void setComboBoxMap(Map<String, MathFunction> comboBoxMap) {
+        this.comboBoxMap = comboBoxMap;
+    }
+
     private MathFunction mathFunction;
     private TabulatedFunctionFactory factory;
     @FXML
     ComboBox<String> comboBox;
+
     @FXML
-    public void doOnClickOnComboBox(ActionEvent actionEvent){
-       mathFunction = comboBoxMap.get(((ComboBox) actionEvent.getSource()).getValue());
+    public void doOnClickOnComboBox(ActionEvent actionEvent) {
+        mathFunction = comboBoxMap.get(((ComboBox) actionEvent.getSource()).getValue());
     }
+
+    public ComboBox<String> getComboBox() {
+        return comboBox;
+    }
+
 
     @FXML
     public void pain() {
-        TabulatedFunction function = ((TableController)parentController).getFunction();
+        TabulatedFunction function = ((TableController) parentController).getFunction();
         ((TableController) parentController).createTab(factory.create(mathFunction.andThen(function), function.leftBound(), function.rightBound(), function.getCount()));
         stage.close();
     }
@@ -46,23 +57,8 @@ public class CompositeFunctionController implements Initializable, Openable{
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        comboBoxMap = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(Selectable.class).spliterator(), false)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(Selectable.class).priority()))
-                .forEach(clazz -> {
-                    try {
-                        if (clazz.getDeclaredAnnotation(Selectable.class).parameter()) {
-                            comboBoxMap.put(clazz.getDeclaredAnnotation(Selectable.class).name(), (MathFunction) clazz.getDeclaredConstructor(Double.TYPE).newInstance(0));
-                        } else {
-                            comboBoxMap.put(clazz.getDeclaredAnnotation(Selectable.class).name(), (MathFunction) clazz.getDeclaredConstructor().newInstance());
-                        }
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
-                    }
-                });
-        comboBox.getItems().addAll(comboBoxMap.keySet());
-        comboBox.setValue(comboBox.getItems().get(0));
     }
+
     public Stage getStage() {
         return stage;
     }
@@ -73,7 +69,7 @@ public class CompositeFunctionController implements Initializable, Openable{
 
     @Override
     public void setFactory(TabulatedFunctionFactory factory) {
-        this.factory=factory;
+        this.factory = factory;
     }
 
     @Override

@@ -34,9 +34,10 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Operation">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="apply"/>
+                        <MenuItem mnemonicParsing="false" text="apply" />
                         <MenuItem fx:id="plot" mnemonicParsing="false" onAction="#plot" text="plot" />
                         <MenuItem fx:id="calculateItem" mnemonicParsing="false" onAction="#calculate" text="calculate" />
+                  <MenuItem mnemonicParsing="false" onAction="#compose" text="compose" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Settings">
@@ -45,7 +46,7 @@
                </items></Menu>
                 <Menu mnemonicParsing="false" text="About">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#about" text="About"/>
+                        <MenuItem mnemonicParsing="false" onAction="#about" text="About" />
                     </items>
                 </Menu>
             </menus>

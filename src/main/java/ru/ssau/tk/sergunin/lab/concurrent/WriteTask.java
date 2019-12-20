@@ -3,20 +3,21 @@ package ru.ssau.tk.sergunin.lab.concurrent;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 
 public class WriteTask implements Runnable {
-    private TabulatedFunction func;
-    private Double value;
+    private final TabulatedFunction tabulatedFunction;
+    private double value;
 
-    public WriteTask(TabulatedFunction func, Double value) {
-        this.func = func;
+    WriteTask(TabulatedFunction tabulatedFunction, double value) {
         this.value = value;
+        this.tabulatedFunction = tabulatedFunction;
     }
 
     @Override
     public void run() {
-        for (int i = 0; func.getCount() > i; i++) {
-            func.setY(i, value);
-            System.out.println("Writing for index " + i + " complete");
+        for (int i = 0; i < tabulatedFunction.getCount(); i++) {
+            synchronized (tabulatedFunction) {
+                tabulatedFunction.setY(i, value);
+                System.out.printf("Writing for index %d complete\n", i);
+            }
         }
-
     }
 }
