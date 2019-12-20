@@ -1,8 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import ru.ssau.tk.sergunin.lab.alt_ui.ExplicitAccessControllable;
 
-public interface TabulatedFunction extends MathFunction, Iterable<Point>{
+public interface TabulatedFunction extends MathFunction, Iterable<Point>, ExplicitAccessControllable {
 //    static TabulatedFunction join(TabulatedFunction firstFunction, TabulatedFunction secondFunction, TabulatedFunctionFactory factory) {
 //        if (firstFunction.getCount() == 0) return secondFunction;
 //        Point[] firstPoints = TabulatedFunctionOperationService.asPoints(firstFunction);
@@ -39,6 +39,10 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point>{
 //        return factory.create(xValues, yValues);
 //    }
 
+    //static TabulatedFunction join(TabulatedFunction function) {
+
+    //}
+
     int getCount();
 
     double getX(int index);
@@ -64,8 +68,4 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point>{
     boolean isUnmodifiable();
 
     TabulatedFunction unwrap();
-
-    void offerStrict(boolean isStrict);
-
-    void offerUnmodifiable(boolean isUnmodifiable);
 }

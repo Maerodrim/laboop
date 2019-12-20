@@ -7,8 +7,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class InputParameterController {
-    Stage stage;
-    double value;
+    private Stage stage;
+    private double value;
 
     @FXML
     Label label;
@@ -17,7 +17,7 @@ public class InputParameterController {
     @FXML
     Button button;
 
-    public double getParameter() {
+    double getParameter() {
         return value;
     }
 

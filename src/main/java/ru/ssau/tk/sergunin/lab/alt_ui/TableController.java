@@ -1,54 +1,76 @@
 package ru.ssau.tk.sergunin.lab.alt_ui;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class TableController implements Initializable {
 
-    Stage stage;
-    TabulatedFunction function;
-    TabulatedFunctionFactory factory = new ArrayTabulatedFunctionFactory();
-    String defaultDirectory;
+    private Stage stage;
+    private TabulatedFunctionFactory factory = new ArrayTabulatedFunctionFactory();
+    private String defaultDirectory;
+    private int numberId = 1;
+    private TableColumn<Point, Double> x = new TableColumn<>("X");
+    private TableColumn<Point, Double> y = new TableColumn<>("Y");
 
-    FunctionController functionController; // контроллер окна создания новой функции
-    Functions functions;
+    private FunctionController functionController; // контроллер окна создания новой функции
+    private Functions functions;
     @FXML
-    TabPane tabPane;
+    private TabPane tabPane;
     @FXML
-    Button addFunction;
+    private BorderPane mainPane;
     @FXML
-    BorderPane mainPane;
+    private BorderPane bottomPane;
     @FXML
-    BorderPane labelPane;
+    private Pane labelPane;
     @FXML
-    Label label;
+    private Button addPointButton;
     @FXML
-    MenuItem plot;
+    private Button deletePointButton;
     @FXML
-    MenuItem loadItem;
+    private Button calculateValueButton;
     @FXML
-    MenuItem saveItem;
+    private Label label;
     @FXML
-    MenuItem saveAsItem;
+    private MenuItem plot;
+    @FXML
+    private MenuItem loadItem;
+    @FXML
+    private MenuItem saveItem;
+    @FXML
+    private MenuItem saveAsItem;
+    private Tab currentTab;
+    private Map<Tab, Map.Entry<ObservableList<Point>, TabulatedFunction>> map;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        map = new LinkedHashMap<>();
+        x.setCellValueFactory(new PropertyValueFactory<>("X"));
+        y.setCellValueFactory(new PropertyValueFactory<>("Y"));
+        x.setPrefWidth(300);
+        y.setPrefWidth(300);
         tabPane.getSelectionModel().selectLast();
-        this.function = factory.getIdentity();
         functions = new Functions(factory);
         defaultDirectory = System.getenv("APPDATA") + "\\tempFunctions";
         new File(defaultDirectory).mkdir();
+        mainPane.getChildren().remove(bottomPane);
         initializeWindowControllers();
     }
 
@@ -57,10 +79,87 @@ public class TableController implements Initializable {
         functionController.getStage().initOwner(stage);
         functionController.getStage().setTitle("Create new function");
         functionController.setFactory(factory);
-        functionController.setTabPane(tabPane);
-        functionController.setMainPane(mainPane);
-        functionController.setLabelPane(labelPane);
-        functionController.setLabel(label);
+        functionController.setParentController(this);
+    }
+
+    void createTab(TabulatedFunction function) {
+        Tab tab = new Tab();
+        tab.setText("Function" + numberId);
+        tab.setId("function" + numberId++);
+        tab.setClosable(true);
+        tabPane.getTabs().add(tab);
+        ObservableList<Point> list = getModelFunctionList(function);
+        TableView<Point> table = new TableView<>();
+        table.setItems(list);
+        table.getColumns().addAll(x, y);
+        tab.setContent(table);
+        tabPane.getSelectionModel().select(tab);
+        map.put(tab, Map.entry(list, function));
+        notifyAboutAccessibility(function);
+        currentTab = tab;
+        tab.setOnSelectionChanged(event -> {
+            if (tab.isSelected()) {
+                currentTab = tab;
+                notifyAboutAccessibility(getFunction());
+            }
+        });
+        tab.setOnClosed(event -> {
+            map.remove(tab);
+            if (map.isEmpty()) {
+                mainPane.getChildren().remove(bottomPane);
+                currentTab = null;
+            }
+        });
+    }
+
+    private void notifyAboutAccessibility(TabulatedFunction function) {
+        boolean isStrict = function.isStrict();
+        boolean isUnmodifiable = function.isUnmodifiable();
+        List<Node> list = List.of(calculateValueButton, label);
+        if (map.size() == 1) {
+            mainPane.setBottom(bottomPane);
+        }
+        if (isUnmodifiable && isStrict) {
+            clear(bottomPane);
+            bottomPane.setLeft(null);
+            bottomPane.setCenter(labelPane);
+            bottomPane.setRight(null);
+            labelPane.getChildren().removeAll(list);
+            labelPane.getChildren().add(label);
+            label.setText("Function is strict and unmodifiable");
+        } else if (isUnmodifiable) {
+            clear(bottomPane);
+            bottomPane.setLeft(null);
+            bottomPane.setCenter(labelPane);
+            bottomPane.setRight(null);
+            labelPane.getChildren().removeAll(list);
+            labelPane.getChildren().add(calculateValueButton);
+            calculateValueButton.layoutXProperty().setValue(225);
+        } else if (isStrict) {
+            clear(bottomPane);
+            bottomPane.setLeft(addPointButton);
+            BorderPane.setMargin(addPointButton, new Insets(0, 0, 0, 80));
+            BorderPane.setMargin(deletePointButton, new Insets(0, 80, 0, 0));
+            bottomPane.setRight(deletePointButton);
+        } else {
+            clear(bottomPane);
+            bottomPane.setLeft(addPointButton);
+            BorderPane.setMargin(addPointButton, new Insets(0, 0, 0, 30));
+            BorderPane.setMargin(deletePointButton, new Insets(0, 30, 0, 0));
+            bottomPane.setRight(deletePointButton);
+            bottomPane.setCenter(labelPane);
+            labelPane.getChildren().removeAll(list);
+            labelPane.getChildren().add(calculateValueButton);
+            calculateValueButton.layoutXProperty().setValue(45);
+        }
+    }
+
+    private void clear(BorderPane pane) {
+        pane.setTop(null);
+        pane.setLeft(null);
+        pane.setCenter(null);
+        pane.setRight(null);
+        pane.setBottom(null);
     }
 
     public void setStage(Stage stage) {
@@ -69,58 +168,84 @@ public class TableController implements Initializable {
 
     @FXML
     private void newFunctionButtonEvent() {
-        //createNewFunctionController.create.setText("Создать");
         functionController.getStage().show();
     }
 
     @FXML
     private void join() {
-        //createNewFunctionController.create.setText("Присоединить");
         functionController.getStage().show();
     }
 
-    public void setFactory(TabulatedFunctionFactory factory) {
+    private void setFactory(TabulatedFunctionFactory factory) {
         this.factory = factory;
     }
 
     @FXML
-    public void plot() {
-        if (!Objects.equals(functionController.getCurrentTab(), null)) {
-            Plot.plotFunction(stage, functionController.getObservableList());
+    private void plot() {
+        if (!Objects.equals(currentTab, null)) {
+            Plot.plotFunction(stage, getObservableList());
         }
     }
 
     @FXML
-    public void loadFunction() {
+    private void loadFunction() {
         File file = Functions.load(stage, defaultDirectory);
         if (!Objects.equals(file, null)) {
-            functionController.createTab(functions.loadFunctionAs(file));
+            createTab(functions.loadFunctionAs(file));
         }
     }
 
+    private TabulatedFunction getFunction() {
+        return map.get(currentTab).getValue();
+    }
+
+    private ObservableList<Point> getObservableList() {
+        return map.get(currentTab).getKey();
+    }
+
     @FXML
-    public void saveFunction() {
+    private void saveFunction() {
         save(true);
     }
 
     @FXML
-    public void saveAsFunction() {
+    private void saveAsFunction() {
         save(false);
     }
 
     private void save(boolean toTempPath) {
-        if (!Objects.equals(functionController.getCurrentTab(), null)) {
+        if (!Objects.equals(currentTab, null)) {
             File file = toTempPath
-                    ? new File(defaultDirectory + "\\" + functionController.getCurrentTab().getText() + ".txt")
+                    ? new File(defaultDirectory + "\\" + currentTab.getText() + ".txt")
                     : Functions.save(stage);
             if (!Objects.equals(file, null)) {
-                functions.saveFunctionAs(file, functionController.getFunction());
+                functions.saveFunctionAs(file, getFunction());
             }
         }
     }
 
     @FXML
-    public void exit() {
+    private void exit() {
         stage.close();
+    }
+
+    @FXML
+    private void deletePoint(ActionEvent event) {
+    }
+
+    @FXML
+    private void addPoint(ActionEvent event) {
+    }
+
+    @FXML
+    private void calculate(ActionEvent event) {
+    }
+
+    private ObservableList<Point> getModelFunctionList(TabulatedFunction function) {
+        List<Point> listPoint = new ArrayList<>();
+        for (Point point : function) {
+            listPoint.add(point);
+        }
+        return FXCollections.observableArrayList(listPoint);
     }
 }
