@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -23,6 +24,10 @@ public class TabulatedFunctionController implements Initializable, Openable {
     TextField textX;
     @FXML
     TextField textY;
+    @FXML
+    CheckBox isUnmodifiable;
+    @FXML
+    CheckBox isStrict;
     @FXML
     TableView<Point> functionTable;
     @FXML
@@ -48,6 +53,14 @@ public class TabulatedFunctionController implements Initializable, Openable {
     private void addRow() {
         list.add(new Point(Double.parseDouble(textX.getText()), Double.parseDouble(textY.getText())));
         functionTable.setItems(list);
+    }
+
+    public boolean isUnmodifiable() {
+        return isUnmodifiable.isSelected();
+    }
+
+    public boolean isStrict() {
+        return isStrict.isSelected();
     }
 
     @FXML
