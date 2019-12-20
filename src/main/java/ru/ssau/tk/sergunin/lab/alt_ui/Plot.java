@@ -1,6 +1,5 @@
 package ru.ssau.tk.sergunin.lab.alt_ui;
 
-import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
@@ -8,10 +7,8 @@ import javafx.scene.chart.XYChart;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.functions.Point;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 
 import java.util.Collection;
-import java.util.List;
 
 public class Plot {
 

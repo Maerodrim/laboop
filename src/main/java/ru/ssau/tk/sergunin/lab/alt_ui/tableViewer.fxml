@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
@@ -15,8 +16,12 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem fx:id="newFunctionButtonEvent" mnemonicParsing="false"
-                                  onAction="#newFunctionButtonEvent" text="New"/>
+                        <Menu mnemonicParsing="false" text="New">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="As tabulated function"/>
+                                <MenuItem mnemonicParsing="false" onAction="#newMathFunction" text="As function"/>
+                            </items>
+                        </Menu>
                         <MenuItem fx:id="loadItem" mnemonicParsing="false" onAction="#loadFunction" text="Load"/>
                         <MenuItem fx:id="saveItem" mnemonicParsing="false" onAction="#saveFunction" text="Save"/>
                         <MenuItem fx:id="saveAsItem" mnemonicParsing="false" onAction="#saveAsFunction" text="Save as"/>
@@ -25,8 +30,9 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Change">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Add point"/>
-                        <MenuItem mnemonicParsing="false" text="Delete point"/>
+                        <MenuItem fx:id="addPointItem" mnemonicParsing="false" onAction="#addPoint" text="Add point"/>
+                        <MenuItem fx:id="deletePointItem" mnemonicParsing="false" onAction="#deletePoint"
+                                  text="Delete point"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Operation">
@@ -37,7 +43,7 @@
                         <MenuItem mnemonicParsing="false" text="/"/>
                         <MenuItem mnemonicParsing="false" text="d/dx"/>
                         <MenuItem fx:id="plot" mnemonicParsing="false" onAction="#plot" text="plot"/>
-                        <MenuItem mnemonicParsing="false" text="apply"/>
+                        <MenuItem fx:id="calculateItem" mnemonicParsing="false" onAction="#calculate" text="calculate"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Settings"/>
@@ -49,15 +55,40 @@
         <TabPane fx:id="tabPane" prefHeight="328.0" prefWidth="600.0" tabClosingPolicy="ALL_TABS"/>
     </center>
     <bottom>
-        <BorderPane fx:id="labelPane" prefHeight="47.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+        <BorderPane fx:id="bottomPane" prefHeight="66.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <center>
-                <Label fx:id="label" alignment="CENTER" opacity="0.36" prefHeight="56.0" prefWidth="515.0"
-                       BorderPane.alignment="CENTER">
-                    <font>
-                        <Font name="System Bold" size="18.0"/>
-                    </font>
-                </Label>
+                <Pane fx:id="labelPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Label fx:id="label" alignment="CENTER" layoutY="16.0" opacity="0.36" prefHeight="0.0"
+                               prefWidth="600.0">
+                            <font>
+                                <Font name="System Bold" size="24.0"/>
+                            </font>
+                        </Label>
+                        <Button fx:id="calculateValueButton" layoutX="45.0" layoutY="18.0" mnemonicParsing="false"
+                                onAction="#calculate" prefHeight="31.0" prefWidth="150.0" text="Calculate value"/>
+                    </children>
+                    <BorderPane.margin>
+                        <Insets/>
+                    </BorderPane.margin>
+                </Pane>
             </center>
+            <left>
+                <Button fx:id="deletePointButton" mnemonicParsing="false" onAction="#deletePoint" prefHeight="31.0"
+                        prefWidth="150.0" text="Delete point" BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets left="30.0"/>
+                    </BorderPane.margin>
+                </Button>
+            </left>
+            <right>
+                <Button fx:id="addPointButton" mnemonicParsing="false" onAction="#addPoint" prefHeight="30.0"
+                        prefWidth="150.0" text="Add point" BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets right="30.0"/>
+                    </BorderPane.margin>
+                </Button>
+            </right>
         </BorderPane>
     </bottom>
 </BorderPane>
