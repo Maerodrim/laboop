@@ -24,14 +24,16 @@ import java.util.*;
 public class TableController implements Initializable {
 
     private Stage stage;
-    private TabulatedFunctionFactory factory = new ArrayTabulatedFunctionFactory();
+    private final TableColumn<Point, Double> x = new TableColumn<>("X");
     private String defaultDirectory;
     private int numberId = 1;
-    private TableColumn<Point, Double> x = new TableColumn<>("X");
-    private TableColumn<Point, Double> y = new TableColumn<>("Y");
-
-    private FunctionController functionController; // контроллер окна создания новой функции
+    private final TableColumn<Point, Double> y = new TableColumn<>("Y");
+    private TabulatedFunctionFactory factory;
+    private Map<Tab, Map.Entry<ObservableList<Point>, TabulatedFunction>> map;
+    private Tab currentTab;
+    private FunctionController functionController;
     private Functions functions;
+
     @FXML
     private TabPane tabPane;
     @FXML
@@ -56,8 +58,6 @@ public class TableController implements Initializable {
     private MenuItem saveItem;
     @FXML
     private MenuItem saveAsItem;
-    private Tab currentTab;
-    private Map<Tab, Map.Entry<ObservableList<Point>, TabulatedFunction>> map;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,6 +67,7 @@ public class TableController implements Initializable {
         x.setPrefWidth(300);
         y.setPrefWidth(300);
         tabPane.getSelectionModel().selectLast();
+        factory = new ArrayTabulatedFunctionFactory();
         functions = new Functions(factory);
         defaultDirectory = System.getenv("APPDATA") + "\\tempFunctions";
         new File(defaultDirectory).mkdir();
@@ -181,8 +182,13 @@ public class TableController implements Initializable {
     }
 
     @FXML
+    public void newMathFunction() {
+        functionController.getStage().show();
+    }
+
+    @FXML
     private void plot() {
-        if (!Objects.equals(currentTab, null)) {
+        if (isTabExist()) {
             Plot.plotFunction(stage, getObservableList());
         }
     }
@@ -190,7 +196,7 @@ public class TableController implements Initializable {
     @FXML
     private void loadFunction() {
         File file = Functions.load(stage, defaultDirectory);
-        if (!Objects.equals(file, null)) {
+        if (file.exists()) {
             createTab(functions.loadFunctionAs(file));
         }
     }
@@ -214,11 +220,11 @@ public class TableController implements Initializable {
     }
 
     private void save(boolean toTempPath) {
-        if (!Objects.equals(currentTab, null)) {
+        if (isTabExist()) {
             File file = toTempPath
                     ? new File(defaultDirectory + "\\" + currentTab.getText() + ".txt")
                     : Functions.save(stage);
-            if (!Objects.equals(file, null)) {
+            if (file.exists()) {
                 functions.saveFunctionAs(file, getFunction());
             }
         }
@@ -230,15 +236,40 @@ public class TableController implements Initializable {
     }
 
     @FXML
-    private void deletePoint(ActionEvent event) {
+    private void deletePoint() {
+        if (isTabExist()) {
+            if (!getFunction().isUnmodifiable()) {
+
+            } else {
+                AlertWindows.showWarning("Function is unmodifiable");
+            }
+        }
     }
 
     @FXML
-    private void addPoint(ActionEvent event) {
+    private void addPoint() {
+        if (isTabExist()) {
+            if (!getFunction().isUnmodifiable()) {
+
+            } else {
+                AlertWindows.showWarning("Function is unmodifiable");
+            }
+        }
     }
 
     @FXML
-    private void calculate(ActionEvent event) {
+    private void calculate() {
+        if (isTabExist()) {
+            if (!getFunction().isStrict()) {
+
+            } else {
+                AlertWindows.showWarning("Function is strict");
+            }
+        }
+    }
+
+    private boolean isTabExist() {
+        return !Objects.equals(currentTab, null);
     }
 
     private ObservableList<Point> getModelFunctionList(TabulatedFunction function) {

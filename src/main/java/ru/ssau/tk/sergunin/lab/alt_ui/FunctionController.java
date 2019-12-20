@@ -94,8 +94,6 @@ public class FunctionController implements Initializable {
         } catch (IllegalArgumentException e) {
             AlertWindows.showWarning("Укажите положительное > 2 количество точек");
         }
-//        if ((((Button) event.getSource()).getText()).equals("Присоединить")) {
-//        }
     }
 
     @FXML
@@ -120,9 +118,5 @@ public class FunctionController implements Initializable {
     void setParentController(TableController parentController) {
         this.parentController = parentController;
     }
-
-    /*Tab getCurrentTab() {
-        return currentTab;
-    }*/
 
 }
