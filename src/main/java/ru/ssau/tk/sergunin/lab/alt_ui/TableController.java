@@ -34,6 +34,7 @@ public class TableController implements Initializable, Openable {
     private TabulatedFunctionController tabulatedFunctionController = new TabulatedFunctionController();
     private Functions functions;
     private AddPoint addPoint = new AddPoint();
+    private DeletePoint deletePoint = new DeletePoint();
 
     @FXML
     private TabPane tabPane;
@@ -78,14 +79,16 @@ public class TableController implements Initializable, Openable {
 
     private void initializeWindowControllers() {
         functionController = initializeWindowController(functionController,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newFunction.fxml", "Create new function" );
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newFunction.fxml", "Create new function");
         tabulatedFunctionController = initializeWindowController(tabulatedFunctionController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newTabulatedFunction.fxml", "Create new function");
         addPoint = initializeWindowController(addPoint,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/addPoint.fxml", "Add Point.");
+        deletePoint = initializeWindowController(deletePoint,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/DeletePoint.fxml", "Delete Point.");
     }
 
-    public  <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {
+    public <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {
         controller = Functions.initializeModalityWindow(path, controller);
         controller.getStage().initOwner(stage);
         controller.getStage().setTitle(windowName);
@@ -286,7 +289,7 @@ public class TableController implements Initializable, Openable {
     private void deletePoint() {
         if (isTabExist()) {
             if (!getFunction().isUnmodifiable()) {
-
+                deletePoint.getStage().show();
             } else {
                 AlertWindows.showWarning("Function is unmodifiable");
             }
