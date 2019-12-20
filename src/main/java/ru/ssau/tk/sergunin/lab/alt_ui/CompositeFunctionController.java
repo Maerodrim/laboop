@@ -24,6 +24,7 @@ public class CompositeFunctionController implements Initializable, Openable {
     private Stage stage;
     private Openable parentController;
     private Map<String, MathFunction> comboBoxMap;
+    private InputParameterController inputParameterController = new InputParameterController();
 
     public void setComboBoxMap(Map<String, MathFunction> comboBoxMap) {
         this.comboBoxMap = comboBoxMap;
@@ -35,8 +36,17 @@ public class CompositeFunctionController implements Initializable, Openable {
     ComboBox<String> comboBox;
 
     @FXML
-    public void doOnClickOnComboBox(ActionEvent actionEvent) {
-        mathFunction = comboBoxMap.get(((ComboBox) actionEvent.getSource()).getValue());
+    public void doOnClickOnComboBox(ActionEvent event) {
+        if (comboBoxMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(Selectable.class).parameter()) {
+            inputParameterController.getStage().show();
+        }
+    }
+
+
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        inputParameterController = Functions.initializeModalityWindow("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/inputParameter.fxml", inputParameterController);
+        inputParameterController.getStage().initOwner(stage);
+        inputParameterController.getStage().setTitle("Input parameter");
     }
 
     public ComboBox<String> getComboBox() {
@@ -45,18 +55,34 @@ public class CompositeFunctionController implements Initializable, Openable {
 
 
     @FXML
-    public void pain() {
-        TabulatedFunction function = ((TableController) parentController).getFunction();
-        ((TableController) parentController).createTab(factory.create(mathFunction.andThen(function), function.leftBound(), function.rightBound(), function.getCount()));
-        stage.close();
+    public void composeFunction() {
+        TabulatedFunction parentFunction = ((TableController) parentController).getFunction();
+        if (comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(Selectable.class).parameter()) {
+            try {
+                comboBoxMap.replace(comboBox.getValue(), comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getParameter()));
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            TabulatedFunction function = factory.create(
+                    comboBoxMap.get(comboBox.getValue()).andThen(parentFunction),
+                    parentFunction.leftBound(), parentFunction.rightBound(),
+                    parentFunction.getCount(),
+                    true,
+                    false);
+            ((TableController)parentController).createTab(function);
+            stage.close();
+        } catch (NullPointerException | NumberFormatException nfe) {
+            AlertWindows.showWarning("Введите корректные значения");
+        } catch (IllegalArgumentException e) {
+            AlertWindows.showWarning("Укажите положительное > 2 количество точек");
+        }
     }
 
     @FXML
     private void cancel() {
         stage.close();
-    }
-
-    public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
     public Stage getStage() {

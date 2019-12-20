@@ -363,11 +363,17 @@ public class TableController implements Initializable, Openable {
     }
     @FXML
     private void compose() {
-        compositeFunctionController.getStage().show();
+        if (isTabExist()) {
+            if (getFunction().isStrict()) {
+                compositeFunctionController.getStage().show();
+            } else {
+                AlertWindows.showWarning("Function is strict");
+            }
+        }
     }
 
     @FXML
-    private void setting() {
+    private void settings() {
         settings.start();
     }
 
