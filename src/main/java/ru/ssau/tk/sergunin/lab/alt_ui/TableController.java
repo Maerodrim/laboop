@@ -2,7 +2,6 @@ package ru.ssau.tk.sergunin.lab.alt_ui;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -38,6 +37,7 @@ public class TableController implements Initializable, Openable {
     private DeletePoint deletePoint = new DeletePoint();
     private Calc calc = new Calc();
     private About about = new About();
+    private Settings settings = new Settings();
 
     @FXML
     private TabPane tabPane;
@@ -55,6 +55,14 @@ public class TableController implements Initializable, Openable {
     private Button calculateValueButton;
     @FXML
     private Label label;
+    @FXML
+    private MenuItem plot;
+    @FXML
+    private MenuItem loadItem;
+    @FXML
+    private MenuItem saveItem;
+    @FXML
+    private MenuItem saveAsItem;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -82,9 +90,11 @@ public class TableController implements Initializable, Openable {
         deletePoint = initializeWindowController(deletePoint,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/DeletePoint.fxml", "Delete Point.");
         calc = initializeWindowController(calc,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Calc.fxml", "Calculate");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Calc.fxml", "...");
         about = initializeWindowController(about,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/About.fxml", "Смешарики");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/About.fxml", "About");
+        settings = initializeWindowController(settings,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Settings.fxml", "Settings");
     }
 
     public <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {
@@ -321,6 +331,16 @@ public class TableController implements Initializable, Openable {
     }
 
     @FXML
+    private void about() {
+            about.play();
+    }
+
+    @FXML
+    private void setting() {
+        settings.start();
+    }
+
+    @FXML
     private void newTabulatedFunction() {
         tabulatedFunctionController.getStage().show();
         tabulatedFunctionController.getStage().setResizable(false);
@@ -351,10 +371,5 @@ public class TableController implements Initializable, Openable {
 
     public void sort() {
         getObservableList().sort(Comparator.comparingDouble(point1 -> point1.x));
-    }
-
-    @FXML
-    public void about() {
-        about.play();
     }
 }

@@ -1,9 +1,10 @@
 package ru.ssau.tk.sergunin.lab.functions.factory;
 
+import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFactory;
 import ru.ssau.tk.sergunin.lab.functions.ArrayTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
-
+@SelectableFactory(name = "Array tabulated function", priority = 1)
 public class ArrayTabulatedFunctionFactory implements TabulatedFunctionFactory {
 
     public Class<ArrayTabulatedFunction> getTabulatedFunctionClass() {
