@@ -65,8 +65,14 @@ public class TabulatedFunctionController implements Initializable, Openable {
 
     @FXML
     private void save() {
-        ((TableController)parentController).createTab(functionTable);
-        stage.close();
+        if (list.size() > 1) {
+            ((TableController) parentController).createTab(functionTable);
+            stage.close();
+        } else if (list.isEmpty()) {
+            AlertWindows.showWarning("Empty function");
+        } else {
+            AlertWindows.showWarning("Input more points");
+        }
     }
 
     @FXML
