@@ -1,8 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
+import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFunction;
 
-@Selectable(name = "Гиперболический синус", priority = 16)
+@SelectableFunction(name = "Гиперболический синус", priority = 16)
 public class SinhFunction implements MathFunction {
     @Override
     public double apply(double x) throws ArrayIndexOutOfBoundsException, IllegalArgumentException {

@@ -1,8 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
+import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFunction;
 
-@Selectable(name = "Кубический корень", priority = 8)
+@SelectableFunction(name = "Кубический корень", priority = 8)
 public class CbrtFunction extends PowFunction {
 
     public CbrtFunction() {

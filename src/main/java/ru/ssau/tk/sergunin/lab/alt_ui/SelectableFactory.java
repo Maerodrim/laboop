@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 @IndexAnnotated
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+
 public @interface SelectableFactory {
     String name() default "Factory";
     int priority() default 0;

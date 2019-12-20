@@ -8,7 +8,8 @@
 <?import javafx.scene.layout.*?>
 
 
-<AnchorPane prefHeight="130.0" prefWidth="278.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.ssau.tk.sergunin.lab.alt_ui.DeletePoint">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="130.0" prefWidth="278.0" xmlns="http://javafx.com/javafx/8"
+            fx:controller="ru.ssau.tk.sergunin.lab.alt_ui.DeletePointController">
    <children>
       <Button layoutX="31.0" layoutY="77.0" mnemonicParsing="false" onAction="#delete" text="Delete" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="40.0" />
       <Label layoutX="24.0" layoutY="25.0" prefHeight="31.0" prefWidth="13.0" text="X" AnchorPane.leftAnchor="40.0">

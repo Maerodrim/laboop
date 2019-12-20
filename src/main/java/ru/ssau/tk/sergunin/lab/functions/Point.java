@@ -16,4 +16,12 @@ public class Point {
     public String getY(){
         return y + "";
     }
+
+    public double x() {
+        return x;
+    }
+
+    public double y() {
+        return y;
+    }
 }

@@ -1,8 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
+import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFunction;
 
-@Selectable(name = "Логарифм", priority = 11, parameter = true)
+@SelectableFunction(name = "Логарифм", priority = 11, parameter = true)
 public class LogFunction implements MathFunction {
     private final double log;
 

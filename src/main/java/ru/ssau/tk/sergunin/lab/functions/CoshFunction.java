@@ -1,8 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
+import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFunction;
 
-@Selectable(name = "Гиперболический косинус", priority = 17)
+@SelectableFunction(name = "Гиперболический косинус", priority = 17)
 public class CoshFunction implements MathFunction {
     @Override
     public double apply(double x) throws ArrayIndexOutOfBoundsException, IllegalArgumentException {

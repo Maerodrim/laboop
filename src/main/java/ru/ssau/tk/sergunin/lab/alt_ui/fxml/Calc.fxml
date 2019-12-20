@@ -8,7 +8,8 @@
 <?import javafx.scene.layout.*?>
 
 
-<AnchorPane prefHeight="108.0" prefWidth="373.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.ssau.tk.sergunin.lab.alt_ui.Calc">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="108.0" prefWidth="373.0" xmlns="http://javafx.com/javafx/8"
+            fx:controller="ru.ssau.tk.sergunin.lab.alt_ui.CalculateController">
    <children>
       <Button layoutX="40.0" layoutY="67.0" mnemonicParsing="false" onAction="#calc" prefHeight="31.0" prefWidth="130.0" text="Ok" AnchorPane.leftAnchor="40.0" />
       <Button layoutX="228.0" layoutY="67.0" mnemonicParsing="false" onAction="#cancel" prefHeight="31.0" prefWidth="130.0" text="Cancel" AnchorPane.rightAnchor="15.0" />

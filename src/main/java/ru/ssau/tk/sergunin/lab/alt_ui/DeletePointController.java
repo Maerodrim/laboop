@@ -5,7 +5,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
-public class DeletePoint implements Openable {
+public class DeletePointController implements Openable {
     @FXML
     TextField x;
     private Stage stage;

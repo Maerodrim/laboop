@@ -1,8 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
+import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFunction;
 
-@Selectable(name = "Экспонента", priority = 10)
+@SelectableFunction(name = "Экспонента", priority = 10)
 public class ExpFunction extends ExponentialFunction {
 
     public ExpFunction() {

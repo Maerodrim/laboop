@@ -1,8 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
+import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFunction;
 
-@Selectable(name = "Квадратный корень", priority = 7)
+@SelectableFunction(name = "Квадратный корень", priority = 7)
 public class SqrtFunction extends PowFunction {
 
     public SqrtFunction() {

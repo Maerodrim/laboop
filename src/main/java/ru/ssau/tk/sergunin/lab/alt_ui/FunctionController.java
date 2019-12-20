@@ -8,18 +8,14 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.atteo.classindex.ClassIndex;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.stream.StreamSupport;
 
 public class FunctionController implements Initializable, Openable {
     @FXML
@@ -55,7 +51,7 @@ public class FunctionController implements Initializable, Openable {
 
     @FXML
     private void createFunction() {
-        if (comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(Selectable.class).parameter()) {
+        if (comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(SelectableFunction.class).parameter()) {
             try {
                 comboBoxMap.replace(comboBox.getValue(), comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getParameter()));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -80,7 +76,7 @@ public class FunctionController implements Initializable, Openable {
 
     @FXML
     private void doOnClickOnComboBox(ActionEvent event) {
-        if (comboBoxMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(Selectable.class).parameter()) {
+        if (comboBoxMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(SelectableFunction.class).parameter()) {
             inputParameterController.getStage().show();
         }
     }

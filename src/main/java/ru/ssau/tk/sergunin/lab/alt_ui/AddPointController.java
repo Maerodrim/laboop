@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;
 
-public class AddPoint implements Initializable, Openable {
+public class AddPointController implements Initializable, Openable {
     @FXML
     TextField x;
     @FXML

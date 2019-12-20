@@ -4,21 +4,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import javafx.scene.media.Media;
-import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
-import org.atteo.classindex.ClassIndex;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.stream.StreamSupport;
 
 public class CompositeFunctionController implements Initializable, Openable {
     private Stage stage;
@@ -30,14 +24,13 @@ public class CompositeFunctionController implements Initializable, Openable {
         this.comboBoxMap = comboBoxMap;
     }
 
-    private MathFunction mathFunction;
     private TabulatedFunctionFactory factory;
     @FXML
     ComboBox<String> comboBox;
 
     @FXML
     public void doOnClickOnComboBox(ActionEvent event) {
-        if (comboBoxMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(Selectable.class).parameter()) {
+        if (comboBoxMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(SelectableFunction.class).parameter()) {
             inputParameterController.getStage().show();
         }
     }
@@ -57,7 +50,7 @@ public class CompositeFunctionController implements Initializable, Openable {
     @FXML
     public void composeFunction() {
         TabulatedFunction parentFunction = ((TableController) parentController).getFunction();
-        if (comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(Selectable.class).parameter()) {
+        if (comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(SelectableFunction.class).parameter()) {
             try {
                 comboBoxMap.replace(comboBox.getValue(), comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getParameter()));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -69,8 +62,8 @@ public class CompositeFunctionController implements Initializable, Openable {
                     comboBoxMap.get(comboBox.getValue()).andThen(parentFunction),
                     parentFunction.leftBound(), parentFunction.rightBound(),
                     parentFunction.getCount(),
-                    true,
-                    false);
+                    ((TableController) parentController).isStrict(),
+                    ((TableController) parentController).isUnmodifiable());
             ((TableController)parentController).createTab(function);
             stage.close();
         } catch (NullPointerException | NumberFormatException nfe) {

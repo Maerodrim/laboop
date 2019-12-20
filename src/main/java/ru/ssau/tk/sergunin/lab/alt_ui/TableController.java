@@ -39,12 +39,14 @@ public class TableController implements Initializable, Openable {
     private FunctionController functionController = new FunctionController();
     private TabulatedFunctionController tabulatedFunctionController = new TabulatedFunctionController();
     private Functions functions;
-    private AddPoint addPoint = new AddPoint();
-    private DeletePoint deletePoint = new DeletePoint();
-    private Calc calc = new Calc();
+    private AddPointController addPointController = new AddPointController();
+    private DeletePointController deletePointController = new DeletePointController();
+    private CalculateController calculateController = new CalculateController();
     private About about = new About();
-    private Settings settings = new Settings();
+    private SettingsController settingsController = new SettingsController();
     private CompositeFunctionController compositeFunctionController = new CompositeFunctionController();
+    private boolean isStrict = true;
+    private boolean isUnmodifiable = false;
     @FXML
     private TabPane tabPane;
     @FXML
@@ -89,14 +91,14 @@ public class TableController implements Initializable, Openable {
 
     private void initializeComboBoxMap() {
         comboBoxMap = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(Selectable.class).spliterator(), false)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(Selectable.class).priority()))
+        StreamSupport.stream(ClassIndex.getAnnotated(SelectableFunction.class).spliterator(), false)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableFunction.class).priority()))
                 .forEach(clazz -> {
                     try {
-                        if (clazz.getDeclaredAnnotation(Selectable.class).parameter()) {
-                            comboBoxMap.put(clazz.getDeclaredAnnotation(Selectable.class).name(), (MathFunction) clazz.getDeclaredConstructor(Double.TYPE).newInstance(0));
+                        if (clazz.getDeclaredAnnotation(SelectableFunction.class).parameter()) {
+                            comboBoxMap.put(clazz.getDeclaredAnnotation(SelectableFunction.class).name(), (MathFunction) clazz.getDeclaredConstructor(Double.TYPE).newInstance(0));
                         } else {
-                            comboBoxMap.put(clazz.getDeclaredAnnotation(Selectable.class).name(), (MathFunction) clazz.getDeclaredConstructor().newInstance());
+                            comboBoxMap.put(clazz.getDeclaredAnnotation(SelectableFunction.class).name(), (MathFunction) clazz.getDeclaredConstructor().newInstance());
                         }
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                         e.printStackTrace();
@@ -115,15 +117,15 @@ public class TableController implements Initializable, Openable {
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/newFunction.fxml", "Create new function");
         tabulatedFunctionController = initializeWindowController(tabulatedFunctionController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/newTabulatedFunction.fxml", "Create new function");
-        addPoint = initializeWindowController(addPoint,
+        addPointController = initializeWindowController(addPointController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/addPoint.fxml", "Add Point.");
-        deletePoint = initializeWindowController(deletePoint,
+        deletePointController = initializeWindowController(deletePointController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/DeletePoint.fxml", "Delete Point.");
-        calc = initializeWindowController(calc,
+        calculateController = initializeWindowController(calculateController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Calc.fxml", "...");
         about = initializeWindowController(about,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/About.fxml", "About");
-        settings = initializeWindowController(settings,
+        settingsController = initializeWindowController(settingsController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Settings.fxml", "Settings");
         compositeFunctionController = initializeWindowController(compositeFunctionController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/CompositeFunctionController.fxml", "Compose");
@@ -328,7 +330,7 @@ public class TableController implements Initializable, Openable {
     private void deletePoint() {
         if (isTabExist()) {
             if (!getFunction().isUnmodifiable()) {
-                deletePoint.getStage().show();
+                deletePointController.getStage().show();
             } else {
                 AlertWindows.showWarning("Function is unmodifiable");
             }
@@ -339,7 +341,7 @@ public class TableController implements Initializable, Openable {
     private void addPoint() {
         if (isTabExist()) {
             if (!getFunction().isUnmodifiable()) {
-                addPoint.getStage().show();
+                addPointController.getStage().show();
             } else {
                 AlertWindows.showWarning("Function is unmodifiable");
             }
@@ -350,7 +352,7 @@ public class TableController implements Initializable, Openable {
     private void calculate() {
         if (isTabExist()) {
             if (!getFunction().isStrict()) {
-                calc.getStage().show();
+                calculateController.getStage().show();
             } else {
                 AlertWindows.showWarning("Function is strict");
             }
@@ -364,7 +366,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void compose() {
         if (isTabExist()) {
-            if (getFunction().isStrict()) {
+            if (!getFunction().isStrict()) {
                 compositeFunctionController.getStage().show();
             } else {
                 AlertWindows.showWarning("Function is strict");
@@ -374,7 +376,7 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void settings() {
-        settings.start();
+        settingsController.start();
     }
 
     @FXML
@@ -406,11 +408,27 @@ public class TableController implements Initializable, Openable {
         return factory.create(valuesX, valuesY);
     }
 
-    public Map<String, MathFunction> getComboBoxMap() {
-        return comboBoxMap;
+    public void sort(ObservableList<Point> list) {
+        list.sort(Comparator.comparingDouble(point1 -> point1.x));
     }
 
     public void sort() {
-        getObservableList().sort(Comparator.comparingDouble(point1 -> point1.x));
+        sort(getObservableList());
+    }
+
+    public boolean isStrict() {
+        return isStrict;
+    }
+
+    public void setStrict(boolean strict) {
+        isStrict = strict;
+    }
+
+    public boolean isUnmodifiable() {
+        return isUnmodifiable;
+    }
+
+    public void setUnmodifiable(boolean unmodifiable) {
+        isUnmodifiable = unmodifiable;
     }
 }

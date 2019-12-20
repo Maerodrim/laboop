@@ -9,7 +9,7 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Calc implements Initializable, Openable {
+public class CalculateController implements Initializable, Openable {
     private Stage stage;
     private Openable parentController;
 
@@ -18,20 +18,19 @@ public class Calc implements Initializable, Openable {
     @FXML
     TextField y;
 
-
-
     @FXML
     private void cancel() {
         stage.close();
     }
+
     @FXML
     private void calc() {
-        y.setText(""+((TableController)parentController).getFunction().apply(Double.parseDouble(x.getText())));
+        y.setText("" + ((TableController) parentController).getFunction().apply(Double.parseDouble(x.getText())));
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-    y.setEditable(false);
+        y.setEditable(false);
     }
 
     public Stage getStage() {
@@ -43,7 +42,8 @@ public class Calc implements Initializable, Openable {
     }
 
     @Override
-    public void setFactory(TabulatedFunctionFactory factory) {}
+    public void setFactory(TabulatedFunctionFactory factory) {
+    }
 
     @Override
     public void setParentController(Openable controller) {

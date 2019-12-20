@@ -1,8 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.Selectable;
+import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFunction;
 
-@Selectable(name = "Синус", priority = 12)
+@SelectableFunction(name = "Синус", priority = 12)
 public class SinFunction implements MathFunction {
     @Override
     public double apply(double x) throws ArrayIndexOutOfBoundsException, IllegalArgumentException {

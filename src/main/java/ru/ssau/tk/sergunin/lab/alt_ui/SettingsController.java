@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.StreamSupport;
 
-public class Settings implements Initializable, Openable {
+public class SettingsController implements Initializable, Openable {
     private Stage stage;
     private Openable parentController;
     private TabulatedFunctionFactory factory;
@@ -34,12 +34,22 @@ public class Settings implements Initializable, Openable {
     ComboBox<String> comboBox;
 
     @FXML
+    ComboBox<Boolean> strictComboBox;
+
+    @FXML
+    ComboBox<Boolean> unmodifiableComboBox;
+
+    @FXML
     private void save() {
         parentController.setFactory(factory);
         stage.close();
     }
+
     public void start() {
         stage.show();
+        comboBox.setValue(comboBox.getItems().get(factory.getClass().getDeclaredAnnotation(SelectableFactory.class).priority() - 1));
+        strictComboBox.setValue(((TableController) parentController).isStrict());
+        unmodifiableComboBox.setValue(((TableController) parentController).isUnmodifiable());
         WebEngine webEngine = webView.getEngine();
         String url = "https://www.youtube.com/watch?v=pYWocUFndO8";
         webEngine.load(url);
@@ -62,12 +72,24 @@ public class Settings implements Initializable, Openable {
                     }
                 });
         comboBox.getItems().addAll(comboBoxMap.keySet());
-        comboBox.setValue(comboBox.getItems().get(0));
+        strictComboBox.getItems().addAll(true, false);
+        unmodifiableComboBox.getItems().addAll(true, false);
     }
     @FXML
     private void doOnClickOnComboBox(ActionEvent event) {
         factory = comboBoxMap.get(((ComboBox) event.getSource()).getValue());
     }
+
+    @FXML
+    private void doOnClickOnUnmodifiableComboBox() {
+        ((TableController) parentController).setUnmodifiable(unmodifiableComboBox.getValue());
+    }
+
+    @FXML
+    private void doOnClickOnStrictComboBox() {
+        ((TableController) parentController).setStrict(strictComboBox.getValue());
+    }
+
     public Stage getStage() {
         return stage;
     }
@@ -78,6 +100,7 @@ public class Settings implements Initializable, Openable {
 
     @Override
     public void setFactory(TabulatedFunctionFactory factory) {
+        this.factory = factory;
     }
 
     @Override

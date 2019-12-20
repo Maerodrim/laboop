@@ -1,5 +1,6 @@
 package ru.ssau.tk.sergunin.lab.alt_ui;
 
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,8 +16,9 @@ import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 public class TabulatedFunctionController implements Initializable, Openable {
@@ -34,12 +36,11 @@ public class TabulatedFunctionController implements Initializable, Openable {
     TableColumn<Point, Double> x;
     @FXML
     TableColumn<Point, Double> y;
+    private Map<String, Boolean> existingPoints = new LinkedHashMap<>();
 
     private Stage stage;
     private Openable parentController;
-    private TabulatedFunctionFactory factory;
     private ObservableList<Point> list;
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -51,7 +52,11 @@ public class TabulatedFunctionController implements Initializable, Openable {
 
     @FXML
     private void addRow() {
-        list.add(new Point(Double.parseDouble(textX.getText()), Double.parseDouble(textY.getText())));
+        if (Objects.equals(existingPoints.get(textX.getText()), null)) {
+            list.add(new Point(Double.parseDouble(textX.getText()), Double.parseDouble(textY.getText())));
+        }
+        existingPoints.putIfAbsent(textX.getText(), true);
+        ((TableController) parentController).sort(list);
         functionTable.setItems(list);
     }
 
@@ -92,7 +97,6 @@ public class TabulatedFunctionController implements Initializable, Openable {
     }
 
     public void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
     }
 
     @Override
