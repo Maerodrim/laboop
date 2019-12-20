@@ -79,7 +79,7 @@ public class Functions {
         return function;
     }
 
-    private TabulatedFunction wrap(TabulatedFunction function) {
+    public TabulatedFunction wrap(TabulatedFunction function) {
         boolean isStrict = function.isStrict();
         boolean isUnmodifiable = function.isUnmodifiable();
         if (isUnmodifiable && isStrict) {

@@ -126,6 +126,9 @@ public class TableController implements Initializable, Openable {
 
     void createTab(TableView table) {
         TabulatedFunction function = getFunction(table.getItems());
+        function.offerUnmodifiable(tabulatedFunctionController.isUnmodifiable());
+        function.offerStrict(tabulatedFunctionController.isStrict());
+        functions.wrap(function);
         Tab tab = new Tab();
         tab.setText("Function" + numberId);
         tab.setId("function" + numberId++);
