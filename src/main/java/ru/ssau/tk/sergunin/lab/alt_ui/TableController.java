@@ -2,6 +2,7 @@ package ru.ssau.tk.sergunin.lab.alt_ui;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -36,6 +37,7 @@ public class TableController implements Initializable, Openable {
     private AddPoint addPoint = new AddPoint();
     private DeletePoint deletePoint = new DeletePoint();
     private Calc calc = new Calc();
+    private About about = new About();
 
     @FXML
     private TabPane tabPane;
@@ -53,14 +55,6 @@ public class TableController implements Initializable, Openable {
     private Button calculateValueButton;
     @FXML
     private Label label;
-    @FXML
-    private MenuItem plot;
-    @FXML
-    private MenuItem loadItem;
-    @FXML
-    private MenuItem saveItem;
-    @FXML
-    private MenuItem saveAsItem;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -80,15 +74,17 @@ public class TableController implements Initializable, Openable {
 
     private void initializeWindowControllers() {
         functionController = initializeWindowController(functionController,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newFunction.fxml", "Create new function");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/newFunction.fxml", "Create new function");
         tabulatedFunctionController = initializeWindowController(tabulatedFunctionController,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newTabulatedFunction.fxml", "Create new function");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/newTabulatedFunction.fxml", "Create new function");
         addPoint = initializeWindowController(addPoint,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/addPoint.fxml", "Add Point.");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/addPoint.fxml", "Add Point.");
         deletePoint = initializeWindowController(deletePoint,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/DeletePoint.fxml", "Delete Point.");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/DeletePoint.fxml", "Delete Point.");
         calc = initializeWindowController(calc,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/Calc.fxml", "...");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Calc.fxml", "Calculate");
+        about = initializeWindowController(about,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/About.fxml", "Смешарики");
     }
 
     public <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {
@@ -355,5 +351,10 @@ public class TableController implements Initializable, Openable {
 
     public void sort() {
         getObservableList().sort(Comparator.comparingDouble(point1 -> point1.x));
+    }
+
+    @FXML
+    public void about() {
+        about.play();
     }
 }
