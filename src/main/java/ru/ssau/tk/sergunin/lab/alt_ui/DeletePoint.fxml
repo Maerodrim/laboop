@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="130.0" prefWidth="278.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.ssau.tk.sergunin.lab.alt_ui.DeletePoint">
+   <children>
+      <Button layoutX="31.0" layoutY="77.0" mnemonicParsing="false" onAction="#delete" text="Delete" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="40.0" />
+      <Label layoutX="24.0" layoutY="25.0" prefHeight="31.0" prefWidth="13.0" text="X" AnchorPane.leftAnchor="40.0">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Button layoutX="185.0" layoutY="77.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="40.0" />
+      <TextField layoutX="62.0" layoutY="25.0" prefHeight="31.0" prefWidth="174.0" AnchorPane.rightAnchor="40.0" fx:id="x" />
+   </children>
+</AnchorPane>
