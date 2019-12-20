@@ -32,6 +32,7 @@ public class TableController implements Initializable {
     private Map<Tab, Map.Entry<ObservableList<Point>, TabulatedFunction>> map;
     private Tab currentTab;
     private FunctionController functionController;
+    private TabulatedFunctionController tabulatedFunctionController;
     private Functions functions;
 
     @FXML
@@ -81,6 +82,12 @@ public class TableController implements Initializable {
         functionController.getStage().setTitle("Create new function");
         functionController.setFactory(factory);
         functionController.setParentController(this);
+
+        tabulatedFunctionController = Functions.initializeModalityWindow("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newTabulatedFunction.fxml", TabulatedFunctionController.class);
+        tabulatedFunctionController.getStage().initOwner(stage);
+        tabulatedFunctionController.getStage().setTitle("Create new function");
+        tabulatedFunctionController.setFactory(factory);
+        tabulatedFunctionController.setParentController(this);
     }
 
     void createTab(TabulatedFunction function) {
@@ -266,6 +273,11 @@ public class TableController implements Initializable {
                 AlertWindows.showWarning("Function is strict");
             }
         }
+    }
+
+    @FXML
+    private void newTabulatedFunction(){
+        tabulatedFunctionController.getStage().show();
     }
 
     private boolean isTabExist() {
