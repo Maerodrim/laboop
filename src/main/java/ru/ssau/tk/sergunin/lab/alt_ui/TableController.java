@@ -35,6 +35,7 @@ public class TableController implements Initializable, Openable {
     private Functions functions;
     private AddPoint addPoint = new AddPoint();
     private DeletePoint deletePoint = new DeletePoint();
+    private Calc calc = new Calc();
 
     @FXML
     private TabPane tabPane;
@@ -86,6 +87,8 @@ public class TableController implements Initializable, Openable {
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/addPoint.fxml", "Add Point.");
         deletePoint = initializeWindowController(deletePoint,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/DeletePoint.fxml", "Delete Point.");
+        calc = initializeWindowController(calc,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/Calc.fxml", "...");
     }
 
     public <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {
@@ -311,7 +314,7 @@ public class TableController implements Initializable, Openable {
     private void calculate() {
         if (isTabExist()) {
             if (!getFunction().isStrict()) {
-
+                calc.getStage().show();
             } else {
                 AlertWindows.showWarning("Function is strict");
             }
