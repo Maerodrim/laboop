@@ -2,7 +2,6 @@ package ru.ssau.tk.sergunin.lab.alt_ui;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -32,6 +31,7 @@ public class TableController implements Initializable {
     private Map<Tab, TabulatedFunction> map;
     private Tab currentTab;
     private FunctionController functionController;
+    private TabulatedFunctionController tabulatedFunctionController;
     private Functions functions;
 
     @FXML
@@ -81,6 +81,12 @@ public class TableController implements Initializable {
         functionController.getStage().setTitle("Create new function");
         functionController.setFactory(factory);
         functionController.setParentController(this);
+
+        tabulatedFunctionController = Functions.initializeModalityWindow("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/newTabulatedFunction.fxml", TabulatedFunctionController.class);
+        tabulatedFunctionController.getStage().initOwner(stage);
+        tabulatedFunctionController.getStage().setTitle("Create new function");
+        tabulatedFunctionController.setFactory(factory);
+        tabulatedFunctionController.setParentController(this);
     }
 
     void createTab(TabulatedFunction function) {
@@ -89,10 +95,37 @@ public class TableController implements Initializable {
         tab.setId("function" + numberId++);
         tab.setClosable(true);
         tabPane.getTabs().add(tab);
-        ObservableList<Point> list = getModelFunctionList(function);
+        ObservableList<Point> list = getList(function);
         TableView<Point> table = new TableView<>();
         table.setItems(list);
         table.getColumns().addAll(x, y);
+        tab.setContent(table);
+        tabPane.getSelectionModel().select(tab);
+        map.put(tab, function);
+        notifyAboutAccessibility(function);
+        currentTab = tab;
+        tab.setOnSelectionChanged(event -> {
+            if (tab.isSelected()) {
+                currentTab = tab;
+                notifyAboutAccessibility(getFunction());
+            }
+        });
+        tab.setOnClosed(event -> {
+            map.remove(tab);
+            if (map.isEmpty()) {
+                mainPane.getChildren().remove(bottomPane);
+                currentTab = null;
+            }
+        });
+    }
+
+    void createTab(TableView table) {
+        TabulatedFunction function = getFunction(table.getItems());
+        Tab tab = new Tab();
+        tab.setText("Function" + numberId);
+        tab.setId("function" + numberId++);
+        tab.setClosable(true);
+        tabPane.getTabs().add(tab);
         tab.setContent(table);
         tabPane.getSelectionModel().select(tab);
         map.put(tab, function);
@@ -268,15 +301,31 @@ public class TableController implements Initializable {
         }
     }
 
+    @FXML
+    private void newTabulatedFunction() {
+        tabulatedFunctionController.getStage().show();
+    }
+
     private boolean isTabExist() {
         return !Objects.equals(currentTab, null);
     }
 
-    private ObservableList<Point> getModelFunctionList(TabulatedFunction function) {
+    private ObservableList<Point> getList(TabulatedFunction function) {
         List<Point> listPoint = new ArrayList<>();
         for (Point point : function) {
             listPoint.add(point);
         }
         return FXCollections.observableArrayList(listPoint);
+    }
+
+    private TabulatedFunction getFunction(ObservableList<Point> points) {
+        double[] valuesX = new double[points.size()];
+        double[] valuesY = new double[points.size()];
+        int i = 0;
+        for (Point point : points) {
+            valuesX[i] = point.x;
+            valuesY[i++] = point.y;
+        }
+        return factory.create(valuesX,valuesY);
     }
 }

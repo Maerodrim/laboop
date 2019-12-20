@@ -1,7 +1,19 @@
 package ru.ssau.tk.sergunin.lab;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import ru.ssau.tk.sergunin.lab.ui.Dialog;
 import ru.ssau.tk.sergunin.lab.ui.TableWindows;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 
@@ -16,8 +28,8 @@ public class Main extends Application {
     public void start(Stage stage){
         new TableWindows(stage, new ArrayTabulatedFunctionFactory());
     }
-
-    /*@Override
+/*
+    @Override
     public void start(final Stage primaryStage) {
 
         MenuBar menuBar = new MenuBar();
