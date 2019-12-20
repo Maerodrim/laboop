@@ -44,23 +44,6 @@ public class FunctionController implements Initializable, Openable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        comboBoxMap = new LinkedHashMap<>();
-
-        StreamSupport.stream(ClassIndex.getAnnotated(Selectable.class).spliterator(), false)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(Selectable.class).priority()))
-                .forEach(clazz -> {
-                    try {
-                        if (clazz.getDeclaredAnnotation(Selectable.class).parameter()) {
-                            comboBoxMap.put(clazz.getDeclaredAnnotation(Selectable.class).name(), (MathFunction) clazz.getDeclaredConstructor(Double.TYPE).newInstance(0));
-                        } else {
-                            comboBoxMap.put(clazz.getDeclaredAnnotation(Selectable.class).name(), (MathFunction) clazz.getDeclaredConstructor().newInstance());
-                        }
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
-                    }
-                });
-        comboBox.getItems().addAll(comboBoxMap.keySet());
-        comboBox.setValue(comboBox.getItems().get(0));
         initializeWindowControllers();
     }
 
@@ -109,6 +92,14 @@ public class FunctionController implements Initializable, Openable {
     @Override
     public void setParentController(Openable controller) {
         parentController = controller;
+    }
+
+    public ComboBox<String> getComboBox() {
+        return comboBox;
+    }
+
+    public void setComboBoxMap(Map<String, MathFunction> comboBoxMap) {
+        this.comboBoxMap = comboBoxMap;
     }
 
     public Stage getStage() {

@@ -11,14 +11,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.atteo.classindex.ClassIndex;
+import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 public class TableController implements Initializable, Openable {
 
@@ -29,7 +33,9 @@ public class TableController implements Initializable, Openable {
     private final TableColumn<Point, Double> y = new TableColumn<>("Y");
     private TabulatedFunctionFactory factory;
     private Map<Tab, TabulatedFunction> map;
+    private Map<String, MathFunction> comboBoxMap;
     private Tab currentTab;
+    //Controllers
     private FunctionController functionController = new FunctionController();
     private TabulatedFunctionController tabulatedFunctionController = new TabulatedFunctionController();
     private Functions functions;
@@ -67,6 +73,7 @@ public class TableController implements Initializable, Openable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         map = new LinkedHashMap<>();
+        functionController.setComboBoxMap(comboBoxMap);
         x.setCellValueFactory(new PropertyValueFactory<>("X"));
         y.setCellValueFactory(new PropertyValueFactory<>("Y"));
         x.setPrefWidth(300);
@@ -78,6 +85,26 @@ public class TableController implements Initializable, Openable {
         new File(defaultDirectory).mkdir();
         mainPane.getChildren().remove(bottomPane);
         initializeWindowControllers();
+        initializeComboBoxMap();
+    }
+
+    private void initializeComboBoxMap() {
+        comboBoxMap = new LinkedHashMap<>();
+        StreamSupport.stream(ClassIndex.getAnnotated(Selectable.class).spliterator(), false)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(Selectable.class).priority()))
+                .forEach(clazz -> {
+                    try {
+                        if (clazz.getDeclaredAnnotation(Selectable.class).parameter()) {
+                            comboBoxMap.put(clazz.getDeclaredAnnotation(Selectable.class).name(), (MathFunction) clazz.getDeclaredConstructor(Double.TYPE).newInstance(0));
+                        } else {
+                            comboBoxMap.put(clazz.getDeclaredAnnotation(Selectable.class).name(), (MathFunction) clazz.getDeclaredConstructor().newInstance());
+                        }
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                });
+        functionController.getComboBox().getItems().addAll(comboBoxMap.keySet());
+        functionController.getComboBox().setValue(functionController.getComboBox().getItems().get(0));
     }
 
     private void initializeWindowControllers() {
@@ -226,11 +253,6 @@ public class TableController implements Initializable, Openable {
     }
 
     @FXML
-    private void newFunctionButtonEvent() {
-        functionController.getStage().show();
-    }
-
-    @FXML
     private void join() {
         functionController.getStage().show();
     }
@@ -367,6 +389,10 @@ public class TableController implements Initializable, Openable {
             valuesY[i++] = point.y;
         }
         return factory.create(valuesX, valuesY);
+    }
+
+    public Map<String, MathFunction> getComboBoxMap() {
+        return comboBoxMap;
     }
 
     public void sort() {

@@ -43,6 +43,7 @@ public class Settings implements Initializable, Openable {
         WebEngine webEngine = webView.getEngine();
         String url = "https://www.youtube.com/watch?v=GF7mcblP6WQ&t=2106s";
         webEngine.load(url);
+        stage.setOnCloseRequest(windowEvent -> webEngine.load(null));
     }
     @FXML
     private void cancel() {
