@@ -61,7 +61,7 @@ public class Functions {
         }
         Stage createNewFunctionStage = new Stage();
         createNewFunctionStage.setScene(new Scene(createNewFunction));
-        createNewFunctionStage.initModality(Modality.WINDOW_MODAL);
+        createNewFunctionStage.initModality(Modality.APPLICATION_MODAL);
         modalityWindow.setStage(createNewFunctionStage);
         return modalityWindow;
     }

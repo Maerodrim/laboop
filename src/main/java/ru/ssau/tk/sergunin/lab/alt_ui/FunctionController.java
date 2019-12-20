@@ -65,7 +65,7 @@ public class FunctionController implements Initializable, Openable {
     }
 
     private void initializeWindowControllers() {
-        inputParameterController = Functions.initializeModalityWindow("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/inputParameter.fxml", inputParameterController);
+        inputParameterController = Functions.initializeModalityWindow("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/inputParameter.fxml", inputParameterController);
         inputParameterController.getStage().initOwner(stage);
         inputParameterController.getStage().setTitle("Input parameter");
     }

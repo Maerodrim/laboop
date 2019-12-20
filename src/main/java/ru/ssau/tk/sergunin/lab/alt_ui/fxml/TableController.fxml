@@ -49,7 +49,7 @@
                </items></Menu>
                 <Menu mnemonicParsing="false" text="About">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#about" text="Unspecified Action" />
+                   <MenuItem mnemonicParsing="false" onAction="#about" text="About"/>
                </items>
             </Menu>
             </menus>
