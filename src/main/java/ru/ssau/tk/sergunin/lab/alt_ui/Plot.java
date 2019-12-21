@@ -40,7 +40,7 @@ public class Plot {
 
         newWindow.setTitle("Plot");
         Scene scene = new Scene(areaChart, 400, 300);
-        areaChart.getData().addAll(series);
+        areaChart.getData().add(series);
         newWindow.setScene(scene);
         newWindow.show();
     }
