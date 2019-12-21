@@ -1,6 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFunction;
+import ru.ssau.tk.sergunin.lab.ui.SelectableFunction;
 
 @SelectableFunction(name = "Показательная функция", priority = 9, parameter = true)
 public class ExponentialFunction implements MathFunction {

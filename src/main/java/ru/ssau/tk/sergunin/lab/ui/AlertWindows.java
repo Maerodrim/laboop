@@ -43,12 +43,4 @@ public class AlertWindows {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-    public static void showNotification(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Notification");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 }

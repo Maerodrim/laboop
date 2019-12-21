@@ -1,6 +1,6 @@
 package ru.ssau.tk.sergunin.lab.operations;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.SelectableOperation;
+import ru.ssau.tk.sergunin.lab.ui.SelectableOperation;
 import ru.ssau.tk.sergunin.lab.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;

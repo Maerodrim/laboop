@@ -1,6 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFunction;
+import ru.ssau.tk.sergunin.lab.ui.SelectableFunction;
 
 @SelectableFunction(name = "Степенная функция", priority = 6, parameter = true)
 public class PowFunction implements MathFunction {

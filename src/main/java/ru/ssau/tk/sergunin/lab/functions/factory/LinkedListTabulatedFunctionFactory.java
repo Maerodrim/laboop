@@ -1,7 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions.factory;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFactory;
-import ru.ssau.tk.sergunin.lab.functions.ArrayTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.ui.SelectableFactory;
 import ru.ssau.tk.sergunin.lab.functions.LinkedListTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;

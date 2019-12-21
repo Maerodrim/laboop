@@ -1,6 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFunction;
+import ru.ssau.tk.sergunin.lab.ui.SelectableFunction;
 
 @SelectableFunction(name = "Синус", priority = 12)
 public class SinFunction implements MathFunction {

@@ -1,6 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.SelectableFunction;
+import ru.ssau.tk.sergunin.lab.ui.SelectableFunction;
 
 @SelectableFunction(name = "Константа", priority = 3, parameter = true)
 public class ConstantFunction implements MathFunction {

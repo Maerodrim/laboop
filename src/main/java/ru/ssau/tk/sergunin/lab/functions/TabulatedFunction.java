@@ -1,6 +1,6 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.alt_ui.ExplicitAccessControllable;
+import ru.ssau.tk.sergunin.lab.ui.ExplicitAccessControllable;
 
 public interface TabulatedFunction extends MathFunction, Iterable<Point>, ExplicitAccessControllable, Insertable, Removable {
 
