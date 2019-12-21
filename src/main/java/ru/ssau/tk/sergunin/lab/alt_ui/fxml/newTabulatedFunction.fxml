@@ -34,7 +34,7 @@
                      prefHeight="30.0" prefWidth="100.0" text="-" AnchorPane.rightAnchor="30.0"
                      AnchorPane.topAnchor="50.0"/>
              <CheckBox fx:id="isUnmodifiable" layoutX="14.0" layoutY="11.0" mnemonicParsing="false"
-                       text="Нельзя именять значения" AnchorPane.leftAnchor="14.0"/>
+                       text="Нельзя изменять значения" AnchorPane.leftAnchor="14.0"/>
              <CheckBox fx:id="isStrict" layoutX="350.0" layoutY="11.0" mnemonicParsing="false"
                        text="Нельзя интерполировать" AnchorPane.rightAnchor="50.0"/>
          </children>

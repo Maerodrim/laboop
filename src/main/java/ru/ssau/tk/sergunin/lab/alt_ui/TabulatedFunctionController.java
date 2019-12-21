@@ -52,12 +52,18 @@ public class TabulatedFunctionController implements Initializable, Openable {
 
     @FXML
     private void addRow() {
-        if (Objects.equals(existingPoints.get(textX.getText()), null)) {
-            list.add(new Point(Double.parseDouble(textX.getText()), Double.parseDouble(textY.getText())));
+        if (!(textX.getText().isEmpty() && textY.getText().isEmpty())) {
+            if (Objects.equals(existingPoints.get(textX.getText()), null)) {
+                list.add(new Point(Double.parseDouble(textX.getText()), Double.parseDouble(textY.getText())));
+            }
+            existingPoints.putIfAbsent(textX.getText(), true);
+            ((TableController) parentController).sort(list);
+            functionTable.setItems(list);
+        } else if (textX.getText().isEmpty()) {
+            AlertWindows.showWarning("X field is empty");
+        } else if (textY.getText().isEmpty()) {
+            AlertWindows.showWarning("Y field is empty");
         }
-        existingPoints.putIfAbsent(textX.getText(), true);
-        ((TableController) parentController).sort(list);
-        functionTable.setItems(list);
     }
 
     public boolean isUnmodifiable() {

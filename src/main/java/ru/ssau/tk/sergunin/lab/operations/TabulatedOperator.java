@@ -103,9 +103,4 @@ public abstract class TabulatedOperator {
             }
         });
     }*/
-
-    @FunctionalInterface
-    private interface BiOperationTest {
-        double apply(Point u, Point v);
-    }
 }
