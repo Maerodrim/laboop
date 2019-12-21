@@ -46,6 +46,7 @@ public class TableController implements Initializable, Openable {
     private SettingsController settingsController = new SettingsController();
     private CompositeFunctionController compositeFunctionController = new CompositeFunctionController();
     private ApplyController applyController = new ApplyController();
+    private OperatorController operatorController = new OperatorController();
     //</controllers>
     private boolean isStrict = true;
     private boolean isUnmodifiable = false;
@@ -126,6 +127,8 @@ public class TableController implements Initializable, Openable {
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/CompositeFunctionController.fxml", "Compose");
         applyController = initializeWindowController(applyController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Apply.fxml", "Compose");
+        operatorController = initializeWindowController(operatorController,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/OperatorController.fxml", "Differentiate/Integrate");
     }
 
     public <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {
@@ -393,6 +396,13 @@ public class TableController implements Initializable, Openable {
                 applyController.getFunctionComboBox().setValue(applyController.getFunctionComboBox().getItems().get(0));
                 applyController.getStage().show();
             }
+        }
+    }
+
+    @FXML
+    private void operate() {
+        if (isTabExist()) {
+            operatorController.getStage().show();
         }
     }
 
