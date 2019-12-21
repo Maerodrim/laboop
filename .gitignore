@@ -2,9 +2,11 @@
 .idea
 target
 input
-output
+out
 temp
 *.txt
 *.json
 *.xml
 1234.mp4
+/bin/
+Lab.jar

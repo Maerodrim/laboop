@@ -1,6 +1,9 @@
 package ru.ssau.tk.sergunin.lab.io;
 
-import ru.ssau.tk.sergunin.lab.functions.*;
+import ru.ssau.tk.sergunin.lab.functions.ArrayTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.ExponentialFunction;
+import ru.ssau.tk.sergunin.lab.functions.LinkedListTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.PowFunction;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

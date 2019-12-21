@@ -1,8 +1,9 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.ui.SelectableFunction;
+import ru.ssau.tk.sergunin.lab.ui.Item;
+import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
 
-@SelectableFunction(name = "Единичная функция", priority = 2)
+@SelectableItem(name = "Единичная функция", priority = 2, type = Item.FUNCTION)
 public class UnitFunction extends ConstantFunction {
 
     public UnitFunction() {

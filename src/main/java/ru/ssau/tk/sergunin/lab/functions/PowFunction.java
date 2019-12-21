@@ -1,8 +1,9 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.ui.SelectableFunction;
+import ru.ssau.tk.sergunin.lab.ui.Item;
+import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
 
-@SelectableFunction(name = "Степенная функция", priority = 6, parameter = true)
+@SelectableItem(name = "Степенная функция", priority = 6, type = Item.FUNCTION, parameter = true)
 public class PowFunction implements MathFunction {
     private final double pow;
 

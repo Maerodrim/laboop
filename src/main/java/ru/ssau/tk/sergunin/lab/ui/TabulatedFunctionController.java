@@ -104,15 +104,15 @@ public class TabulatedFunctionController implements Initializable, Openable {
         return stage;
     }
 
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
     public void setFactory(TabulatedFunctionFactory factory) {
     }
 
     @Override
     public void setParentController(Openable controller) {
         parentController = controller;
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
     }
 }

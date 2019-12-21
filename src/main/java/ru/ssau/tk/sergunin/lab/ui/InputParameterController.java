@@ -9,15 +9,14 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 public class InputParameterController implements Openable {
 
-    private Stage stage;
-    private double value;
-
     @FXML
     Label label;
     @FXML
     TextField textField;
     @FXML
     Button button;
+    private Stage stage;
+    private double value;
 
     public Stage getStage() {
         return stage;
@@ -28,10 +27,12 @@ public class InputParameterController implements Openable {
     }
 
     @Override
-    public void setFactory(TabulatedFunctionFactory factory) { }
+    public void setFactory(TabulatedFunctionFactory factory) {
+    }
 
     @Override
-    public void setParentController(Openable controller) { }
+    public void setParentController(Openable controller) {
+    }
 
     @FXML
     public double getParameter() {

@@ -1,8 +1,9 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.ui.SelectableFunction;
+import ru.ssau.tk.sergunin.lab.ui.Item;
+import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
 
-@SelectableFunction(name = "Нуль-функция", priority = 1)
+@SelectableItem(name = "Нуль-функция", priority = 1, type = Item.FUNCTION)
 public class ZeroFunction extends ConstantFunction {
 
     public ZeroFunction() {

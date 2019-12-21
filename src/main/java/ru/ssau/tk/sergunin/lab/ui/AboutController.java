@@ -10,12 +10,11 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import java.nio.file.Paths;
 
 public class AboutController implements Openable {
-    private Stage stage;
-    private Openable parentController;
     public MediaPlayer mediaPlayer;
-
     @FXML
     MediaView mediaView;
+    private Stage stage;
+    private Openable parentController;
 
     public void play() {
         stage.show();

@@ -1,15 +1,16 @@
 package ru.ssau.tk.sergunin.lab.operations;
 
-import ru.ssau.tk.sergunin.lab.ui.SelectableOperator;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.ui.Item;
+import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@SelectableOperator(name = "Derive", priority = 10)
+@SelectableItem(name = "Integrate", priority = 10, type = Item.OPERATOR)
 public class TabulatedIntegralOperator extends TabulatedOperator implements IntegralOperator<TabulatedFunction> {
     public TabulatedIntegralOperator() {
         super();
@@ -28,7 +29,7 @@ public class TabulatedIntegralOperator extends TabulatedOperator implements Inte
     }
 
     @Override
-    @SelectableOperator(name = "Integrate", priority = 11)
+    @SelectableItem(name = "Integrate", priority = 11, type = Item.OPERATOR)
     public TabulatedFunction integrate(TabulatedFunction function) {
         return new TabulatedFunctionOperationService(new ArrayTabulatedFunctionFactory()).subtract(super.integrate(function, 0, function.getCount(), new double[function.getCount()], new double[function.getCount()], TabulatedFunctionOperationService.asPoints(function)), shift);
     }

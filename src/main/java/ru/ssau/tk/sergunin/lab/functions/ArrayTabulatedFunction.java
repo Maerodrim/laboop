@@ -6,13 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.sergunin.lab.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
+import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable, Serializable {
+public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Serializable {
     private static final long serialVersionUID = 3990511369369675738L;
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     private double[] xValues;
@@ -37,6 +38,11 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         if (xValues.length < 2) {
             throw new IllegalArgumentException("Array less than minimum length");
         }
+        for (double yValue : yValues) {
+            if (yValue != yValue) {
+                throw new NaNException();
+            }
+        }
         this.count = xValues.length;
         this.xValues = Arrays.copyOf(xValues, count);
         this.yValues = Arrays.copyOf(yValues, count);
@@ -59,6 +65,9 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         for (int i = 0; i < count; i++) {
             xValues[i] = buff;
             yValues[i] = source.apply(buff);
+            if (yValues[i] != yValues[i]) {
+                throw new NaNException();
+            }
             buff += step;
         }
     }

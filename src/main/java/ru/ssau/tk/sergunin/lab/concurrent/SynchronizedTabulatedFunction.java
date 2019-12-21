@@ -147,7 +147,7 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
     @Override
     public void insert(double x, double y) {
         synchronized (function) {
-            function.insert(x,y);
+            function.insert(x, y);
         }
     }
 

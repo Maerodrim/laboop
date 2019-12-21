@@ -38,13 +38,14 @@ public class ApplyController implements Initializable, Openable {
         operationMap = new LinkedHashMap<>();
         functionMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(SelectableOperation.class).spliterator(), false)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableOperation.class).priority()))
+        StreamSupport.stream(ClassIndex.getAnnotated(SelectableItem.class).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(SelectableItem.class).type() == Item.OPERATION)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
                 .forEach(clazz -> Stream.of(clazz.getMethods())
-                        .filter(method -> method.isAnnotationPresent(SelectableOperation.class))
-                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableOperation.class).priority()))
+                        .filter(method -> method.isAnnotationPresent(SelectableItem.class))
+                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
                         .forEach(method -> {
-                            operationMap.put(method.getDeclaredAnnotation(SelectableOperation.class).name(), method);
+                            operationMap.put(method.getDeclaredAnnotation(SelectableItem.class).name(), method);
                             classes.put(method, clazz);
                         }));
         operationComboBox.getItems().addAll(operationMap.keySet());
@@ -77,11 +78,14 @@ public class ApplyController implements Initializable, Openable {
     @FXML
     public void apply() {
         try {
-            ((TableController) parentController).createTab((TabulatedFunction) operationMap.get(operationComboBox.getValue())
+            TabulatedFunction function = (TabulatedFunction) operationMap.get(operationComboBox.getValue())
                     .invoke(classes.get(operationMap.get(operationComboBox.getValue())).getDeclaredConstructor(TabulatedFunctionFactory.class)
                                     .newInstance(((TableController) parentController).getFactory()),
                             ((TableController) parentController).getFunction(),
-                            functionMap.get(functionComboBox.getValue())));
+                            functionMap.get(functionComboBox.getValue()));
+            function.offerStrict(((TableController) parentController).isStrict());
+            function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
+            ((TableController) parentController).createTab(function);
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -97,15 +101,15 @@ public class ApplyController implements Initializable, Openable {
         stage.close();
     }
 
-    public ComboBox<String> getFunctionComboBox() {
+    ComboBox<String> getFunctionComboBox() {
         return functionComboBox;
     }
 
-    public Map<String, TabulatedFunction> getFunctionMap() {
+    Map<String, TabulatedFunction> getFunctionMap() {
         return functionMap;
     }
 
-    public void setFunctionMap(Map<Tab, TabulatedFunction> functionMap) {
+    void setFunctionMap(Map<Tab, TabulatedFunction> functionMap) {
         functionMap.forEach((tab, function) -> {
             if (function != ((TableController) parentController).getFunction() &&
                     !function.isStrict() &&

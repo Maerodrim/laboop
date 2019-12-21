@@ -1,13 +1,14 @@
 package ru.ssau.tk.sergunin.lab.operations;
 
-import ru.ssau.tk.sergunin.lab.ui.SelectableOperation;
 import ru.ssau.tk.sergunin.lab.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.ui.Item;
+import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
 
-@SelectableOperation(name = "", priority = 0)
+@SelectableItem(name = "", priority = 0, type = Item.OPERATION)
 public class TabulatedFunctionOperationService {
 
     private static final double ACCURACY = 1E-6;
@@ -44,8 +45,8 @@ public class TabulatedFunctionOperationService {
         return points;
     }
 
-    public static double[][][] asPoints(TabulatedFunction tabulatedFunction, int number) {
-        double[][][] points = new double[number][tabulatedFunction.getCount()/number + 1][2];
+    static double[][][] asPoints(TabulatedFunction tabulatedFunction, int number) {
+        double[][][] points = new double[number][tabulatedFunction.getCount() / number + 1][2];
         int step = tabulatedFunction.getCount() / number;
         int remainder = tabulatedFunction.getCount() % number;
         int i = 0;
@@ -88,22 +89,22 @@ public class TabulatedFunctionOperationService {
         return factory.create(xValues, yValues);
     }
 
-    @SelectableOperation(name = "+", priority = 1)
+    @SelectableItem(name = "+", priority = 1, type = Item.OPERATION)
     public TabulatedFunction sum(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, Double::sum);
     }
 
-    @SelectableOperation(name = "-", priority = 2)
+    @SelectableItem(name = "-", priority = 2, type = Item.OPERATION)
     public TabulatedFunction subtract(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, (u, v) -> u - v);
     }
 
-    @SelectableOperation(name = "*", priority = 3)
+    @SelectableItem(name = "*", priority = 3, type = Item.OPERATION)
     public TabulatedFunction multiplication(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, (u, v) -> u * v);
     }
 
-    @SelectableOperation(name = "/", priority = 4)
+    @SelectableItem(name = "/", priority = 4, type = Item.OPERATION)
     public TabulatedFunction division(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, (u, v) -> u / v);
     }

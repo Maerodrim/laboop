@@ -3,6 +3,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.sergunin.lab.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
+import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
 import ru.ssau.tk.sergunin.lab.operations.TabulatedFunctionOperationService;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Insertable, Removable, Serializable {
+public class LinkedListTabulatedFunction extends AbstractTabulatedFunction implements Serializable {
     private static final long serialVersionUID = -8102232408974120402L;
     private Node head;
     private int count;
@@ -24,6 +25,8 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private LinkedListTabulatedFunction(LinkedListTabulatedFunction function) {
         Point[] points = TabulatedFunctionOperationService.asPoints(function);
         this.count = points.length;
+        this.isStrict = function.isStrict();
+        this.isUnmodifiable = function.isUnmodifiable();
         for (int i = 0; i < count; i++) {
             this.addNode(points[i].x, points[i].y);
         }
@@ -34,6 +37,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         checkSorted(xValues);
         if (xValues.length < 2) {
             throw new IllegalArgumentException("Length of array less than minimum length");
+        }
+        for (double yValue : yValues) {
+            if (yValue != yValue) {
+                throw new NaNException();
+            }
         }
         this.count = xValues.length;
         for (int i = 0; i < count; i++) {
@@ -54,7 +62,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         double step = (xTo - xFrom) / (count - 1);
         double buff = xFrom;
         for (int i = 0; i < count; i++) {
-            this.addNode(buff, source.apply(buff));
+            double temp = source.apply(buff);
+            if (temp != temp) {
+                throw new NaNException();
+            }
+            this.addNode(buff, temp);
             buff += step;
         }
     }

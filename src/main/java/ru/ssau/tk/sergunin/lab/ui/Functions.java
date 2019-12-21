@@ -15,15 +15,15 @@ import ru.ssau.tk.sergunin.lab.io.FunctionsIO;
 import java.io.*;
 import java.nio.file.Paths;
 
-public class Functions {
-    public static final String FXML_PATH = "src/main/java/ru/ssau/tk/sergunin/lab/ui/fxml/";
+class Functions {
+    static final String FXML_PATH = "src/main/java/ru/ssau/tk/sergunin/lab/ui/fxml/";
     private TabulatedFunctionFactory factory;
 
     Functions(TabulatedFunctionFactory factory) {
         this.factory = factory;
     }
 
-    public static File load(Stage stage, String defaultPath) {
+    static File load(Stage stage, String defaultPath) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load function");
         fileChooser.setInitialDirectory(new File(defaultPath));
@@ -35,7 +35,7 @@ public class Functions {
         return fileChooser.showOpenDialog(stage);
     }
 
-    public static File save(Stage stage) {
+    static File save(Stage stage) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save function");
         fileChooser.getExtensionFilters().addAll(
@@ -46,7 +46,7 @@ public class Functions {
         return fileChooser.showSaveDialog(stage);
     }
 
-    public static <T extends Openable> T initializeModalityWindow(String pathFXML, T modalityWindow) {
+    static <T extends Openable> T initializeModalityWindow(String pathFXML, T modalityWindow) {
         FXMLLoader loader;
         Parent createNewFunction = null;
         try {
@@ -76,7 +76,7 @@ public class Functions {
         return function;
     }
 
-    public TabulatedFunction wrap(TabulatedFunction function) {
+    TabulatedFunction wrap(TabulatedFunction function) {
         boolean isStrict = function.isStrict();
         boolean isUnmodifiable = function.isUnmodifiable();
         if (isUnmodifiable && isStrict) {
@@ -90,7 +90,7 @@ public class Functions {
         }
     }
 
-    public void saveFunctionAs(File file, TabulatedFunction function) {
+    void saveFunctionAs(File file, TabulatedFunction function) {
         switch (file.getPath().split("(?=[.])")[1]) {
             case ".json" -> {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
@@ -116,7 +116,7 @@ public class Functions {
         }
     }
 
-    public TabulatedFunction loadFunctionAs(File file) {
+    TabulatedFunction loadFunctionAs(File file) {
         TabulatedFunction function = null;
         switch (file.getPath().split("(?=[.])")[1]) {
             case ".json" -> {

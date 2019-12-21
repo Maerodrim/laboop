@@ -1,11 +1,12 @@
 package ru.ssau.tk.sergunin.lab.operations;
 
-import ru.ssau.tk.sergunin.lab.ui.SelectableOperator;
 import ru.ssau.tk.sergunin.lab.concurrent.SynchronizedTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.ui.Item;
+import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
 
-@SelectableOperator(name = "")
+@SelectableItem(name = "", type = Item.OPERATOR)
 public class TabulatedDifferentialOperator extends TabulatedOperator implements DifferentialOperator<TabulatedFunction> {
 
     public TabulatedDifferentialOperator() {
@@ -25,7 +26,7 @@ public class TabulatedDifferentialOperator extends TabulatedOperator implements 
     }
 
     @Override
-    @SelectableOperator(name = "Derive", priority = 1)
+    @SelectableItem(name = "Derive", priority = 1, type = Item.OPERATOR)
     public TabulatedFunction derive(TabulatedFunction function) {
         return super.derive(function);
     }

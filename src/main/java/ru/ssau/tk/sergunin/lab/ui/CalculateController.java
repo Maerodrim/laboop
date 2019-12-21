@@ -10,13 +10,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class CalculateController implements Initializable, Openable {
-    private Stage stage;
-    private Openable parentController;
-
     @FXML
     TextField x;
     @FXML
     TextField y;
+    private Stage stage;
+    private Openable parentController;
 
     @FXML
     private void cancel() {

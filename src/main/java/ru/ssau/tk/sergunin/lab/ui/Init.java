@@ -15,9 +15,9 @@ public class Init extends Application {
     }
 
     @Override
-    public  void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) throws Exception {
 
-        FXMLLoader loader = new FXMLLoader(Paths.get(Functions.FXML_PATH + "TableController.fxml").toUri().toURL());
+        FXMLLoader loader = new FXMLLoader(Paths.get(Functions.FXML_PATH + "table.fxml").toUri().toURL());
         Parent root = loader.load();
         TableController controller = loader.getController();
         controller.setStage(primaryStage);
