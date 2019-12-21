@@ -3,7 +3,7 @@ package ru.ssau.tk.sergunin.lab.concurrent;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 
 public class ReadTask implements Runnable {
-    private TabulatedFunction func;
+    private final TabulatedFunction func;
 
     public ReadTask(TabulatedFunction func) {
         this.func = func;

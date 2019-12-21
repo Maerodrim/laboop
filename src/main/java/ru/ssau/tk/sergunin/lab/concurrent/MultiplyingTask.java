@@ -4,7 +4,7 @@ import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 
 public class MultiplyingTask implements Runnable {
 
-    private TabulatedFunction function;
+    private final TabulatedFunction function;
     private boolean isCompleted;
 
     MultiplyingTask(TabulatedFunction function) {
