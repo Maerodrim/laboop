@@ -35,16 +35,18 @@ public class TableController implements Initializable, Openable {
     private Map<Tab, TabulatedFunction> map;
     private Map<String, MathFunction> comboBoxMap;
     private Tab currentTab;
-    //Controllers
+    //<controllers>
     private FunctionController functionController = new FunctionController();
     private TabulatedFunctionController tabulatedFunctionController = new TabulatedFunctionController();
     private Functions functions;
     private AddPointController addPointController = new AddPointController();
     private DeletePointController deletePointController = new DeletePointController();
     private CalculateController calculateController = new CalculateController();
-    private About about = new About();
+    private AboutController aboutController = new AboutController();
     private SettingsController settingsController = new SettingsController();
     private CompositeFunctionController compositeFunctionController = new CompositeFunctionController();
+    private ApplyController applyController = new ApplyController();
+    //</controllers>
     private boolean isStrict = true;
     private boolean isUnmodifiable = false;
     @FXML
@@ -63,14 +65,6 @@ public class TableController implements Initializable, Openable {
     private Button calculateValueButton;
     @FXML
     private Label label;
-    @FXML
-    private MenuItem plot;
-    @FXML
-    private MenuItem loadItem;
-    @FXML
-    private MenuItem saveItem;
-    @FXML
-    private MenuItem saveAsItem;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -110,6 +104,7 @@ public class TableController implements Initializable, Openable {
         functionController.getComboBox().setValue(functionController.getComboBox().getItems().get(0));
         compositeFunctionController.getComboBox().getItems().addAll(comboBoxMap.keySet());
         compositeFunctionController.getComboBox().setValue(compositeFunctionController.getComboBox().getItems().get(0));
+        applyController.setFunctionMap(map);
     }
 
     private void initializeWindowControllers() {
@@ -118,17 +113,19 @@ public class TableController implements Initializable, Openable {
         tabulatedFunctionController = initializeWindowController(tabulatedFunctionController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/newTabulatedFunction.fxml", "Create new function");
         addPointController = initializeWindowController(addPointController,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/addPoint.fxml", "Add Point.");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/addPoint.fxml", "Add point");
         deletePointController = initializeWindowController(deletePointController,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/DeletePoint.fxml", "Delete Point.");
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/DeletePoint.fxml", "Delete point");
         calculateController = initializeWindowController(calculateController,
-                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Calc.fxml", "...");
-        about = initializeWindowController(about,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Calc.fxml", "Calculate");
+        aboutController = initializeWindowController(aboutController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/About.fxml", "About");
         settingsController = initializeWindowController(settingsController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Settings.fxml", "Settings");
         compositeFunctionController = initializeWindowController(compositeFunctionController,
                 "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/CompositeFunctionController.fxml", "Compose");
+        applyController = initializeWindowController(applyController,
+                "src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/Apply.fxml", "Compose");
     }
 
     public <T extends Openable> T initializeWindowController(T controller, String path, String windowName) {
@@ -161,7 +158,7 @@ public class TableController implements Initializable, Openable {
                 notifyAboutAccessibility(getFunction());
             }
         });
-        tab.setOnClosed(event -> {
+        tab.setOnCloseRequest(event -> {
             map.remove(tab);
             if (map.isEmpty()) {
                 mainPane.getChildren().remove(bottomPane);
@@ -191,7 +188,7 @@ public class TableController implements Initializable, Openable {
                 notifyAboutAccessibility(getFunction());
             }
         });
-        tab.setOnClosed(event -> {
+        tab.setOnCloseRequest(event -> {
             map.remove(tab);
             if (map.isEmpty()) {
                 mainPane.getChildren().remove(bottomPane);
@@ -313,7 +310,7 @@ public class TableController implements Initializable, Openable {
     private void save(boolean toTempPath) {
         if (isTabExist()) {
             File file = toTempPath
-                    ? new File(defaultDirectory + "\\" + currentTab.getText() + ".txt")
+                    ? new File(defaultDirectory + "\\" + currentTab.getText() + ".fnc")
                     : Functions.save(stage);
             if (!Objects.equals(file, null)) {
                 functions.saveFunctionAs(file, getFunction());
@@ -361,7 +358,7 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void about() {
-        about.play();
+        aboutController.play();
     }
     @FXML
     private void compose() {
@@ -383,6 +380,20 @@ public class TableController implements Initializable, Openable {
     private void newTabulatedFunction() {
         tabulatedFunctionController.getStage().show();
         tabulatedFunctionController.getStage().setResizable(false);
+    }
+
+    @FXML
+    private void apply() {
+        if (isTabExist()) {
+            applyController.setFunctionMap(map);
+            if (applyController.getFunctionMap().isEmpty()) {
+                AlertWindows.showWarning("Отсутствуют подходящие функции");
+            } else {
+                applyController.getFunctionComboBox().getItems().addAll(applyController.getFunctionMap().keySet());
+                applyController.getFunctionComboBox().setValue(applyController.getFunctionComboBox().getItems().get(0));
+                applyController.getStage().show();
+            }
+        }
     }
 
     private boolean isTabExist() {
@@ -430,5 +441,9 @@ public class TableController implements Initializable, Openable {
 
     public void setUnmodifiable(boolean unmodifiable) {
         isUnmodifiable = unmodifiable;
+    }
+
+    public TabulatedFunctionFactory getFactory() {
+        return factory;
     }
 }

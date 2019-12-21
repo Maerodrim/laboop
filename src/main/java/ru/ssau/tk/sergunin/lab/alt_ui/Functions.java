@@ -18,8 +18,7 @@ import java.io.*;
 import java.nio.file.Paths;
 
 public class Functions {
-    TabulatedFunctionFactory factory;
-
+    private TabulatedFunctionFactory factory;
     Functions(TabulatedFunctionFactory factory) {
         this.factory = factory;
     }
@@ -29,7 +28,7 @@ public class Functions {
         fileChooser.setTitle("Load function");
         fileChooser.setInitialDirectory(new File(defaultPath));
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt"),
+                new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
                 new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
                 new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml")
         );
@@ -40,7 +39,7 @@ public class Functions {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save function");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt"),
+                new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
                 new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
                 new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml")
         );
@@ -107,7 +106,7 @@ public class Functions {
                     AlertWindows.showError(e);
                 }
             }
-            case ".txt" -> {
+            case ".fnc" -> {
                 try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
                     FunctionsIO.writeTabulatedFunction(outputStream, function);
                 } catch (IOException e) {
@@ -115,10 +114,6 @@ public class Functions {
                 }
             }
         }
-    }
-
-    public TabulatedFunction loadFunction() {
-        return loadFunctionAs(new File("temp.txt"));
     }
 
     public TabulatedFunction loadFunctionAs(File file) {
@@ -138,7 +133,7 @@ public class Functions {
                     AlertWindows.showError(e);
                 }
             }
-            case ".txt" -> {
+            case ".fnc" -> {
                 try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
                     function = wrap(FunctionsIO.readTabulatedFunction(inputStream, factory));
                 } catch (IOException e) {
@@ -149,27 +144,4 @@ public class Functions {
         return function;
     }
 
-   /* public TabulatedFunction insert(double x, double y) {
-        //TabulatedFunction function = loadFunction();
-        //String functionClassName = function.getClass().getSimpleName();
-        *//*if (functionClassName.equals("ArrayTabulatedFunction") || functionClassName.equals("LinkedListTabulatedFunction")) {
-            ((ArrayTabulatedFunction) function).insert(x, y);
-        } else {
-            AlertWindows.showError(new UnsupportedOperationException());
-        }*//*
-        //saveFunction(function);
-        //return function;
-    }*/
-
-    public TabulatedFunction remove(double x) {
-        TabulatedFunction function = loadFunction();
-        String functionClassName = function.getClass().getSimpleName();
-        if (functionClassName.equals("ArrayTabulatedFunction") || functionClassName.equals("LinkedListTabulatedFunction")) {
-            ((ArrayTabulatedFunction) function).remove(function.indexOfX(x));
-        } else {
-            AlertWindows.showError(new UnsupportedOperationException());
-        }
-        //saveFunction(function);
-        return function;
-    }
 }

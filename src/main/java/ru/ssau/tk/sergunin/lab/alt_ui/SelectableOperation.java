@@ -8,13 +8,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @IndexAnnotated
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 
-public @interface SelectableFunction {
+public @interface SelectableOperation {
     String name();
 
     int priority() default 0;
-
-    boolean parameter() default false;
 }

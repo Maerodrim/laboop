@@ -40,10 +40,6 @@ public class FunctionController implements Initializable, Openable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        initializeWindowControllers();
-    }
-
-    private void initializeWindowControllers() {
         inputParameterController = Functions.initializeModalityWindow("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/inputParameter.fxml", inputParameterController);
         inputParameterController.getStage().initOwner(stage);
         inputParameterController.getStage().setTitle("Input parameter");

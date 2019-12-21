@@ -25,7 +25,11 @@ public class CalculateController implements Initializable, Openable {
 
     @FXML
     private void calc() {
-        y.setText("" + ((TableController) parentController).getFunction().apply(Double.parseDouble(x.getText())));
+        try {
+            y.setText("" + ((TableController) parentController).getFunction().apply(Double.parseDouble(x.getText())));
+        } catch (NumberFormatException e) {
+            AlertWindows.showWarning("Введите корректное значение");
+        }
     }
 
     @Override

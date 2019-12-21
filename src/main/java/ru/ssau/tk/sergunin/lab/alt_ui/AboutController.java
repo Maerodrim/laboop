@@ -14,7 +14,7 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
-public class About implements Openable {
+public class AboutController implements Openable {
     private Stage stage;
     private Openable parentController;
     public MediaPlayer mediaPlayer;

@@ -35,7 +35,6 @@ public class CompositeFunctionController implements Initializable, Openable {
         }
     }
 
-
     public void initialize(URL url, ResourceBundle resourceBundle) {
         inputParameterController = Functions.initializeModalityWindow("src/main/java/ru/ssau/tk/sergunin/lab/alt_ui/fxml/inputParameter.fxml", inputParameterController);
         inputParameterController.getStage().initOwner(stage);

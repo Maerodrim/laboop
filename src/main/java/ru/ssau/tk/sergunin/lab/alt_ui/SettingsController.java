@@ -42,6 +42,7 @@ public class SettingsController implements Initializable, Openable {
     @FXML
     private void save() {
         parentController.setFactory(factory);
+        webView.getEngine().load(null);
         stage.close();
     }
 

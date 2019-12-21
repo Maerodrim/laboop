@@ -29,4 +29,10 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point>, Explic
     boolean isUnmodifiable();
 
     TabulatedFunction unwrap();
+
+    default boolean isCanBeComposed(TabulatedFunction function) {
+        return leftBound() == function.leftBound()
+                && rightBound() == function.rightBound()
+                && getCount() == function.getCount();
+    }
 }

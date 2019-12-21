@@ -8,8 +8,6 @@ import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 public class InputParameterController implements Openable {
-    public InputParameterController() {
-    }
 
     private Stage stage;
     private double value;
@@ -20,10 +18,6 @@ public class InputParameterController implements Openable {
     TextField textField;
     @FXML
     Button button;
-
-    double getParameter() {
-        return value;
-    }
 
     public Stage getStage() {
         return stage;
@@ -40,7 +34,9 @@ public class InputParameterController implements Openable {
     public void setParentController(Openable controller) { }
 
     @FXML
-    public void apply() {
+    public double getParameter() {
+        stage.show();
+        stage.setTitle("Input parameter");
         try {
             value = Double.parseDouble(textField.getText());
             stage.close();
@@ -48,6 +44,7 @@ public class InputParameterController implements Openable {
             textField.clear();
             AlertWindows.showWarning("Введите корректное значение");
         }
+        return value;
     }
 
 }

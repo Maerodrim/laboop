@@ -1,11 +1,13 @@
 package ru.ssau.tk.sergunin.lab.operations;
 
+import ru.ssau.tk.sergunin.lab.alt_ui.SelectableOperation;
 import ru.ssau.tk.sergunin.lab.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
+@SelectableOperation(name = "", priority = 0)
 public class TabulatedFunctionOperationService {
 
     private static final double ACCURACY = 1E-6;
@@ -41,16 +43,6 @@ public class TabulatedFunctionOperationService {
         }
         return points;
     }
-
-   /* public static double[][] toTwoDoubleArrays(TabulatedFunction tabulatedFunction) {
-        double[][] points = new double[tabulatedFunction.getCount()][2];
-        int i = 0;
-        for (Point currentPoint : tabulatedFunction) {
-            points[i][0] = currentPoint.x;
-            points[i++][1] = currentPoint.y;
-        }
-        return points;
-    }*/
 
     public static double[][][] asPoints(TabulatedFunction tabulatedFunction, int number) {
         double[][][] points = new double[number][tabulatedFunction.getCount()/number + 1][2];
@@ -96,18 +88,22 @@ public class TabulatedFunctionOperationService {
         return factory.create(xValues, yValues);
     }
 
+    @SelectableOperation(name = "+", priority = 1)
     public TabulatedFunction sum(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, Double::sum);
     }
 
+    @SelectableOperation(name = "-", priority = 2)
     public TabulatedFunction subtract(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, (u, v) -> u - v);
     }
 
+    @SelectableOperation(name = "*", priority = 3)
     public TabulatedFunction multiplication(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, (u, v) -> u * v);
     }
 
+    @SelectableOperation(name = "/", priority = 4)
     public TabulatedFunction division(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, (u, v) -> u / v);
     }

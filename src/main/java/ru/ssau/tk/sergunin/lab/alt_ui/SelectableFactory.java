@@ -13,6 +13,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 
 public @interface SelectableFactory {
-    String name() default "Factory";
+    String name();
     int priority() default 0;
 }
