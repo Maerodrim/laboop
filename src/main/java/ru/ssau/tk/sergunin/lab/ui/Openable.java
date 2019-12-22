@@ -3,7 +3,7 @@ package ru.ssau.tk.sergunin.lab.ui;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
-public interface Openable {
+interface Openable {
     Stage getStage();
 
     void setStage(Stage stage);

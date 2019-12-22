@@ -68,6 +68,7 @@ public class TableController implements Initializable, Openable {
     private Label label;
 
     @Override
+    @SuppressWarnings(value= "ResultOfMethodCallIgnored")
     public void initialize(URL location, ResourceBundle resources) {
         map = new LinkedHashMap<>();
         x.setCellValueFactory(new PropertyValueFactory<>("X"));
@@ -142,6 +143,7 @@ public class TableController implements Initializable, Openable {
         return controller;
     }
 
+    @SuppressWarnings("unchecked")
     void createTab(TabulatedFunction function) {
         Tab tab = new Tab();
         tab.setText("Function" + numberId);
@@ -289,6 +291,7 @@ public class TableController implements Initializable, Openable {
         return map.get(currentTab);
     }
 
+    @SuppressWarnings("unchecked")
     ObservableList<Point> getObservableList() {
         return ((TableView<Point>) currentTab.getContent()).getItems();
     }

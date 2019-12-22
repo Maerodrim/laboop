@@ -193,7 +193,10 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     @Override
     public TabulatedFunction copy() {
-        return new ArrayTabulatedFunction(xValues, yValues);
+        ArrayTabulatedFunction function = new ArrayTabulatedFunction(xValues, yValues);
+        function.offerStrict(isStrict);
+        function.offerUnmodifiable(isUnmodifiable);
+        return function;
     }
 
     @Override

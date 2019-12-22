@@ -20,8 +20,8 @@ import java.util.stream.StreamSupport;
 
 public class OperatorController implements Initializable, Openable {
 
-    Stage stage;
-    Openable parentController;
+    private Stage stage;
+    private Openable parentController;
     @FXML
     ComboBox<String> comboBox;
     private Map<String, Method> operatorMap;

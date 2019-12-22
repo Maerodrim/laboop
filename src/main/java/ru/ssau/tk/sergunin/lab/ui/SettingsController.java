@@ -39,7 +39,7 @@ public class SettingsController implements Initializable, Openable {
         stage.close();
     }
 
-    public void start() {
+    void start() {
         stage.show();
         comboBox.setValue(comboBox.getItems().get(factory.getClass().getDeclaredAnnotation(SelectableItem.class).priority() - 1));
         strictComboBox.setValue(((TableController) parentController).isStrict());
@@ -73,6 +73,7 @@ public class SettingsController implements Initializable, Openable {
     }
 
     @FXML
+    @SuppressWarnings("SuspiciousMethodCalls")
     private void doOnClickOnComboBox(ActionEvent event) {
         factory = comboBoxMap.get(((ComboBox) event.getSource()).getValue());
     }

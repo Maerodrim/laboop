@@ -1,6 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Iterator;
 
 public class UnmodifiableTabulatedFunction implements TabulatedFunction {
@@ -81,12 +83,15 @@ public class UnmodifiableTabulatedFunction implements TabulatedFunction {
 
     @Override
     public void offerStrict(boolean isStrict) {
+        tabulatedFunction.offerStrict(isStrict);
     }
 
     @Override
     public void offerUnmodifiable(boolean isUnmodifiable) {
+        throw new UnsupportedOperationException("The unmodifiable parameter cannot be changed");
     }
 
+    @NotNull
     @Override
     public Iterator<Point> iterator() {
         return tabulatedFunction.iterator();

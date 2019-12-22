@@ -8,17 +8,17 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.ui.Item;
 import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
 
-@SelectableItem(name = "", priority = 0, type = Item.OPERATION)
+@SelectableItem(name = "", type = Item.OPERATION)
 public class TabulatedFunctionOperationService {
 
     private static final double ACCURACY = 1E-6;
     private TabulatedFunctionFactory factory;
 
-    public TabulatedFunctionOperationService(TabulatedFunctionFactory factory) {
+    TabulatedFunctionOperationService(TabulatedFunctionFactory factory) {
         this.factory = factory;
     }
 
-    public TabulatedFunctionOperationService() {
+    TabulatedFunctionOperationService() {
         factory = new ArrayTabulatedFunctionFactory();
     }
 
@@ -62,7 +62,6 @@ public class TabulatedFunctionOperationService {
         return points;
     }
 
-
     public TabulatedFunctionFactory getFactory() {
         return factory;
     }
@@ -90,22 +89,22 @@ public class TabulatedFunctionOperationService {
     }
 
     @SelectableItem(name = "+", priority = 1, type = Item.OPERATION)
-    public TabulatedFunction sum(TabulatedFunction a, TabulatedFunction b) {
+    TabulatedFunction sum(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, Double::sum);
     }
 
     @SelectableItem(name = "-", priority = 2, type = Item.OPERATION)
-    public TabulatedFunction subtract(TabulatedFunction a, TabulatedFunction b) {
+    TabulatedFunction subtract(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, (u, v) -> u - v);
     }
 
     @SelectableItem(name = "*", priority = 3, type = Item.OPERATION)
-    public TabulatedFunction multiplication(TabulatedFunction a, TabulatedFunction b) {
+    TabulatedFunction multiplication(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, (u, v) -> u * v);
     }
 
     @SelectableItem(name = "/", priority = 4, type = Item.OPERATION)
-    public TabulatedFunction division(TabulatedFunction a, TabulatedFunction b) {
+    TabulatedFunction division(TabulatedFunction a, TabulatedFunction b) {
         return doOperation(a, b, (u, v) -> u / v);
     }
 
