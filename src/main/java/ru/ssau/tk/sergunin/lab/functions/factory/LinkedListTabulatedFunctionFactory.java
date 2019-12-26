@@ -4,9 +4,9 @@ import ru.ssau.tk.sergunin.lab.functions.LinkedListTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.ui.Item;
-import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
+import ru.ssau.tk.sergunin.lab.ui.ConnectableItem;
 
-@SelectableItem(name = "Linked list tabulated function", priority = 2, type = Item.FACTORY)
+@ConnectableItem(name = "Linked list tabulated function", priority = 2, type = Item.FACTORY)
 public class LinkedListTabulatedFunctionFactory implements TabulatedFunctionFactory {
 
     @Override

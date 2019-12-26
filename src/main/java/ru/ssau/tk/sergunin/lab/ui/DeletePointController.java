@@ -5,6 +5,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
+@ConnectableItem(name = "Delete point", type = Item.CONTROLLER, pathFXML = "deletePoint.fxml")
 public class DeletePointController implements Openable {
     @FXML
     TextField x;
@@ -13,14 +14,18 @@ public class DeletePointController implements Openable {
 
     @FXML
     private void delete() {
-        int index = ((TableController) parentController).getFunction().indexOfX(Double.parseDouble(x.getText()));
-        if (index == -1) {
-            AlertWindows.showWarning("Point doesn't exist");
-        } else {
-            ((TableController) parentController).getObservableList().remove(index);
-            ((TableController) parentController).sort();
-            ((TableController) parentController).getFunction().remove(index);
-            stage.close();
+        try {
+            int index = ((TableController) parentController).getFunction().indexOfX(Double.parseDouble(x.getText()));
+            if (index == -1) {
+                AlertWindows.showWarning("Point doesn't exist");
+            } else {
+                ((TableController) parentController).getObservableList().remove(index);
+                ((TableController) parentController).sort();
+                ((TableController) parentController).getFunction().remove(index);
+                stage.close();
+            }
+        } catch (NumberFormatException e) {
+            AlertWindows.showWarning("Введите корретное значение");
         }
     }
 

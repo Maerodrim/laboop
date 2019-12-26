@@ -6,6 +6,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
+import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
@@ -19,7 +20,8 @@ import java.util.ResourceBundle;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class ApplyController implements Initializable, Openable {
+@ConnectableItem(name = "Apply", type = Item.CONTROLLER, pathFXML = "apply.fxml")
+public class ApplyController implements Initializable, Openable, TabulatedFunctionAccessible {
     private Stage stage;
     private Openable parentController;
 
@@ -38,14 +40,14 @@ public class ApplyController implements Initializable, Openable {
         operationMap = new LinkedHashMap<>();
         functionMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(SelectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(SelectableItem.class).type() == Item.OPERATION)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
+        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.OPERATION)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                 .forEach(clazz -> Stream.of(clazz.getMethods())
-                        .filter(method -> method.isAnnotationPresent(SelectableItem.class))
-                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
+                        .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
+                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                         .forEach(method -> {
-                            operationMap.put(method.getDeclaredAnnotation(SelectableItem.class).name(), method);
+                            operationMap.put(method.getDeclaredAnnotation(ConnectableItem.class).name(), method);
                             classes.put(method, clazz);
                         }));
         operationComboBox.getItems().addAll(operationMap.keySet());
@@ -86,8 +88,14 @@ public class ApplyController implements Initializable, Openable {
             function.offerStrict(((TableController) parentController).isStrict());
             function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
             ((TableController) parentController).createTab(function);
-        } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {
+            AlertWindows.showError(e);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof NaNException){
+                AlertWindows.showWarning("Результат не существует");
+            } else {
+                AlertWindows.showError(e);
+            }
         }
         functionMap.clear();
         functionComboBox.getItems().clear();
@@ -101,15 +109,7 @@ public class ApplyController implements Initializable, Openable {
         stage.close();
     }
 
-    ComboBox<String> getFunctionComboBox() {
-        return functionComboBox;
-    }
-
-    Map<String, TabulatedFunction> getFunctionMap() {
-        return functionMap;
-    }
-
-    void setFunctionMap(Map<Tab, TabulatedFunction> functionMap) {
+    public boolean connectMap(Map<Tab, TabulatedFunction> functionMap) {
         functionMap.forEach((tab, function) -> {
             if (function != ((TableController) parentController).getFunction() &&
                     !function.isStrict() &&
@@ -117,5 +117,13 @@ public class ApplyController implements Initializable, Openable {
                 this.functionMap.put(tab.getText(), function);
             }
         });
+        if (!this.functionMap.isEmpty()) {
+            functionComboBox.getItems().addAll(this.functionMap.keySet());
+            functionComboBox.setValue(functionComboBox.getItems().get(0));
+            return true;
+        } else {
+            return false;
+        }
     }
+
 }

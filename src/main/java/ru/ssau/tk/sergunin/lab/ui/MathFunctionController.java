@@ -3,10 +3,7 @@ package ru.ssau.tk.sergunin.lab.ui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
@@ -18,7 +15,8 @@ import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class FunctionController implements Initializable, Openable {
+@ConnectableItem(name = "Create new math function", type = Item.CONTROLLER, pathFXML = "function.fxml")
+public class MathFunctionController implements Initializable, Openable, MathFunctionAccessible {
     @FXML
     ComboBox<String> comboBox;
     @FXML
@@ -37,26 +35,28 @@ public class FunctionController implements Initializable, Openable {
     private InputParameterController inputParameterController = new InputParameterController();
     private Openable parentController;
     private TabulatedFunctionFactory factory;
-    private Map<String, MathFunction> comboBoxMap;
+    private Map<String, MathFunction> functionMap;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        inputParameterController = Functions.initializeModalityWindow(Functions.FXML_PATH + "inputParameter.fxml", inputParameterController);
+        inputParameterController = Functions.initializeModalityWindow(
+                Functions.FXML_PATH + "inputParameter.fxml", inputParameterController);
         inputParameterController.getStage().initOwner(stage);
         inputParameterController.getStage().setTitle("Input parameter");
     }
 
     @FXML
     private void createFunction() {
-        if (comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(SelectableItem.class).parameter()) {
+        if (functionMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(ConnectableItem.class).parameter()) {
             try {
-                comboBoxMap.replace(comboBox.getValue(), comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getParameter()));
+                functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
+                        .getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getParameter()));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
         }
         try {
-            TabulatedFunction function = factory.create(comboBoxMap.get(comboBox.getValue()),
+            TabulatedFunction function = factory.create(functionMap.get(comboBox.getValue()),
                     Double.parseDouble(leftBorder.getText()),
                     Double.parseDouble(rightBorder.getText()),
                     Integer.parseInt(numberOfPoints.getText()),
@@ -75,7 +75,7 @@ public class FunctionController implements Initializable, Openable {
 
     @FXML
     private void doOnClickOnComboBox(ActionEvent event) {
-        if (comboBoxMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(SelectableItem.class).parameter()) {
+        if (functionMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(ConnectableItem.class).parameter()) {
             inputParameterController.getStage().show();
         }
     }
@@ -93,8 +93,9 @@ public class FunctionController implements Initializable, Openable {
         return comboBox;
     }
 
-    public void setComboBoxMap(Map<String, MathFunction> comboBoxMap) {
-        this.comboBoxMap = comboBoxMap;
+    @Override
+    public void setFunctionMap(Map<String, MathFunction> functionMap) {
+        this.functionMap = functionMap;
     }
 
     public Stage getStage() {
@@ -104,5 +105,4 @@ public class FunctionController implements Initializable, Openable {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-
 }

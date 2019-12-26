@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+@ConnectableItem(name = "Differentiate/Integrate", type = Item.CONTROLLER, pathFXML = "operator.fxml")
 public class OperatorController implements Initializable, Openable {
 
     private Stage stage;
@@ -31,14 +32,14 @@ public class OperatorController implements Initializable, Openable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         operatorMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(SelectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(SelectableItem.class).type() == Item.OPERATOR)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
+        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.OPERATOR)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                 .forEach(clazz -> Stream.of(clazz.getMethods())
-                        .filter(method -> method.isAnnotationPresent(SelectableItem.class))
-                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
+                        .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
+                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                         .forEach(method -> {
-                            operatorMap.put(method.getDeclaredAnnotation(SelectableItem.class).name(), method);
+                            operatorMap.put(method.getDeclaredAnnotation(ConnectableItem.class).name(), method);
                             classes.put(method, clazz);
                         }));
         comboBox.getItems().addAll(operatorMap.keySet());
@@ -56,9 +57,7 @@ public class OperatorController implements Initializable, Openable {
     }
 
     @Override
-    public void setFactory(TabulatedFunctionFactory factory) {
-
-    }
+    public void setFactory(TabulatedFunctionFactory factory) { }
 
     @Override
     public void setParentController(Openable controller) {
@@ -83,5 +82,6 @@ public class OperatorController implements Initializable, Openable {
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
             e.printStackTrace();
         }
+        stage.close();
     }
 }

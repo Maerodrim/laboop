@@ -7,7 +7,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity"
             prefHeight="509.0" prefWidth="336.0" xmlns="http://javafx.com/javafx/8"
-            fx:controller="ru.ssau.tk.sergunin.lab.ui.FunctionController">
+            fx:controller="ru.ssau.tk.sergunin.lab.ui.MathFunctionController">
     <center>
         <VBox prefHeight="380.0" prefWidth="203.0" BorderPane.alignment="CENTER">
             <BorderPane.margin>

@@ -16,7 +16,7 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import java.net.URL;
 import java.util.*;
 
-
+@ConnectableItem(name = "Create new tabulated function", type = Item.CONTROLLER, pathFXML = "tabulatedFunction.fxml")
 public class TabulatedFunctionController implements Initializable, Openable {
     @FXML
     TextField textX;

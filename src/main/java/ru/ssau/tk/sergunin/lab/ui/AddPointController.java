@@ -10,6 +10,7 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@ConnectableItem(name = "Add point", type = Item.CONTROLLER, pathFXML = "addPoint.fxml")
 public class AddPointController implements Initializable, Openable {
     @FXML
     TextField x;
@@ -21,15 +22,19 @@ public class AddPointController implements Initializable, Openable {
 
     @FXML
     private void add() {
-        Point point = new Point(Double.parseDouble(x.getText()), Double.parseDouble(y.getText()));
-        int index = ((TableController) parentController).getFunction().indexOfX(point.x);
-        if (index == -1) {
-            ((TableController) parentController).getObservableList().add(point);
-            ((TableController) parentController).sort();
-            ((TableController) parentController).getFunction().insert(point.x, point.y);
-            stage.close();
-        } else {
-            AlertWindows.showWarning("Point already exists");
+        try {
+            Point point = new Point(Double.parseDouble(x.getText()), Double.parseDouble(y.getText()));
+            int index = ((TableController) parentController).getFunction().indexOfX(point.x);
+            if (index == -1) {
+                ((TableController) parentController).getObservableList().add(point);
+                ((TableController) parentController).sort();
+                ((TableController) parentController).getFunction().insert(point.x, point.y);
+                stage.close();
+            } else {
+                AlertWindows.showWarning("Point already exists");
+            }
+        } catch (NumberFormatException e) {
+            AlertWindows.showWarning("Введите корректное значение");
         }
     }
 
