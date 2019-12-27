@@ -12,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
+import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
@@ -29,14 +30,14 @@ public class TableController implements Initializable, Openable {
     private final TableColumn<Point, Double> x = new TableColumn<>("X");
     private final TableColumn<Point, Double> y = new TableColumn<>("Y");
     private Stage stage;
-    private String defaultDirectory;
     private int numberId = 1;
     private TabulatedFunctionFactory factory;
     private Map<Tab, TabulatedFunction> tabulatedFunctionMap;
     private Map<String, MathFunction> mathFunctionMap;
-    private Tab currentTab;
-    private Functions functions;
     private Map<String, Openable> controllerMap;
+    private Map<String, MathFunction> compositeFunctionMap;
+    private Tab currentTab;
+    private IO io;
     private boolean isStrict = true;
     private boolean isUnmodifiable = false;
     @FXML
@@ -61,15 +62,15 @@ public class TableController implements Initializable, Openable {
     public void initialize(URL location, ResourceBundle resources) {
         controllerMap = new HashMap<>();
         tabulatedFunctionMap = new LinkedHashMap<>();
+        compositeFunctionMap = new LinkedHashMap<>();
         x.setCellValueFactory(new PropertyValueFactory<>("X"));
         y.setCellValueFactory(new PropertyValueFactory<>("Y"));
         x.setPrefWidth(300);
         y.setPrefWidth(300);
         tabPane.getSelectionModel().selectLast();
         factory = new ArrayTabulatedFunctionFactory();
-        functions = new Functions(factory);
-        defaultDirectory = System.getenv("APPDATA") + "\\tempFunctions";
-        new File(defaultDirectory).mkdir();
+        io = new IO(factory);
+        new File(IO.DEFAULT_DIRECTORY).mkdir();
         clear(bottomPane);
         initializeMathFunctionMap();
         initializeWindowControllers();
@@ -106,12 +107,12 @@ public class TableController implements Initializable, Openable {
                 });
         controllerMap.values().stream()
                 .filter(f -> f instanceof MathFunctionAccessible)
-                .forEach(f -> ((MathFunctionAccessible)f).connectMap(mathFunctionMap));
+                .forEach(f -> ((MathFunctionAccessible) f).connectMathFunctionMap(mathFunctionMap));
     }
 
     private <T extends Openable> T initializeWindowController(T controller) {
-        String path = Functions.FXML_PATH + controller.getClass().getDeclaredAnnotation(ConnectableItem.class).pathFXML();
-        controller = Functions.initializeModalityWindow(path, controller);
+        String path = IO.FXML_PATH + controller.getClass().getDeclaredAnnotation(ConnectableItem.class).pathFXML();
+        controller = IO.initializeModalityWindow(path, controller);
         controller.getStage().initOwner(stage);
         controller.getStage().setTitle(controller.getClass().getDeclaredAnnotation(ConnectableItem.class).name());
         controller.setFactory(factory);
@@ -155,7 +156,7 @@ public class TableController implements Initializable, Openable {
         TabulatedFunctionController controller = (TabulatedFunctionController)getController("tabulatedFunction");
         function.offerUnmodifiable(controller.isUnmodifiable());
         function.offerStrict(controller.isStrict());
-        functions.wrap(function);
+        io.wrap(function);
         Tab tab = new Tab();
         tab.setText("Function" + numberId);
         tab.setId("function" + numberId++);
@@ -249,9 +250,9 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void loadFunction() {
-        File file = Functions.load(stage, defaultDirectory);
+        File file = IO.load(stage, IO.DEFAULT_DIRECTORY);
         if (!Objects.equals(file, null)) {
-            createTab(functions.loadFunctionAs(file));
+            createTab(io.loadFunctionAs(file));
         }
     }
 
@@ -268,10 +269,10 @@ public class TableController implements Initializable, Openable {
     private void save(boolean toTempPath) {
         if (isTabExist()) {
             File file = toTempPath
-                    ? new File(defaultDirectory + "\\" + currentTab.getText() + ".fnc")
-                    : Functions.save(stage);
+                    ? new File(IO.DEFAULT_DIRECTORY + "\\" + currentTab.getText() + ".fnc")
+                    : IO.save(stage);
             if (!Objects.equals(file, null)) {
-                functions.saveFunctionAs(file, getFunction());
+                io.saveFunctionAs(file, getFunction());
             }
         }
     }
@@ -313,7 +314,7 @@ public class TableController implements Initializable, Openable {
         return factory.create(valuesX, valuesY);
     }
 
-    void sort(ObservableList<Point> list) {
+    void sort(@NotNull ObservableList<Point> list) {
         list.sort(Comparator.comparingDouble(point -> point.x));
     }
 
@@ -326,6 +327,13 @@ public class TableController implements Initializable, Openable {
     }
 
     private Openable getController(String path){
+        Openable controller = controllerMap.get(path + ".fxml");
+        if (controller instanceof TabulatedFunctionAccessible) {
+            ((TabulatedFunctionAccessible) controller).connectTabulatedFunctionMap();
+        }
+        if (controller instanceof CompositeFunctionAccessible) {
+            ((CompositeFunctionAccessible) controller).connectCompositeFunctionMap();
+        }
         return controllerMap.get(path + ".fxml");
     }
 
@@ -391,19 +399,16 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void tabulatedFunction() {
         Stage stage = getController().getStage();
-        stage.show();
         stage.setResizable(false);
+        stage.show();
     }
 
     @FXML
     private void apply() {
         if (isTabExist()) {
-            Openable controller = getController();
-            if (((ApplyController)controller).connectMap(tabulatedFunctionMap)) {
-                controller.getStage().show();
-            } else {
-                AlertWindows.showWarning("Отсутствуют подходящие функции");
-            }
+            Stage stage = getController().getStage();
+            stage.setResizable(false);
+            stage.show();
         }
     }
 
@@ -440,5 +445,21 @@ public class TableController implements Initializable, Openable {
 
     public void setFactory(TabulatedFunctionFactory factory) {
         this.factory = factory;
+    }
+
+    Map<Tab, TabulatedFunction> getTabulatedFunctionMap() {
+        return tabulatedFunctionMap;
+    }
+
+    public void addCompositeFunction(String name, MathFunction function) {
+        compositeFunctionMap.put(name, function);
+    }
+
+    public Tab getCurrentTab() {
+        return currentTab;
+    }
+
+    public Map<String, MathFunction> getCompositeFunctionMap() {
+        return compositeFunctionMap;
     }
 }

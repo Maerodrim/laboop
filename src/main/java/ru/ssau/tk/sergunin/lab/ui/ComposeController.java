@@ -3,6 +3,7 @@ package ru.ssau.tk.sergunin.lab.ui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
@@ -17,6 +18,8 @@ import java.util.ResourceBundle;
 
 @ConnectableItem(name = "Compose", type = Item.CONTROLLER, pathFXML = "compose.fxml")
 public class ComposeController implements Initializable, Openable, MathFunctionAccessible {
+    @FXML
+    public CheckBox isSaveable;
     @FXML
     ComboBox<String> comboBox;
     private Stage stage;
@@ -33,7 +36,7 @@ public class ComposeController implements Initializable, Openable, MathFunctionA
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        inputParameterController = Functions.initializeModalityWindow(Functions.FXML_PATH + "inputParameter.fxml", inputParameterController);
+        inputParameterController = IO.initializeModalityWindow(IO.FXML_PATH + "inputParameter.fxml", inputParameterController);
         inputParameterController.getStage().initOwner(stage);
         inputParameterController.getStage().setTitle("Input parameter");
     }
@@ -49,12 +52,18 @@ public class ComposeController implements Initializable, Openable, MathFunctionA
             }
         }
         try {
+            MathFunction mathFunction = functionMap.get(comboBox.getValue()).andThen(parentFunction);
             TabulatedFunction function = factory.create(
                     functionMap.get(comboBox.getValue()).andThen(parentFunction),
                     parentFunction.leftBound(), parentFunction.rightBound(),
                     parentFunction.getCount(),
                     ((TableController) parentController).isStrict(),
                     ((TableController) parentController).isUnmodifiable());
+            if (isSaveable.isSelected()) {
+                ((TableController) parentController)
+                        .addCompositeFunction(comboBox.getValue() + "(" + ((TableController) parentController)
+                                .getCurrentTab().getText() + ")", mathFunction);
+            }
             ((TableController) parentController).createTab(function);
             stage.close();
         } catch (NullPointerException | NumberFormatException nfe) {
@@ -90,12 +99,13 @@ public class ComposeController implements Initializable, Openable, MathFunctionA
     }
 
     @Override
-    public ComboBox<String> getComboBox() {
-        return comboBox;
+    public void setMathFunctionNode() {
+        comboBox.getItems().addAll(functionMap.keySet());
+        comboBox.setValue(comboBox.getItems().get(0));
     }
 
     @Override
-    public void setFunctionMap(Map<String, MathFunction> functionMap) {
+    public void setMathFunctionMap(Map<String, MathFunction> functionMap) {
         this.functionMap = functionMap;
     }
 }

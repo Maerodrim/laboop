@@ -14,11 +14,12 @@ import ru.ssau.tk.sergunin.lab.io.FunctionsIO;
 
 import java.io.*;
 
-class Functions {
+class IO {
     static final String FXML_PATH = "fxml/";
+    static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions";
     private final TabulatedFunctionFactory factory;
 
-    Functions(TabulatedFunctionFactory factory) {
+    IO(TabulatedFunctionFactory factory) {
         this.factory = factory;
     }
 

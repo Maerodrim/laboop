@@ -3,7 +3,10 @@ package ru.ssau.tk.sergunin.lab.ui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
@@ -13,10 +16,11 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
-@ConnectableItem(name = "Create new math function", type = Item.CONTROLLER, pathFXML = "function.fxml")
-public class MathFunctionController implements Initializable, Openable, MathFunctionAccessible {
+@ConnectableItem(name = "Create new math function", type = Item.CONTROLLER, pathFXML = "mathFunction.fxml")
+public class MathFunctionController implements Initializable, Openable, MathFunctionAccessible, CompositeFunctionAccessible {
     @FXML
     ComboBox<String> comboBox;
     @FXML
@@ -39,15 +43,16 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        inputParameterController = Functions.initializeModalityWindow(
-                Functions.FXML_PATH + "inputParameter.fxml", inputParameterController);
+        inputParameterController = IO.initializeModalityWindow(
+                IO.FXML_PATH + "inputParameter.fxml", inputParameterController);
         inputParameterController.getStage().initOwner(stage);
         inputParameterController.getStage().setTitle("Input parameter");
     }
 
     @FXML
     private void createFunction() {
-        if (functionMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(ConnectableItem.class).parameter()) {
+        ConnectableItem item = functionMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(ConnectableItem.class);
+        if (!Objects.isNull(item) && item.parameter()) {
             try {
                 functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
                         .getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getParameter()));
@@ -75,7 +80,8 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
 
     @FXML
     private void doOnClickOnComboBox(ActionEvent event) {
-        if (functionMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(ConnectableItem.class).parameter()) {
+        ConnectableItem item = functionMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(ConnectableItem.class);
+        if (!Objects.isNull(item) && item.parameter()) {
             inputParameterController.getStage().show();
         }
     }
@@ -89,12 +95,14 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
         parentController = controller;
     }
 
-    public ComboBox<String> getComboBox() {
-        return comboBox;
+    @Override
+    public void setMathFunctionNode() {
+        comboBox.getItems().addAll(functionMap.keySet());
+        comboBox.setValue(comboBox.getItems().get(0));
     }
 
     @Override
-    public void setFunctionMap(Map<String, MathFunction> functionMap) {
+    public void setMathFunctionMap(Map<String, MathFunction> functionMap) {
         this.functionMap = functionMap;
     }
 
@@ -104,5 +112,21 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    @Override
+    public Openable getParentController() {
+        return parentController;
+    }
+
+    @Override
+    public void updateCompositeFunctionNode() {
+        comboBox.getItems().addAll(functionMap.keySet());
+        comboBox.setValue(comboBox.getItems().get(0));
+    }
+
+    @Override
+    public void updateCompositeFunctionMap(Map<String, MathFunction> functionMap) {
+        this.functionMap.putAll(functionMap);
     }
 }

@@ -1,18 +1,16 @@
 package ru.ssau.tk.sergunin.lab.ui;
 
-import javafx.scene.control.ComboBox;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 
 import java.util.Map;
 
 public interface MathFunctionAccessible {
-    default void connectMap(Map<String, MathFunction> functionMap) {
-        setFunctionMap(functionMap);
-        getComboBox().getItems().addAll(functionMap.keySet());
-        getComboBox().setValue(getComboBox().getItems().get(0));
+    default void connectMathFunctionMap(Map<String, MathFunction> functionMap) {
+        setMathFunctionMap(functionMap);
+        setMathFunctionNode();
     }
 
-    ComboBox<String> getComboBox();
+    void setMathFunctionNode();
 
-    void setFunctionMap(Map<String, MathFunction> functionMap);
+    void setMathFunctionMap(Map<String, MathFunction> functionMap);
 }
