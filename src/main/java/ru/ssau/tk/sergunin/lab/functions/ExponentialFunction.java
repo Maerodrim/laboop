@@ -1,8 +1,9 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
-import ru.ssau.tk.sergunin.lab.ui.SelectableFunction;
+import ru.ssau.tk.sergunin.lab.ui.Item;
+import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
 
-@SelectableFunction(name = "Показательная функция", priority = 9, parameter = true)
+@SelectableItem(name = "Показательная функция", priority = 9, type = Item.FUNCTION, parameter = true)
 public class ExponentialFunction implements MathFunction {
     private final double exp;
 

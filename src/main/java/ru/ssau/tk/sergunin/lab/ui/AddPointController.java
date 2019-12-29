@@ -32,6 +32,7 @@ public class AddPointController implements Initializable, Openable {
             AlertWindows.showWarning("Point already exists");
         }
     }
+
     @FXML
     private void cancel() {
         stage.close();
@@ -51,7 +52,8 @@ public class AddPointController implements Initializable, Openable {
     }
 
     @Override
-    public void setFactory(TabulatedFunctionFactory factory) {}
+    public void setFactory(TabulatedFunctionFactory factory) {
+    }
 
     @Override
     public void setParentController(Openable controller) {

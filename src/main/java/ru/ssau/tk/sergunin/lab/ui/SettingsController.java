@@ -19,22 +19,18 @@ import java.util.ResourceBundle;
 import java.util.stream.StreamSupport;
 
 public class SettingsController implements Initializable, Openable {
+    @FXML
+    WebView webView;
+    @FXML
+    ComboBox<String> comboBox;
+    @FXML
+    ComboBox<Boolean> strictComboBox;
+    @FXML
+    ComboBox<Boolean> unmodifiableComboBox;
     private Stage stage;
     private Openable parentController;
     private TabulatedFunctionFactory factory;
     private Map<String, TabulatedFunctionFactory> comboBoxMap;
-
-    @FXML
-    WebView webView;
-
-    @FXML
-    ComboBox<String> comboBox;
-
-    @FXML
-    ComboBox<Boolean> strictComboBox;
-
-    @FXML
-    ComboBox<Boolean> unmodifiableComboBox;
 
     @FXML
     private void save() {
@@ -43,9 +39,9 @@ public class SettingsController implements Initializable, Openable {
         stage.close();
     }
 
-    public void start() {
+    void start() {
         stage.show();
-        comboBox.setValue(comboBox.getItems().get(factory.getClass().getDeclaredAnnotation(SelectableFactory.class).priority() - 1));
+        comboBox.setValue(comboBox.getItems().get(factory.getClass().getDeclaredAnnotation(SelectableItem.class).priority() - 1));
         strictComboBox.setValue(((TableController) parentController).isStrict());
         unmodifiableComboBox.setValue(((TableController) parentController).isUnmodifiable());
         WebEngine webEngine = webView.getEngine();
@@ -53,6 +49,7 @@ public class SettingsController implements Initializable, Openable {
         webEngine.load(url);
         stage.setOnCloseRequest(windowEvent -> webEngine.load(null));
     }
+
     @FXML
     private void cancel() {
         stage.close();
@@ -60,11 +57,12 @@ public class SettingsController implements Initializable, Openable {
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
         comboBoxMap = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(SelectableFactory.class).spliterator(), false)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableFactory.class).priority()))
+        StreamSupport.stream(ClassIndex.getAnnotated(SelectableItem.class).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(SelectableItem.class).type() == Item.FACTORY)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
                 .forEach(clazz -> {
                     try {
-                        comboBoxMap.put(clazz.getDeclaredAnnotation(SelectableFactory.class).name(), (TabulatedFunctionFactory) clazz.getDeclaredConstructor().newInstance());
+                        comboBoxMap.put(clazz.getDeclaredAnnotation(SelectableItem.class).name(), (TabulatedFunctionFactory) clazz.getDeclaredConstructor().newInstance());
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                         e.printStackTrace();
                     }
@@ -73,7 +71,9 @@ public class SettingsController implements Initializable, Openable {
         strictComboBox.getItems().addAll(true, false);
         unmodifiableComboBox.getItems().addAll(true, false);
     }
+
     @FXML
+    @SuppressWarnings("SuspiciousMethodCalls")
     private void doOnClickOnComboBox(ActionEvent event) {
         factory = comboBoxMap.get(((ComboBox) event.getSource()).getValue());
     }

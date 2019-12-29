@@ -1,6 +1,5 @@
 package ru.ssau.tk.sergunin.lab.ui;
 
-
 import org.atteo.classindex.IndexAnnotated;
 
 import java.lang.annotation.ElementType;
@@ -9,10 +8,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @IndexAnnotated
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 
-public @interface SelectableFactory {
+public @interface SelectableItem {
     String name();
+
     int priority() default 0;
+
+    Item type();
+
+    boolean parameter() default false;
 }

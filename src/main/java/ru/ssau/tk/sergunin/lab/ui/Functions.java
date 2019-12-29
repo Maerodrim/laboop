@@ -13,17 +13,16 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.io.FunctionsIO;
 
 import java.io.*;
-import java.nio.file.Paths;
 
-public class Functions {
-    public static final String FXML_PATH = "src/main/java/ru/ssau/tk/sergunin/lab/ui/fxml/";
-    private TabulatedFunctionFactory factory;
+class Functions {
+    static final String FXML_PATH = "fxml/";
+    private final TabulatedFunctionFactory factory;
 
     Functions(TabulatedFunctionFactory factory) {
         this.factory = factory;
     }
 
-    public static File load(Stage stage, String defaultPath) {
+    static File load(Stage stage, String defaultPath) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load function");
         fileChooser.setInitialDirectory(new File(defaultPath));
@@ -35,7 +34,7 @@ public class Functions {
         return fileChooser.showOpenDialog(stage);
     }
 
-    public static File save(Stage stage) {
+    static File save(Stage stage) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save function");
         fileChooser.getExtensionFilters().addAll(
@@ -46,20 +45,20 @@ public class Functions {
         return fileChooser.showSaveDialog(stage);
     }
 
-    public static <T extends Openable> T initializeModalityWindow(String pathFXML, T modalityWindow) {
+    static <T extends Openable> T initializeModalityWindow(String pathFXML, T modalityWindow) {
         FXMLLoader loader;
-        Parent createNewFunction = null;
+        Parent createNewFunction;
+        Stage createNewFunctionStage = new Stage();
         try {
-            loader = new FXMLLoader(Paths.get(pathFXML).toUri().toURL());
+            loader = new FXMLLoader(modalityWindow.getClass().getClassLoader().getResource(pathFXML));
             createNewFunction = loader.load();
             modalityWindow = loader.getController();
+            createNewFunctionStage.setScene(new Scene(createNewFunction));
+            createNewFunctionStage.initModality(Modality.APPLICATION_MODAL);
+            modalityWindow.setStage(createNewFunctionStage);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Stage createNewFunctionStage = new Stage();
-        createNewFunctionStage.setScene(new Scene(createNewFunction));
-        createNewFunctionStage.initModality(Modality.APPLICATION_MODAL);
-        modalityWindow.setStage(createNewFunctionStage);
         return modalityWindow;
     }
 
@@ -76,7 +75,7 @@ public class Functions {
         return function;
     }
 
-    public TabulatedFunction wrap(TabulatedFunction function) {
+    TabulatedFunction wrap(TabulatedFunction function) {
         boolean isStrict = function.isStrict();
         boolean isUnmodifiable = function.isUnmodifiable();
         if (isUnmodifiable && isStrict) {
@@ -90,55 +89,61 @@ public class Functions {
         }
     }
 
-    public void saveFunctionAs(File file, TabulatedFunction function) {
+    void saveFunctionAs(File file, TabulatedFunction function) {
         switch (file.getPath().split("(?=[.])")[1]) {
-            case ".json" -> {
+            case (".json") : {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                     FunctionsIO.serializeJson(writer, unwrap(function));
                 } catch (IOException e) {
                     AlertWindows.showError(e);
                 }
+                break;
             }
-            case ".xml" -> {
+            case (".xml") : {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                     FunctionsIO.serializeXml(writer, unwrap(function));
                 } catch (IOException e) {
                     AlertWindows.showError(e);
                 }
+                break;
             }
-            case ".fnc" -> {
+            case (".fnc") : {
                 try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
                     FunctionsIO.writeTabulatedFunction(outputStream, function);
                 } catch (IOException e) {
                     AlertWindows.showError(e);
                 }
+                break;
             }
         }
     }
 
-    public TabulatedFunction loadFunctionAs(File file) {
+    TabulatedFunction loadFunctionAs(File file) {
         TabulatedFunction function = null;
         switch (file.getPath().split("(?=[.])")[1]) {
-            case ".json" -> {
+            case (".json") : {
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                     function = wrap(FunctionsIO.deserializeJson(reader, factory.getTabulatedFunctionClass()));
                 } catch (IOException e) {
                     AlertWindows.showError(e);
                 }
+                break;
             }
-            case ".xml" -> {
+            case (".xml") : {
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                     function = wrap(FunctionsIO.deserializeXml(reader, factory.getTabulatedFunctionClass()));
                 } catch (IOException e) {
                     AlertWindows.showError(e);
                 }
+                break;
             }
-            case ".fnc" -> {
+            case (".fnc") : {
                 try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
                     function = wrap(FunctionsIO.readTabulatedFunction(inputStream, factory));
                 } catch (IOException e) {
                     AlertWindows.showError(e);
                 }
+                break;
             }
         }
         return function;

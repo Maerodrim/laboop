@@ -35,4 +35,5 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point>, Explic
                 && rightBound() == function.rightBound()
                 && getCount() == function.getCount();
     }
+
 }

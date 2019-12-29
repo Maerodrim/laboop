@@ -10,14 +10,12 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import java.nio.file.Paths;
 
 public class AboutController implements Openable {
-    private Stage stage;
-    private Openable parentController;
-    public MediaPlayer mediaPlayer;
-
+    private MediaPlayer mediaPlayer;
     @FXML
     MediaView mediaView;
+    private Stage stage;
 
-    public void play() {
+    void play() {
         stage.show();
         stage.setOnCloseRequest(windowEvent -> mediaPlayer.stop());
         Media media = new Media(Paths.get("1234.mp4").toUri().toString());
@@ -40,8 +38,6 @@ public class AboutController implements Openable {
     }
 
     @Override
-    public void setParentController(Openable controller) {
-        this.parentController = controller;
-    }
+    public void setParentController(Openable controller) { }
 
 }

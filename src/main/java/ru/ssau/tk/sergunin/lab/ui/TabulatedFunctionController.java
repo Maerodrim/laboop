@@ -32,7 +32,7 @@ public class TabulatedFunctionController implements Initializable, Openable {
     TableColumn<Point, Double> x;
     @FXML
     TableColumn<Point, Double> y;
-    private Map<String, Boolean> existingPoints = new LinkedHashMap<>();
+    private final Map<String, Boolean> existingPoints = new LinkedHashMap<>();
 
     private Stage stage;
     private Openable parentController;
@@ -104,15 +104,15 @@ public class TabulatedFunctionController implements Initializable, Openable {
         return stage;
     }
 
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
     public void setFactory(TabulatedFunctionFactory factory) {
     }
 
     @Override
     public void setParentController(Openable controller) {
         parentController = controller;
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
     }
 }

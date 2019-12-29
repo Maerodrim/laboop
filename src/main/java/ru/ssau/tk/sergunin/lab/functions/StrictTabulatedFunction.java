@@ -1,5 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Iterator;
 
 public class StrictTabulatedFunction implements TabulatedFunction {
@@ -69,6 +71,7 @@ public class StrictTabulatedFunction implements TabulatedFunction {
         return tabulatedFunction.isUnmodifiable();
     }
 
+    @NotNull
     @Override
     public Iterator<Point> iterator() {
         return tabulatedFunction.iterator();
@@ -90,10 +93,12 @@ public class StrictTabulatedFunction implements TabulatedFunction {
 
     @Override
     public void offerStrict(boolean isStrict) {
+        throw new UnsupportedOperationException("The strict parameter cannot be changed");
     }
 
     @Override
     public void offerUnmodifiable(boolean isUnmodifiable) {
+        tabulatedFunction.offerUnmodifiable(isUnmodifiable);
     }
 
     @Override

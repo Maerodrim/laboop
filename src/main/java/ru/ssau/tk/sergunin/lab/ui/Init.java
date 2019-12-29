@@ -6,8 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.nio.file.Paths;
-
 public class Init extends Application {
 
     public static void main(String[] args) {
@@ -15,9 +13,9 @@ public class Init extends Application {
     }
 
     @Override
-    public  void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) throws Exception {
 
-        FXMLLoader loader = new FXMLLoader(Paths.get(Functions.FXML_PATH + "TableController.fxml").toUri().toURL());
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(Functions.FXML_PATH + "table.fxml"));
         Parent root = loader.load();
         TableController controller = loader.getController();
         controller.setStage(primaryStage);

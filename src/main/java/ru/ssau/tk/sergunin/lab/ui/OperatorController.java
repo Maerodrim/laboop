@@ -20,8 +20,8 @@ import java.util.stream.StreamSupport;
 
 public class OperatorController implements Initializable, Openable {
 
-    Stage stage;
-    Openable parentController;
+    private Stage stage;
+    private Openable parentController;
     @FXML
     ComboBox<String> comboBox;
     private Map<String, Method> operatorMap;
@@ -31,13 +31,14 @@ public class OperatorController implements Initializable, Openable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         operatorMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(SelectableOperator.class).spliterator(), false)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableOperator.class).priority()))
+        StreamSupport.stream(ClassIndex.getAnnotated(SelectableItem.class).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(SelectableItem.class).type() == Item.OPERATOR)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
                 .forEach(clazz -> Stream.of(clazz.getMethods())
-                        .filter(method -> method.isAnnotationPresent(SelectableOperator.class))
-                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableOperator.class).priority()))
+                        .filter(method -> method.isAnnotationPresent(SelectableItem.class))
+                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
                         .forEach(method -> {
-                            operatorMap.put(method.getDeclaredAnnotation(SelectableOperator.class).name(), method);
+                            operatorMap.put(method.getDeclaredAnnotation(SelectableItem.class).name(), method);
                             classes.put(method, clazz);
                         }));
         comboBox.getItems().addAll(operatorMap.keySet());
@@ -72,10 +73,13 @@ public class OperatorController implements Initializable, Openable {
     @FXML
     public void ok() {
         try {
-            ((TableController) parentController).createTab((TabulatedFunction) operatorMap.get(comboBox.getValue()).invoke(
+            TabulatedFunction function = (TabulatedFunction) operatorMap.get(comboBox.getValue()).invoke(
                     classes.get(operatorMap.get(comboBox.getValue())).getDeclaredConstructor(TabulatedFunctionFactory.class)
                             .newInstance(((TableController) parentController).getFactory()),
-                    ((TableController) parentController).getFunction()));
+                    ((TableController) parentController).getFunction());
+            function.offerStrict(((TableController) parentController).isStrict());
+            function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
+            ((TableController) parentController).createTab(function);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
             e.printStackTrace();
         }

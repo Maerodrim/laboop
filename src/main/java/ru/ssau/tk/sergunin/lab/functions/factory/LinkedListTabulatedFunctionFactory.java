@@ -1,10 +1,12 @@
 package ru.ssau.tk.sergunin.lab.functions.factory;
 
-import ru.ssau.tk.sergunin.lab.ui.SelectableFactory;
 import ru.ssau.tk.sergunin.lab.functions.LinkedListTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
-@SelectableFactory(name = "Linked list tabulated function", priority = 2)
+import ru.ssau.tk.sergunin.lab.ui.Item;
+import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
+
+@SelectableItem(name = "Linked list tabulated function", priority = 2, type = Item.FACTORY)
 public class LinkedListTabulatedFunctionFactory implements TabulatedFunctionFactory {
 
     @Override
