@@ -1,9 +1,9 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import ru.ssau.tk.sergunin.lab.ui.Item;
-import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
+import ru.ssau.tk.sergunin.lab.ui.ConnectableItem;
 
-@SelectableItem(name = "Константа", priority = 3, type = Item.FUNCTION, parameter = true)
+@ConnectableItem(name = "Константа", priority = 3, type = Item.FUNCTION, hasParameter = true)
 public class ConstantFunction implements MathFunction {
     final private double constant;
 

@@ -4,5 +4,6 @@ public enum Item {
     FACTORY,
     FUNCTION,
     OPERATION,
-    OPERATOR
+    OPERATOR,
+    CONTROLLER
 }

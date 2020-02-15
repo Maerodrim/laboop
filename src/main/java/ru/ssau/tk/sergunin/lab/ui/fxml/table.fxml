@@ -14,9 +14,9 @@
                     <items>
                         <Menu mnemonicParsing="false" text="New">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#newTabulatedFunction"
+                                <MenuItem mnemonicParsing="false" onAction="#tabulatedFunction"
                                           text="As tabulated function"/>
-                                <MenuItem mnemonicParsing="false" onAction="#newMathFunction" text="As function"/>
+                                <MenuItem mnemonicParsing="false" onAction="#mathFunction" text="As function"/>
                             </items>
                         </Menu>
                         <MenuItem mnemonicParsing="false" onAction="#loadFunction" text="Load"/>
@@ -37,7 +37,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#plot" text="Plot"/>
                         <MenuItem mnemonicParsing="false" onAction="#calculate" text="Calculate"/>
                         <MenuItem mnemonicParsing="false" onAction="#compose" text="Compose"/>
-                        <MenuItem mnemonicParsing="false" onAction="#operate" text="Operate"/>
+                        <MenuItem mnemonicParsing="false" onAction="#operator" text="Operate"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Settings">

@@ -16,9 +16,11 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class FunctionController implements Initializable, Openable {
+@ConnectableItem(name = "Create new math function", type = Item.CONTROLLER, pathFXML = "mathFunction.fxml")
+public class MathFunctionController implements Initializable, Openable, MathFunctionAccessible, CompositeFunctionAccessible {
     @FXML
     ComboBox<String> comboBox;
     @FXML
@@ -37,26 +39,34 @@ public class FunctionController implements Initializable, Openable {
     private InputParameterController inputParameterController = new InputParameterController();
     private Openable parentController;
     private TabulatedFunctionFactory factory;
-    private Map<String, MathFunction> comboBoxMap;
+    private Map<String, MathFunction> functionMap;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        inputParameterController = Functions.initializeModalityWindow(Functions.FXML_PATH + "inputParameter.fxml", inputParameterController);
+        inputParameterController = IO.initializeModalityWindow(
+                IO.FXML_PATH + "inputParameter.fxml", inputParameterController);
         inputParameterController.getStage().initOwner(stage);
         inputParameterController.getStage().setTitle("Input parameter");
     }
 
     @FXML
     private void createFunction() {
-        if (comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(SelectableItem.class).parameter()) {
+        ConnectableItem item = functionMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(ConnectableItem.class);
+        if (!Objects.isNull(item) && item.hasParameter()) {
             try {
-                comboBoxMap.replace(comboBox.getValue(), comboBoxMap.get(comboBox.getValue()).getClass().getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getParameter()));
+                if (item.parameterInstanceOfDouble()) {
+                    functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
+                            .getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getDoubleParameter()));
+                } else {
+                    functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
+                            .getDeclaredConstructor(String.class).newInstance(inputParameterController.getParameter()));
+                }
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
         }
         try {
-            TabulatedFunction function = factory.create(comboBoxMap.get(comboBox.getValue()),
+            TabulatedFunction function = factory.create(functionMap.get(comboBox.getValue()),
                     Double.parseDouble(leftBorder.getText()),
                     Double.parseDouble(rightBorder.getText()),
                     Integer.parseInt(numberOfPoints.getText()),
@@ -75,8 +85,13 @@ public class FunctionController implements Initializable, Openable {
 
     @FXML
     private void doOnClickOnComboBox(ActionEvent event) {
-        if (comboBoxMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(SelectableItem.class).parameter()) {
-            inputParameterController.getStage().show();
+        if (!Objects.isNull(functionMap.get(((ComboBox) event.getSource()).getValue()))) {
+            ConnectableItem item = functionMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass()
+                    .getDeclaredAnnotation(ConnectableItem.class);
+            if (!Objects.isNull(item) && item.hasParameter()) {
+                inputParameterController.getStage().show();
+                inputParameterController.setTypeOfParameter(item.parameterInstanceOfDouble() ? Double.TYPE : String.class);
+            }
         }
     }
 
@@ -89,12 +104,15 @@ public class FunctionController implements Initializable, Openable {
         parentController = controller;
     }
 
-    public ComboBox<String> getComboBox() {
-        return comboBox;
+    @Override
+    public void setMathFunctionNode() {
+        comboBox.getItems().addAll(functionMap.keySet());
+        comboBox.setValue(comboBox.getItems().get(0));
     }
 
-    public void setComboBoxMap(Map<String, MathFunction> comboBoxMap) {
-        this.comboBoxMap = comboBoxMap;
+    @Override
+    public void setMathFunctionMap(Map<String, MathFunction> functionMap) {
+        this.functionMap = functionMap;
     }
 
     public Stage getStage() {
@@ -105,4 +123,20 @@ public class FunctionController implements Initializable, Openable {
         this.stage = stage;
     }
 
+    @Override
+    public Openable getParentController() {
+        return parentController;
+    }
+
+    @Override
+    public void updateCompositeFunctionNode() {
+        comboBox.getItems().clear();
+        comboBox.getItems().setAll(functionMap.keySet());
+        comboBox.setValue(comboBox.getItems().get(0));
+    }
+
+    @Override
+    public void updateCompositeFunctionMap(Map<String, MathFunction> functionMap) {
+        this.functionMap.putAll(functionMap);
+    }
 }

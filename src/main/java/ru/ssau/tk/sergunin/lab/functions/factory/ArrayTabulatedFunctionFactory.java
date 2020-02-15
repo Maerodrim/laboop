@@ -4,9 +4,9 @@ import ru.ssau.tk.sergunin.lab.functions.ArrayTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.ui.Item;
-import ru.ssau.tk.sergunin.lab.ui.SelectableItem;
+import ru.ssau.tk.sergunin.lab.ui.ConnectableItem;
 
-@SelectableItem(name = "Array tabulated function", priority = 1, type = Item.FACTORY)
+@ConnectableItem(name = "Array tabulated function", priority = 1, type = Item.FACTORY)
 public class ArrayTabulatedFunctionFactory implements TabulatedFunctionFactory {
 
     public Class<ArrayTabulatedFunction> getTabulatedFunctionClass() {

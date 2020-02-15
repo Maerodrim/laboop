@@ -7,8 +7,11 @@ import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
+import java.io.BufferedInputStream;
 import java.nio.file.Paths;
+import java.util.Objects;
 
+@ConnectableItem(name = "Смешарики", type = Item.CONTROLLER, pathFXML = "about.fxml")
 public class AboutController implements Openable {
     private MediaPlayer mediaPlayer;
     @FXML
@@ -18,7 +21,7 @@ public class AboutController implements Openable {
     void play() {
         stage.show();
         stage.setOnCloseRequest(windowEvent -> mediaPlayer.stop());
-        Media media = new Media(Paths.get("1234.mp4").toUri().toString());
+        Media media = new Media(getClass().getResource("/videos/video.mp4").toString());
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.play();
         mediaPlayer.setOnEndOfMedia(() -> stage.close());

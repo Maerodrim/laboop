@@ -9,6 +9,7 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@ConnectableItem(name = "Calculate", type = Item.CONTROLLER, pathFXML = "calculate.fxml")
 public class CalculateController implements Initializable, Openable {
     @FXML
     TextField x;

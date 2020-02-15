@@ -11,12 +11,16 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 
-public @interface SelectableItem {
+public @interface ConnectableItem {
     String name();
 
     int priority() default 0;
 
     Item type();
 
-    boolean parameter() default false;
+    boolean hasParameter() default false;
+
+    boolean parameterInstanceOfDouble() default true;
+
+    String pathFXML() default "";
 }

@@ -30,7 +30,7 @@
                         <Insets top="15.0"/>
                     </VBox.margin>
                 </TextField>
-                <Button fx:id="button" mnemonicParsing="false" onAction="#getParameter" prefHeight="31.0"
+                <Button fx:id="button" mnemonicParsing="false" onAction="#ok" prefHeight="31.0"
                         prefWidth="326.0" text="Применить">
                     <VBox.margin>
                         <Insets top="30.0"/>

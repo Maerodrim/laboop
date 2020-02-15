@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.StreamSupport;
 
+@ConnectableItem(name = "Settings", type = Item.CONTROLLER, pathFXML = "settings.fxml")
 public class SettingsController implements Initializable, Openable {
     @FXML
     WebView webView;
@@ -41,7 +42,7 @@ public class SettingsController implements Initializable, Openable {
 
     void start() {
         stage.show();
-        comboBox.setValue(comboBox.getItems().get(factory.getClass().getDeclaredAnnotation(SelectableItem.class).priority() - 1));
+        comboBox.setValue(comboBox.getItems().get(factory.getClass().getDeclaredAnnotation(ConnectableItem.class).priority() - 1));
         strictComboBox.setValue(((TableController) parentController).isStrict());
         unmodifiableComboBox.setValue(((TableController) parentController).isUnmodifiable());
         WebEngine webEngine = webView.getEngine();
@@ -57,12 +58,12 @@ public class SettingsController implements Initializable, Openable {
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
         comboBoxMap = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(SelectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(SelectableItem.class).type() == Item.FACTORY)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
+        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.FACTORY)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                 .forEach(clazz -> {
                     try {
-                        comboBoxMap.put(clazz.getDeclaredAnnotation(SelectableItem.class).name(), (TabulatedFunctionFactory) clazz.getDeclaredConstructor().newInstance());
+                        comboBoxMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(), (TabulatedFunctionFactory) clazz.getDeclaredConstructor().newInstance());
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                         e.printStackTrace();
                     }
@@ -105,4 +106,5 @@ public class SettingsController implements Initializable, Openable {
     public void setParentController(Openable controller) {
         this.parentController = controller;
     }
+
 }

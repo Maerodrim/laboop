@@ -3,49 +3,60 @@ package ru.ssau.tk.sergunin.lab.ui;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Tab;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
+import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
+import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class ApplyController implements Initializable, Openable {
+@ConnectableItem(name = "Apply", type = Item.CONTROLLER, pathFXML = "apply.fxml")
+public class ApplyController implements Initializable, Openable, TabulatedFunctionAccessible, MathFunctionAccessible, CompositeFunctionAccessible {
     private Stage stage;
     private Openable parentController;
-
+    private TabulatedFunctionFactory factory;
     private Map<String, Method> operationMap;
-    private Map<String, TabulatedFunction> functionMap;
-
+    private Map<String, MathFunction> tabulatedFunctionMap;
+    private Map<String, MathFunction> mathFunctionMap;
+    private Map<String, MathFunction> compositeFunctionMap;
     private Map<Method, Class<?>> classes;
+    private MathFunction currentFunction;
+    @FXML
+    private Menu mathFunctionMenu;
+    @FXML
+    private Menu compositeFunctionMenu;
+    @FXML
+    private Menu currentFunctionMenu;
+    @FXML
+    private Menu loadFunction;
 
     @FXML
     private ComboBox<String> operationComboBox;
-    @FXML
-    private ComboBox<String> functionComboBox;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         operationMap = new LinkedHashMap<>();
-        functionMap = new LinkedHashMap<>();
+        tabulatedFunctionMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(SelectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(SelectableItem.class).type() == Item.OPERATION)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
+        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.OPERATION)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                 .forEach(clazz -> Stream.of(clazz.getMethods())
-                        .filter(method -> method.isAnnotationPresent(SelectableItem.class))
-                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(SelectableItem.class).priority()))
+                        .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
+                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                         .forEach(method -> {
-                            operationMap.put(method.getDeclaredAnnotation(SelectableItem.class).name(), method);
+                            operationMap.put(method.getDeclaredAnnotation(ConnectableItem.class).name(), method);
                             classes.put(method, clazz);
                         }));
         operationComboBox.getItems().addAll(operationMap.keySet());
@@ -61,13 +72,14 @@ public class ApplyController implements Initializable, Openable {
     public void setStage(Stage stage) {
         this.stage = stage;
         this.stage.setOnCloseRequest(windowEvent -> {
-            functionMap.clear();
-            functionComboBox.getItems().clear();
+            tabulatedFunctionMap.clear();
+            currentFunctionMenu.getItems().clear();
         });
     }
 
     @Override
     public void setFactory(TabulatedFunctionFactory factory) {
+        this.factory = factory;
     }
 
     @Override
@@ -82,40 +94,71 @@ public class ApplyController implements Initializable, Openable {
                     .invoke(classes.get(operationMap.get(operationComboBox.getValue())).getDeclaredConstructor(TabulatedFunctionFactory.class)
                                     .newInstance(((TableController) parentController).getFactory()),
                             ((TableController) parentController).getFunction(),
-                            functionMap.get(functionComboBox.getValue()));
+                            currentFunction);
             function.offerStrict(((TableController) parentController).isStrict());
             function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
             ((TableController) parentController).createTab(function);
-        } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {
+            AlertWindows.showError(e);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof NaNException){
+                AlertWindows.showWarning("Результат не существует");
+            } else {
+                AlertWindows.showError(e);
+            }
         }
-        functionMap.clear();
-        functionComboBox.getItems().clear();
         stage.close();
     }
 
     @FXML
     public void cancel() {
-        functionMap.clear();
-        functionComboBox.getItems().clear();
         stage.close();
     }
 
-    ComboBox<String> getFunctionComboBox() {
-        return functionComboBox;
+    @Override
+    public Openable getParentController() {
+        return parentController;
     }
 
-    Map<String, TabulatedFunction> getFunctionMap() {
-        return functionMap;
+    public Map<String, ? super MathFunction> getTabulatedFunctionMap() {
+        return tabulatedFunctionMap;
     }
 
-    void setFunctionMap(Map<Tab, TabulatedFunction> functionMap) {
-        functionMap.forEach((tab, function) -> {
-            if (function != ((TableController) parentController).getFunction() &&
-                    !function.isStrict() &&
-                    ((TableController) parentController).getFunction().isCanBeComposed(function)) {
-                this.functionMap.put(tab.getText(), function);
-            }
-        });
+    private void addMenuItems(Menu menu, Map<String, MathFunction> map) {
+        menu.getItems().addAll(map.keySet().stream().map(MenuItem::new).collect(Collectors.toList()));
+        menu.getItems().forEach(f -> f.setOnAction(e -> currentFunction = map.get(f.getText())));
+    }
+
+    @Override
+    public void updateTabulatedFunctionNode() {
+        addMenuItems(currentFunctionMenu, tabulatedFunctionMap);
+    }
+
+    @Override
+    public void setMathFunctionNode() {
+        addMenuItems(mathFunctionMenu, mathFunctionMap);
+    }
+
+    @Override
+    public void setMathFunctionMap(Map<String, MathFunction> functionMap) {
+        mathFunctionMap = functionMap;
+    }
+
+    @FXML
+    public void load() {
+        File file = IO.load(stage, IO.DEFAULT_DIRECTORY);
+        if (!Objects.equals(file, null)) {
+            currentFunction = new IO(factory).loadFunctionAs(file);
+        }
+    }
+
+    @Override
+    public void updateCompositeFunctionNode() {
+        addMenuItems(compositeFunctionMenu, compositeFunctionMap);
+    }
+
+    @Override
+    public void updateCompositeFunctionMap(Map<String, MathFunction> functionMap) {
+        compositeFunctionMap = functionMap;
     }
 }

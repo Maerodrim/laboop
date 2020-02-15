@@ -49,7 +49,12 @@ public abstract class AbstractTabulatedFunction implements TabulatedFunction {
         StringBuilder builder = new StringBuilder();
         builder.append(getClass().getSimpleName()).append(" size = ").append(getCount()).append("\n");
         for (Point point : this) {
-            builder.append("[").append(point.x).append("; ").append(point.y).append("]\n");
+            builder
+                    .append("[")
+                    .append(point.x)
+                    .append("; ")
+                    .append(point.y)
+                    .append("]\n");
         }
         builder.deleteCharAt(builder.length() - 1);
         return builder.toString();

@@ -13,12 +13,22 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.io.FunctionsIO;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
-class Functions {
+class IO {
     static final String FXML_PATH = "fxml/";
+    static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions"; // будеть работать только
+    // на компьютерах под управлением OS Windows 7/8/8.1/10
     private final TabulatedFunctionFactory factory;
+    private static final Collection<FileChooser.ExtensionFilter> EXTENSION_FILTERS = List.of(
+            new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
+            new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
+            new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
 
-    Functions(TabulatedFunctionFactory factory) {
+    IO(TabulatedFunctionFactory factory) {
         this.factory = factory;
     }
 
@@ -26,22 +36,14 @@ class Functions {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load function");
         fileChooser.setInitialDirectory(new File(defaultPath));
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
-                new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
-                new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml")
-        );
+        fileChooser.getExtensionFilters().addAll(EXTENSION_FILTERS);
         return fileChooser.showOpenDialog(stage);
     }
 
     static File save(Stage stage) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save function");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
-                new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
-                new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml")
-        );
+        fileChooser.getExtensionFilters().addAll(EXTENSION_FILTERS);
         return fileChooser.showSaveDialog(stage);
     }
 
