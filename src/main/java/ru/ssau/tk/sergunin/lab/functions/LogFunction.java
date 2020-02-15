@@ -3,7 +3,7 @@ package ru.ssau.tk.sergunin.lab.functions;
 import ru.ssau.tk.sergunin.lab.ui.Item;
 import ru.ssau.tk.sergunin.lab.ui.ConnectableItem;
 
-@ConnectableItem(name = "Логарифм", priority = 11, type = Item.FUNCTION, parameter = true)
+@ConnectableItem(name = "Логарифм", priority = 11, type = Item.FUNCTION, hasParameter = true)
 public class LogFunction implements MathFunction {
     private final double log;
 

@@ -83,10 +83,17 @@ public class TableController implements Initializable, Openable {
                 .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                 .forEach(clazz -> {
                     try {
-                        if (clazz.getDeclaredAnnotation(ConnectableItem.class).parameter()) {
-                            mathFunctionMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(), (MathFunction) clazz.getDeclaredConstructor(Double.TYPE).newInstance(0));
+                        if (clazz.getDeclaredAnnotation(ConnectableItem.class).hasParameter()) {
+                            if (clazz.getDeclaredAnnotation(ConnectableItem.class).parameterInstanceOfDouble()) {
+                                mathFunctionMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(),
+                                        (MathFunction) clazz.getDeclaredConstructor(Double.TYPE).newInstance(0));
+                            } else {
+                                mathFunctionMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(),
+                                        (MathFunction) clazz.getDeclaredConstructor(String.class).newInstance(""));
+                            }
                         } else {
-                            mathFunctionMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(), (MathFunction) clazz.getDeclaredConstructor().newInstance());
+                            mathFunctionMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(),
+                                    (MathFunction) clazz.getDeclaredConstructor().newInstance());
                         }
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                         e.printStackTrace();

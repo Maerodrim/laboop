@@ -1,5 +1,6 @@
 package ru.ssau.tk.sergunin.lab.ui;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,8 +16,11 @@ public class InputParameterController implements Openable {
     TextField textField;
     @FXML
     Button button;
+    private String value;
+    private double doubleValue;
+    private Class<?> typeOfParameter;
+
     private Stage stage;
-    private double value;
 
     public Stage getStage() {
         return stage;
@@ -35,17 +39,28 @@ public class InputParameterController implements Openable {
     }
 
     @FXML
-    public double getParameter() {
-        stage.show();
-        stage.setTitle("Input parameter");
+    public void ok() {
         try {
-            value = Double.parseDouble(textField.getText());
+            value = textField.getText();
+            if (typeOfParameter.equals(Double.TYPE)) {
+                doubleValue = Double.parseDouble(value);
+            }
             stage.close();
-        } catch (NullPointerException | NumberFormatException nfe) {
+        } catch (NullPointerException | NumberFormatException e) {
             textField.clear();
             AlertWindows.showWarning("Введите корректное значение");
         }
+    }
+
+    public void setTypeOfParameter(Class<?> clazz) {
+        typeOfParameter = clazz;
+    }
+
+    public String getParameter() {
         return value;
     }
 
+    public double getDoubleParameter() {
+        return doubleValue;
+    }
 }

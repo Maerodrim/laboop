@@ -14,6 +14,7 @@ import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 @ConnectableItem(name = "Compose", type = Item.CONTROLLER, pathFXML = "compose.fxml")
@@ -30,8 +31,14 @@ public class ComposeController implements Initializable, Openable, MathFunctionA
 
     @FXML
     public void doOnClickOnComboBox(ActionEvent event) {
-        if (functionMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(ConnectableItem.class).parameter()) {
+        /*if (functionMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(ConnectableItem.class).hasParameter()) {
             inputParameterController.getStage().show();
+        }*/
+        ConnectableItem item = functionMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass()
+                .getDeclaredAnnotation(ConnectableItem.class);
+        if (!Objects.isNull(item) && item.hasParameter()) {
+            inputParameterController.getStage().show();
+            inputParameterController.setTypeOfParameter(item.parameterInstanceOfDouble() ? Double.TYPE : String.class);
         }
     }
 
@@ -44,9 +51,16 @@ public class ComposeController implements Initializable, Openable, MathFunctionA
     @FXML
     public void composeFunction() {
         TabulatedFunction parentFunction = ((TableController) parentController).getFunction();
-        if (functionMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(ConnectableItem.class).parameter()) {
+        ConnectableItem item = functionMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(ConnectableItem.class);
+        if (!Objects.isNull(item) && item.hasParameter()) {
             try {
-                functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass().getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getParameter()));
+                if (item.parameterInstanceOfDouble()) {
+                    functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
+                            .getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getDoubleParameter()));
+                } else {
+                    functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
+                            .getDeclaredConstructor(String.class).newInstance(inputParameterController.getParameter()));
+                }
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }

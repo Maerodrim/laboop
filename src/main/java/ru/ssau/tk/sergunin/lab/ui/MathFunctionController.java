@@ -52,10 +52,15 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
     @FXML
     private void createFunction() {
         ConnectableItem item = functionMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(ConnectableItem.class);
-        if (!Objects.isNull(item) && item.parameter()) {
+        if (!Objects.isNull(item) && item.hasParameter()) {
             try {
-                functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
-                        .getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getParameter()));
+                if (item.parameterInstanceOfDouble()) {
+                    functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
+                            .getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getDoubleParameter()));
+                } else {
+                    functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
+                            .getDeclaredConstructor(String.class).newInstance(inputParameterController.getParameter()));
+                }
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
@@ -80,9 +85,13 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
 
     @FXML
     private void doOnClickOnComboBox(ActionEvent event) {
-        ConnectableItem item = functionMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass().getDeclaredAnnotation(ConnectableItem.class);
-        if (!Objects.isNull(item) && item.parameter()) {
-            inputParameterController.getStage().show();
+        if (!Objects.isNull(functionMap.get(((ComboBox) event.getSource()).getValue()))) {
+            ConnectableItem item = functionMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass()
+                    .getDeclaredAnnotation(ConnectableItem.class);
+            if (!Objects.isNull(item) && item.hasParameter()) {
+                inputParameterController.getStage().show();
+                inputParameterController.setTypeOfParameter(item.parameterInstanceOfDouble() ? Double.TYPE : String.class);
+            }
         }
     }
 
@@ -121,7 +130,8 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
 
     @Override
     public void updateCompositeFunctionNode() {
-        comboBox.getItems().addAll(functionMap.keySet());
+        comboBox.getItems().clear();
+        comboBox.getItems().setAll(functionMap.keySet());
         comboBox.setValue(comboBox.getItems().get(0));
     }
 

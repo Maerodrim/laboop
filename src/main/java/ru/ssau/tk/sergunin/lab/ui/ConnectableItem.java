@@ -18,7 +18,9 @@ public @interface ConnectableItem {
 
     Item type();
 
-    boolean parameter() default false;
+    boolean hasParameter() default false;
+
+    boolean parameterInstanceOfDouble() default true;
 
     String pathFXML() default "";
 }
