@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -48,10 +49,12 @@ public class SolvePolynomialController implements Initializable, Openable {
 
     @FXML
     private void ok() {
-        ListX = new ListView(FXCollections.observableList(numMethod.solve(
+        ListX.setItems(FXCollections.observableList(numMethod.solve(
                 ((PolynomialFunction) ((TableController) parentController).getFunction().getMathFunction()),
                 Double.parseDouble(left.getText()), Double.parseDouble(right.getText()),
                 Integer.parseInt(count.getText()), Double.parseDouble(eps.getText()))));
+        ListX.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        ListX.getSelectionModel().selectAll();
     }
 
     @FXML
