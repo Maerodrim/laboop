@@ -15,6 +15,7 @@ import org.atteo.classindex.ClassIndex;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
+import ru.ssau.tk.sergunin.lab.functions.PolynomialFunction;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
@@ -397,7 +398,16 @@ public class TableController implements Initializable, Openable {
             }
         }
     }
-
+    @FXML
+    private void solvePolynomial() {
+        if (isTabExist()) {
+            if (getFunction().getMathFunction() instanceof PolynomialFunction) {
+                getController().getStage().show();
+            } else {
+                AlertWindows.showWarning("Function isn't Polynomial");
+            }
+        }
+    }
     @FXML
     private void settings() {
         ((SettingsController)getController()).start();

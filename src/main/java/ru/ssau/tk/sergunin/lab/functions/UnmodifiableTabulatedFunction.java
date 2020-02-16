@@ -82,6 +82,17 @@ public class UnmodifiableTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
+    public void setMathFunction(MathFunction math) {
+        tabulatedFunction.setMathFunction(math);
+    }
+
+    @Override
+    public MathFunction getMathFunction(){
+        return tabulatedFunction.getMathFunction();
+    }
+
+
+    @Override
     public void offerStrict(boolean isStrict) {
         tabulatedFunction.offerStrict(isStrict);
     }

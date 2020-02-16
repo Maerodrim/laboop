@@ -36,4 +36,7 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point>, Explic
                 && getCount() == function.getCount();
     }
 
+    void setMathFunction(MathFunction math);
+
+    MathFunction getMathFunction();
 }
