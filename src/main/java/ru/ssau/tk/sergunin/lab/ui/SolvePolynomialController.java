@@ -8,14 +8,18 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import org.atteo.classindex.ClassIndex;
 import ru.ssau.tk.sergunin.lab.numericalMethods.NewtonMethod;
-import ru.ssau.tk.sergunin.lab.numericalMethods.NumericalMethod;
+import ru.ssau.tk.sergunin.lab.numericalMethods.NumericalMethods;
 import ru.ssau.tk.sergunin.lab.functions.PolynomialFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 import java.net.URL;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.StreamSupport;
 
 @ConnectableItem(name = "Solve Polynomial", type = Item.CONTROLLER, pathFXML = "solvePolynomial.fxml")
 public class SolvePolynomialController implements Initializable, Openable {
@@ -28,9 +32,19 @@ public class SolvePolynomialController implements Initializable, Openable {
 
     private Stage stage;
     private Openable parentController;
-    private TabulatedFunctionFactory factory;
-    private Map<String, TabulatedFunctionFactory> comboBoxMap;
-    private NumericalMethod numMethod = new NewtonMethod();
+    private Map<String, Class<? extends NumericalMethods>> numericalMethodMap;
+    private NumericalMethods numMethod = new NewtonMethod();
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        numericalMethodMap = new LinkedHashMap<>();
+        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.NUMERICAL_METHOD)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
+                .forEach(clazz -> numericalMethodMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(), clazz));
+        method.getItems().addAll(numericalMethodMap.keySet());
+        method.setValue(method.getItems().get(0));
+    }
 
     @FXML
     private void ok() {

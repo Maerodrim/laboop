@@ -3,12 +3,23 @@ package ru.ssau.tk.sergunin.lab.numericalMethods;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.PolynomialFunction;
 import ru.ssau.tk.sergunin.lab.operations.MiddleSteppingDifferentialOperator;
+import ru.ssau.tk.sergunin.lab.ui.ConnectableItem;
+import ru.ssau.tk.sergunin.lab.ui.Item;
 
 import java.util.List;
 
+@ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD)
+public class NumericalMethods {
+    double left, right, count, eps;
 
-public class NewtonMethod implements NumericalMethod {
-    public List<Double> solve(PolynomialFunction func, Double left, Double right, Integer count, Double eps) {
+    public NumericalMethods(Double left, Double right, Integer count, Double eps){
+        this.left = left;
+        this.right = right;
+        this.count = count;
+        this.eps = eps;
+    }
+
+    public List<Double> solveWithSecantMethod(PolynomialFunction func) {
         double x1 = 0, x0 = 0,x=left,step;
         List<Double> X = null;
         step=(right-left)/count;

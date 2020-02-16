@@ -33,13 +33,7 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
     private Map<Method, Class<?>> classes;
     private MathFunction currentFunction;
     @FXML
-    private Menu mathFunctionMenu;
-    @FXML
-    private Menu compositeFunctionMenu;
-    @FXML
-    private Menu currentFunctionMenu;
-    @FXML
-    private Menu loadFunction;
+    private Menu mathFunctionMenu, compositeFunctionMenu, currentFunctionMenu;
 
     @FXML
     private ComboBox<String> operationComboBox;

@@ -44,17 +44,11 @@ public class TableController implements Initializable, Openable {
     @FXML
     private TabPane tabPane;
     @FXML
-    private BorderPane mainPane;
-    @FXML
-    private BorderPane bottomPane;
+    private BorderPane mainPane, bottomPane;
     @FXML
     private Pane labelPane;
     @FXML
-    private Button addPointButton;
-    @FXML
-    private Button deletePointButton;
-    @FXML
-    private Button calculateValueButton;
+    private Button addPointButton, deletePointButton, calculateValueButton;
     @FXML
     private Label label;
 
