@@ -44,7 +44,25 @@ public class NumericalMethods {
 
     @ConnectableItem(name = "Half-division method", type = Item.NUMERICAL_METHOD, priority = 1)
     public List<Double> solveWithHalfDivisionMethod(PolynomialFunction func) {
-        return null;
+        double x1 = 0, x0 = 0, x = left, step;
+        List<Double> X = new ArrayList<>();
+        step = (right - left) / count;
+        while ((x + step) < right) {
+            if (func.apply(x) * func.apply(x + step) <= 0) {
+                x0 = x;
+                x1 = x + step; // первое приближение
+                while (Math.abs(x1 - x0) > eps) {
+                    if (func.apply(x0) * func.apply(0.5 * (x1 + x0)) <= 0) {
+                        x1 = 0.5 * (x1 + x0);
+                    } else {
+                        x0 = 0.5 * (x1 + x0);
+                    }
+                }
+                X.add(x1);
+            }
+            x = x + step;
+        }
+        return X;
     }
 
     @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 2)
