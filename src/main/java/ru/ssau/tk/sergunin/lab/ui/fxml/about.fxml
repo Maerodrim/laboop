@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="156.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.ssau.tk.sergunin.lab.ui.AboutController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="156.0" prefWidth="456.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.ssau.tk.sergunin.lab.ui.AboutController">
    <children>
-      <Label layoutX="14.0" layoutY="7.0" prefHeight="36.0" prefWidth="141.0" text="Base math function" />
+      <Label layoutX="14.0" layoutY="7.0" prefHeight="36.0" prefWidth="141.0" text="Base math function" AnchorPane.leftAnchor="14.0" />
       <Label layoutX="14.0" layoutY="43.0" prefHeight="36.0" prefWidth="141.0" text="Left border" />
       <Label layoutX="14.0" layoutY="79.0" prefHeight="36.0" prefWidth="141.0" text="Right border" />
       <Label layoutX="14.0" layoutY="115.0" prefHeight="36.0" prefWidth="141.0" text="Number of points" />
-      <Label fx:id="baseMathFunction" layoutX="165.0" layoutY="7.0" prefHeight="36.0" prefWidth="141.0" />
-      <Label fx:id="leftBorder" layoutX="165.0" layoutY="43.0" prefHeight="36.0" prefWidth="141.0" />
-      <Label fx:id="rightBorder" layoutX="165.0" layoutY="79.0" prefHeight="36.0" prefWidth="141.0" />
-      <Label fx:id="numberOfPoints" layoutX="165.0" layoutY="115.0" prefHeight="36.0" prefWidth="141.0" />
+      <Label fx:id="baseMathFunction" layoutX="166.0" layoutY="14.0" prefHeight="36.0" prefWidth="276.0" AnchorPane.leftAnchor="166.0" AnchorPane.rightAnchor="14.0" />
+      <Label fx:id="leftBorder" layoutX="165.0" layoutY="43.0" prefHeight="36.0" prefWidth="141.0" AnchorPane.leftAnchor="166.0" AnchorPane.rightAnchor="14.0" />
+      <Label fx:id="rightBorder" layoutX="165.0" layoutY="79.0" prefHeight="36.0" prefWidth="141.0" AnchorPane.leftAnchor="166.0" AnchorPane.rightAnchor="14.0" />
+      <Label fx:id="numberOfPoints" layoutX="165.0" layoutY="115.0" prefHeight="36.0" prefWidth="141.0" AnchorPane.leftAnchor="166.0" AnchorPane.rightAnchor="14.0" />
    </children>
 </AnchorPane>

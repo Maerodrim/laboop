@@ -1,9 +1,8 @@
 package ru.ssau.tk.sergunin.lab.operations;
 
 import org.testng.annotations.Test;
-import ru.ssau.tk.sergunin.lab.functions.ExpFunction;
-import ru.ssau.tk.sergunin.lab.functions.ExponentialFunction;
-import ru.ssau.tk.sergunin.lab.functions.SqrFunction;
+import ru.ssau.tk.sergunin.lab.functions.exponentialFunctions.ExponentialFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.SqrFunction;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;

@@ -2,7 +2,7 @@ package ru.ssau.tk.sergunin.lab.operations;
 
 import org.testng.annotations.Test;
 import ru.ssau.tk.sergunin.lab.functions.Point;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.LinkedListTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;

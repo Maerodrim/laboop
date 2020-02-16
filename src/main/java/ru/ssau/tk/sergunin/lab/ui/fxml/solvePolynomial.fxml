@@ -6,7 +6,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <AnchorPane prefHeight="290.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.ssau.tk.sergunin.lab.ui.SolvePolynomialController">
    <children>
       <Button layoutX="327.0" layoutY="237.0" mnemonicParsing="false" onAction="#ok" prefHeight="31.0" prefWidth="90.0" text="Ok" />
@@ -20,6 +19,6 @@
       <Label layoutX="26.0" layoutY="145.0" text="Right" />
       <Label layoutX="26.0" layoutY="194.0" text="Count" />
       <Label layoutX="26.0" layoutY="242.0" prefHeight="21.0" prefWidth="36.0" text="Eps" />
-      <ComboBox fx:id="numericalMethodsBox" layoutX="26.0" layoutY="26.0" prefHeight="31.0" prefWidth="242.0" />
+      <ComboBox fx:id="numericalMethodsBox" layoutX="26.0" layoutY="26.0" onAction="#doOnClickOnComboBox" prefHeight="31.0" prefWidth="242.0" />
    </children>
 </AnchorPane>

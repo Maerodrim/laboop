@@ -1,7 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions.factory;
 
 import org.testng.annotations.Test;
-import ru.ssau.tk.sergunin.lab.functions.*;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.*;
 
 import static org.testng.Assert.*;
 

@@ -1,9 +1,9 @@
 package ru.ssau.tk.sergunin.lab.io;
 
-import ru.ssau.tk.sergunin.lab.functions.ArrayTabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.ExponentialFunction;
-import ru.ssau.tk.sergunin.lab.functions.LinkedListTabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.PowFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.ArrayTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.exponentialFunctions.ExponentialFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.LinkedListTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PowFunction;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;

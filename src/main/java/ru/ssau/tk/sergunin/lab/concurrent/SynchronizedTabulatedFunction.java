@@ -3,7 +3,7 @@ package ru.ssau.tk.sergunin.lab.concurrent;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.operations.TabulatedFunctionOperationService;
 
 import java.util.Iterator;

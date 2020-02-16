@@ -1,8 +1,8 @@
 package ru.ssau.tk.sergunin.lab.concurrent;
 
-import ru.ssau.tk.sergunin.lab.functions.LinkedListTabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.UnitFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.LinkedListTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.UnitFunction;
 
 import java.util.ArrayList;
 import java.util.Collection;

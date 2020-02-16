@@ -13,10 +13,11 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
 import org.jetbrains.annotations.NotNull;
+import ru.ssau.tk.sergunin.lab.functions.CompositeFunction;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
-import ru.ssau.tk.sergunin.lab.functions.PolynomialFunction;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PolynomialFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
@@ -271,7 +272,7 @@ public class TableController implements Initializable, Openable {
     private void save(boolean toTempPath) {
         if (isTabExist()) {
             File file = toTempPath
-                    ? new File(IO.DEFAULT_DIRECTORY + "\\" + currentTab.getText() + ".fnc")
+                    ? new File(IO.DEFAULT_DIRECTORY + "\\" + getFunction().getMathFunction() + ".fnc")
                     : IO.save(stage);
             if (!Objects.equals(file, null)) {
                 io.saveFunctionAs(file, getFunction());
@@ -399,10 +400,10 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void solvePolynomial() {
         if (isTabExist()) {
-            if (getFunction().getMathFunction().toString().split(":")[0].equals("PolynomialFunction")) {
+            if (!getFunction().isStrict()) {
                 getController().getStage().show();
             } else {
-                AlertWindows.showWarning("Function isn't polynomial function");
+                AlertWindows.showWarning("Function is strict");
             }
         }
     }

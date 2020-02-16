@@ -1,7 +1,7 @@
 package ru.ssau.tk.sergunin.lab.operations;
 
 import ru.ssau.tk.sergunin.lab.concurrent.SynchronizedTabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.ui.Item;
 import ru.ssau.tk.sergunin.lab.ui.ConnectableItem;

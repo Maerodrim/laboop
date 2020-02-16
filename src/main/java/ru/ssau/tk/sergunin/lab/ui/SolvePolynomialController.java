@@ -1,6 +1,7 @@
 package ru.ssau.tk.sergunin.lab.ui;
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -10,9 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import org.atteo.classindex.ClassIndex;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.CompositeFunction;
 import ru.ssau.tk.sergunin.lab.numericalMethods.NumericalMethods;
-import ru.ssau.tk.sergunin.lab.functions.PolynomialFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 import java.lang.reflect.InvocationTargetException;
@@ -56,6 +56,17 @@ public class SolvePolynomialController implements Initializable, Openable {
     }
 
     @FXML
+    public void doOnClickOnComboBox(ActionEvent event){
+        ConnectableItem item = numericalMethodMap.get(((ComboBox) event.getSource()).getValue().toString())
+                .getDeclaredAnnotation(ConnectableItem.class);
+        if (!Objects.isNull(item) && item.methodOnlyForPolynomialFunction()
+                && ((TableController)parentController).getFunction().getMathFunction() instanceof CompositeFunction) {
+            AlertWindows.showWarning("In the current version of the program, the Newton method only works for polynomial functions");
+            numericalMethodsBox.getSelectionModel().select(0);
+        }
+    }
+
+    @FXML
     private void ok() {
         numMethod = new NumericalMethods(Double.parseDouble(left.getText()), Double.parseDouble(right.getText()),
                 Integer.parseInt(count.getText()), Double.parseDouble(eps.getText()));
@@ -91,5 +102,4 @@ public class SolvePolynomialController implements Initializable, Openable {
     public void setParentController(Openable controller) {
         this.parentController = controller;
     }
-
 }

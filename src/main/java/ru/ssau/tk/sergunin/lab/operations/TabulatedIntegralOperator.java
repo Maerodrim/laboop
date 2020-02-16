@@ -1,6 +1,6 @@
 package ru.ssau.tk.sergunin.lab.operations;
 
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.ui.Item;
@@ -34,11 +34,11 @@ public class TabulatedIntegralOperator extends TabulatedOperator implements Inte
         return new TabulatedFunctionOperationService(new ArrayTabulatedFunctionFactory()).subtract(super.integrate(function, 0, function.getCount(), new double[function.getCount()], new double[function.getCount()], TabulatedFunctionOperationService.asPoints(function)), shift);
     }
 
-    public TabulatedFunction integrateParallel(TabulatedFunction function) {
+    /*public TabulatedFunction integrateParallel(TabulatedFunction function) {
         return integrateParallel(function.copy(), 16);
-    }
+    }*/
 
-    public TabulatedFunction integrateParallel(TabulatedFunction function, final int NUMBER_OF_THREADS) {
+    /*public TabulatedFunction integrateParallel(TabulatedFunction function, final int NUMBER_OF_THREADS) {
         //TabulatedFunction result = function.copy(); // создаём функцию в которую будем записывать результат
         boolean isParalledCompleted = false;
         int step = function.getCount() / NUMBER_OF_THREADS;
@@ -53,17 +53,17 @@ public class TabulatedIntegralOperator extends TabulatedOperator implements Inte
             thread.start();
             //Thread.onSpinWait();
         }
-        /*try {
+        *//*try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }*//*
         while (!isParalledCompleted) {
             Thread.onSpinWait();
             isParalledCompleted = collection.stream().allMatch(TabulatedIntegratorTask::isCompleted);
         }
         return function;
         //return new TabulatedFunctionOperationService(new ArrayTabulatedFunctionFactory()).subtract(result, shift);
-    }
+    }*/
 
 }

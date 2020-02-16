@@ -1,6 +1,10 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import org.testng.annotations.Test;
+import ru.ssau.tk.sergunin.lab.functions.hyperbolicFunctions.SinhFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.CbrtFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.IdentityFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.SqrFunction;
 
 import static org.testng.Assert.assertEquals;
 

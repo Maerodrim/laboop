@@ -4,6 +4,9 @@ package ru.ssau.tk.sergunin.lab.concurrent;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.ssau.tk.sergunin.lab.functions.*;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.SqrFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.ArrayTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

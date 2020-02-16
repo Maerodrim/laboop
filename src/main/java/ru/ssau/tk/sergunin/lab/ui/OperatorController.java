@@ -5,7 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 import java.lang.reflect.InvocationTargetException;

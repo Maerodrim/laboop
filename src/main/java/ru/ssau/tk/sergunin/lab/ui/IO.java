@@ -6,16 +6,14 @@ import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import ru.ssau.tk.sergunin.lab.functions.StrictTabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.UnmodifiableTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.StrictTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.UnmodifiableTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.io.FunctionsIO;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 class IO {

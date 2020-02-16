@@ -2,6 +2,10 @@ package ru.ssau.tk.sergunin.lab.operations;
 
 import org.testng.annotations.Test;
 import ru.ssau.tk.sergunin.lab.functions.*;
+import ru.ssau.tk.sergunin.lab.functions.exponentialFunctions.ExpFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.IdentityFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.SqrFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.UnitFunction;
 
 import static org.testng.Assert.assertEquals;
 

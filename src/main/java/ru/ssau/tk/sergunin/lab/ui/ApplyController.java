@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
 import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 import java.io.File;

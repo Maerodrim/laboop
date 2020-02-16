@@ -3,6 +3,10 @@ package ru.ssau.tk.sergunin.lab.operations;
 import ru.ssau.tk.sergunin.lab.functions.*;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.ConstantFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.ZeroFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.ArrayTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 
 public abstract class TabulatedOperator {
     protected TabulatedFunctionFactory factory;

@@ -1,6 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
 import org.testng.annotations.Test;
+import ru.ssau.tk.sergunin.lab.functions.hyperbolicFunctions.SinhFunction;
 
 import static org.testng.Assert.assertEquals;
 

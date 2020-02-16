@@ -1,6 +1,11 @@
 package ru.ssau.tk.sergunin.lab.operations;
 
 import ru.ssau.tk.sergunin.lab.functions.*;
+import ru.ssau.tk.sergunin.lab.functions.exponentialFunctions.ExpFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.ConstantFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.IdentityFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PowFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.ZeroFunction;
 
 public class MathFunctionIntegralOperator implements IntegralOperator<MathFunction> {
     private final double AROUND;

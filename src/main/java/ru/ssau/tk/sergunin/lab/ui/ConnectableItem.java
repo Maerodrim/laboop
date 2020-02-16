@@ -22,5 +22,7 @@ public @interface ConnectableItem {
 
     boolean parameterInstanceOfDouble() default true;
 
+    boolean methodOnlyForPolynomialFunction() default false;
+
     String pathFXML() default "";
 }

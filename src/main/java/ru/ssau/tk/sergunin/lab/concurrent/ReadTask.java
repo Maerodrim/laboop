@@ -1,6 +1,6 @@
 package ru.ssau.tk.sergunin.lab.concurrent;
 
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 
 public class ReadTask implements Runnable {
     private final TabulatedFunction func;

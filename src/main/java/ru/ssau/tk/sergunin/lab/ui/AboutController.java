@@ -1,22 +1,22 @@
 package ru.ssau.tk.sergunin.lab.ui;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import org.atteo.classindex.ClassIndex;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
-import java.io.BufferedInputStream;
 import java.net.URL;
-import java.nio.file.Paths;
-import java.util.Objects;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.ResourceBundle;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @ConnectableItem(name = "About function", type = Item.CONTROLLER, pathFXML = "about.fxml")
-public class AboutController implements Openable {
+public class AboutController implements Openable, Initializable {
     @FXML
     Label baseMathFunction;
     @FXML
@@ -29,9 +29,14 @@ public class AboutController implements Openable {
 
     private Stage stage;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        baseMathFunction.setWrapText(true);
+    }
+
     public void setInfo() {
         TabulatedFunction function = ((TableController)parentController).getFunction();
-        baseMathFunction.setText(function.getMathFunction().toString().split(":")[1]);
+        baseMathFunction.setText(function.getMathFunction().toString());
         leftBorder.setText(function.leftBound() + "");
         rightBorder.setText(function.rightBound() + "");
         numberOfPoints.setText(function.getCount() + "");

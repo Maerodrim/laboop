@@ -1,7 +1,7 @@
 package ru.ssau.tk.sergunin.lab.numericalMethods;
 
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
-import ru.ssau.tk.sergunin.lab.functions.PolynomialFunction;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PolynomialFunction;
 import ru.ssau.tk.sergunin.lab.operations.DifferentialOperator;
 import ru.ssau.tk.sergunin.lab.operations.MiddleSteppingDifferentialOperator;
 import ru.ssau.tk.sergunin.lab.operations.PolynomialDifferentialOperator;
@@ -22,9 +22,8 @@ public class NumericalMethods {
         this.eps = eps;
     }
 
-    @ConnectableItem(name = "Secant method", type = Item.NUMERICAL_METHOD)
-    public List<Double> newtonMethod(PolynomialFunction func, DifferentialOperator differentialOperator) {
-        double x1 = 0, x0 = 0, x = left, step;
+    public List<Double> newtonMethod(MathFunction func, DifferentialOperator differentialOperator) {
+        double x1, x0, x = left, step;
         List<Double> X = new ArrayList<>();
         step = (right - left) / count;
         while ((x + step) < right) {
@@ -43,8 +42,8 @@ public class NumericalMethods {
     }
 
     @ConnectableItem(name = "Half-division method", type = Item.NUMERICAL_METHOD, priority = 1)
-    public List<Double> solveWithHalfDivisionMethod(PolynomialFunction func) {
-        double x1 = 0, x0 = 0, x = left, step;
+    public List<Double> solveWithHalfDivisionMethod(MathFunction func) {
+        double x1, x0, x = left, step;
         List<Double> X = new ArrayList<>();
         step = (right - left) / count;
         while ((x + step) < right) {
@@ -65,13 +64,13 @@ public class NumericalMethods {
         return X;
     }
 
-    @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 2)
+    @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 2, methodOnlyForPolynomialFunction = true)
     public List<Double> solveWithNewtonMethod(PolynomialFunction func) {
         return newtonMethod(func, new PolynomialDifferentialOperator());
     }
 
     @ConnectableItem(name = "Secant method", type = Item.NUMERICAL_METHOD, priority = 3)
-    public List<Double> solveWithSecantMethod(PolynomialFunction func) {
+    public List<Double> solveWithSecantMethod(MathFunction func) {
         return newtonMethod(func, new MiddleSteppingDifferentialOperator(eps));
     }
 

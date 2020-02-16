@@ -8,7 +8,7 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 
 import java.lang.reflect.InvocationTargetException;
@@ -70,10 +70,10 @@ public class ComposeController implements Initializable, Openable, MathFunctionA
                     parentFunction.getCount(),
                     ((TableController) parentController).isStrict(),
                     ((TableController) parentController).isUnmodifiable());
+            function.setMathFunction(mathFunction);
             if (isSaveable.isSelected()) {
                 ((TableController) parentController)
-                        .addCompositeFunction(comboBox.getValue() + "(" + ((TableController) parentController)
-                                .getCurrentTab().getText() + ")", mathFunction);
+                        .addCompositeFunction(mathFunction.toString(), mathFunction);
             }
             ((TableController) parentController).createTab(function);
             stage.close();

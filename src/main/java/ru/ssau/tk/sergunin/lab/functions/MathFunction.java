@@ -1,5 +1,7 @@
 package ru.ssau.tk.sergunin.lab.functions;
 
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.ZeroFunction;
+
 public interface MathFunction {
 
     double apply(double x);

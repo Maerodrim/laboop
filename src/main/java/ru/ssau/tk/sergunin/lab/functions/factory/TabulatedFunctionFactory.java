@@ -1,9 +1,9 @@
 package ru.ssau.tk.sergunin.lab.functions.factory;
 
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
-import ru.ssau.tk.sergunin.lab.functions.StrictTabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.UnmodifiableTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.StrictTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.UnmodifiableTabulatedFunction;
 
 public interface TabulatedFunctionFactory {
     TabulatedFunction create(double[] xValues, double[] yValues);
