@@ -4,7 +4,7 @@ import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 
 public class MiddleSteppingDifferentialOperator extends SteppingDifferentialOperator {
 
-    MiddleSteppingDifferentialOperator(double step) {
+    public MiddleSteppingDifferentialOperator(double step) {
         super(step);
     }
 
