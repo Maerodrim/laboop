@@ -5,5 +5,6 @@ public enum Item {
     FUNCTION,
     OPERATION,
     OPERATOR,
-    CONTROLLER
+    CONTROLLER,
+    NUMERICAL_METHOD
 }

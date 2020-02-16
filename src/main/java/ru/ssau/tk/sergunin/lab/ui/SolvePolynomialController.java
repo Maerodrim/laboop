@@ -8,8 +8,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import ru.ssau.tk.sergunin.lab.NumericalMethods.NewtonMethod;
-import ru.ssau.tk.sergunin.lab.NumericalMethods.NumericalMethod;
+import ru.ssau.tk.sergunin.lab.numericalMethods.NewtonMethod;
+import ru.ssau.tk.sergunin.lab.numericalMethods.NumericalMethod;
 import ru.ssau.tk.sergunin.lab.functions.PolynomialFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 

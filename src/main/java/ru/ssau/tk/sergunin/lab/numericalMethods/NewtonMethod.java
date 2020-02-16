@@ -1,12 +1,11 @@
-package ru.ssau.tk.sergunin.lab.NumericalMethods;
+package ru.ssau.tk.sergunin.lab.numericalMethods;
 
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.PolynomialFunction;
-import ru.ssau.tk.sergunin.lab.operations.DifferentialOperator;
 import ru.ssau.tk.sergunin.lab.operations.MiddleSteppingDifferentialOperator;
 
-import java.util.LinkedList;
 import java.util.List;
+
 
 public class NewtonMethod implements NumericalMethod {
     public List<Double> solve(PolynomialFunction func, Double left, Double right, Integer count, Double eps) {

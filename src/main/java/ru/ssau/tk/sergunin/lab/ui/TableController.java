@@ -385,7 +385,11 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void about() {
-        ((AboutController)getController()).play();
+        if (isTabExist()) {
+            Openable controller = getController();
+            ((AboutController)controller).setInfo();
+            controller.getStage().show();
+        }
     }
 
     @FXML
@@ -401,10 +405,10 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void solvePolynomial() {
         if (isTabExist()) {
-            if (getFunction().getMathFunction() instanceof PolynomialFunction) {
+            if (getFunction().getMathFunction().toString().split(":")[0].equals("PolynomialFunction")) {
                 getController().getStage().show();
             } else {
-                AlertWindows.showWarning("Function isn't Polynomial");
+                AlertWindows.showWarning("Function isn't polynomial function");
             }
         }
     }

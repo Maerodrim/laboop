@@ -3,6 +3,8 @@ package ru.ssau.tk.sergunin.lab.functions;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.sergunin.lab.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.sergunin.lab.exceptions.InterpolationException;
@@ -25,6 +27,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @JsonProperty("unmodifiable")
     private boolean isUnmodifiable = false;
     @JsonProperty("math function")
+    @JsonSerialize(using = ToStringSerializer.class)
     private MathFunction mathFunction;
 
     public MathFunction getMathFunction() {
