@@ -1,7 +1,8 @@
 package ru.ssau.tk.sergunin.lab.functions.polynomial;
 
+import ru.ssau.tk.sergunin.lab.functions.PolynomialFunction;
+
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -63,7 +64,6 @@ public class Polynomial {
      */
     public Polynomial multiply(Polynomial other) {
         Map<Integer, Double> result = new TreeMap<>();
-
         for (Entry<Integer, Double> first : members.entrySet()) {
             for (Entry<Integer, Double> second : other.members.entrySet()) {
                 Integer amountKey = first.getKey() + second.getKey();
@@ -77,6 +77,18 @@ public class Polynomial {
         return new Polynomial(result);
     }
 
+    /**
+     * Взятие производной
+     */
+    public Polynomial derive() {
+        Map<Integer, Double> result = new TreeMap<>();
+        members.forEach((degree, coefficient) -> {
+            if (degree > 0) {
+                result.put(degree - 1, coefficient * degree);
+            }
+        });
+        return new Polynomial(result);
+    }
 
     public Map<Integer, Double> getMembers() {
         return members;
