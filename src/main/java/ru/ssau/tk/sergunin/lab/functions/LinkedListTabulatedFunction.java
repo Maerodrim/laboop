@@ -17,6 +17,16 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private int count;
     private boolean isStrict;
     private boolean isUnmodifiable;
+    private MathFunction mathFunction;
+
+    public MathFunction getMathFunction() {
+        return mathFunction;
+    }
+
+    @Override
+    public void setMathFunction(MathFunction mathFunction) {
+        this.mathFunction = mathFunction;
+    }
 
     private LinkedListTabulatedFunction() {
         head = null;

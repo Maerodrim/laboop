@@ -92,6 +92,16 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
+    public void setMathFunction(MathFunction math) {
+        tabulatedFunction.setMathFunction(math);
+    }
+
+    @Override
+    public MathFunction getMathFunction(){
+        return tabulatedFunction.getMathFunction();
+    }
+
+    @Override
     public void offerStrict(boolean isStrict) {
         throw new UnsupportedOperationException("The strict parameter cannot be changed");
     }

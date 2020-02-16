@@ -1,6 +1,7 @@
 package ru.ssau.tk.sergunin.lab.concurrent;
 
 import org.jetbrains.annotations.NotNull;
+import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.operations.TabulatedFunctionOperationService;
@@ -131,6 +132,17 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
     public TabulatedFunction unwrap() {
         return function;
     }
+
+    @Override
+    public void setMathFunction(MathFunction math) {
+        function.setMathFunction(math);
+    }
+
+    @Override
+    public MathFunction getMathFunction(){
+        return function.getMathFunction();
+    }
+
 
     @Override
     public void offerStrict(boolean isStrict) {

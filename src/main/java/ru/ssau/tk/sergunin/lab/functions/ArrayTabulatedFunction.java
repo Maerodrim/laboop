@@ -24,6 +24,17 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     private boolean isStrict = false;
     @JsonProperty("unmodifiable")
     private boolean isUnmodifiable = false;
+    @JsonProperty("math function")
+    private MathFunction mathFunction;
+
+    public MathFunction getMathFunction() {
+        return mathFunction;
+    }
+
+    @Override
+    public void setMathFunction(MathFunction mathFunction) {
+        this.mathFunction = mathFunction;
+    }
 
     private ArrayTabulatedFunction() {
         xValues = new double[]{};

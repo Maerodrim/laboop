@@ -72,6 +72,7 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
                     Integer.parseInt(numberOfPoints.getText()),
                     isStrict.isSelected(),
                     isUnmodifiable.isSelected());
+            function.setMathFunction(functionMap.get(comboBox.getValue()));
             ((TableController) parentController).createTab(function);
             stage.close();
         } catch (NullPointerException | NumberFormatException nfe) {

@@ -123,6 +123,16 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     @Override
+    public void setMathFunction(MathFunction math) {
+
+    }
+
+    @Override
+    public MathFunction getMathFunction() {
+        return null;
+    }
+
+    @Override
     public void offerStrict(boolean isStrict) {
     }
 
