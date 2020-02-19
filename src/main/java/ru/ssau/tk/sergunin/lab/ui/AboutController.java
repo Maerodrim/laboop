@@ -4,16 +4,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import org.atteo.classindex.ClassIndex;
-import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.MathFunction;
+import ru.ssau.tk.sergunin.lab.functions.Nameable;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 
+import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.ResourceBundle;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @ConnectableItem(name = "About function", type = Item.CONTROLLER, pathFXML = "about.fxml")
 public class AboutController implements Openable, Initializable {
@@ -35,11 +33,32 @@ public class AboutController implements Openable, Initializable {
     }
 
     public void setInfo() {
-        TabulatedFunction function = ((TableController)parentController).getFunction();
-        baseMathFunction.setText(function.getMathFunction().toString());
+        TabulatedFunction function = ((TableController) parentController).getFunction();
+        try {
+            baseMathFunction.setText(function.getMathFunction().getName());
+        } catch (ClassCastException e) {
+            baseMathFunction.setText(getNameForce(function.getMathFunction()));
+        }
         leftBorder.setText(function.leftBound() + "");
         rightBorder.setText(function.rightBound() + "");
         numberOfPoints.setText(function.getCount() + "");
+    }
+
+    private String getNameForce(MathFunction mathFunction) {
+        Field field = mathFunction.getClass().getDeclaredFields()[0];
+        field.setAccessible(true);
+        try {
+            return ((Nameable) field.get(mathFunction)).getName();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassCastException e) {
+            try {
+                getNameForce((MathFunction) field.get(mathFunction));
+            } catch (IllegalAccessException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return "";
     }
 
     public Stage getStage() {

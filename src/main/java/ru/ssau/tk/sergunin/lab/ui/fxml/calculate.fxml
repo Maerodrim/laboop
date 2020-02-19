@@ -6,25 +6,23 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="108.0" prefWidth="373.0" xmlns="http://javafx.com/javafx/8"
             fx:controller="ru.ssau.tk.sergunin.lab.ui.CalculateController">
-    <children>
-        <Button layoutX="40.0" layoutY="67.0" mnemonicParsing="false" onAction="#calc" prefHeight="31.0"
-                prefWidth="130.0" text="Ok" AnchorPane.leftAnchor="40.0"/>
-        <Button layoutX="228.0" layoutY="67.0" mnemonicParsing="false" onAction="#cancel" prefHeight="31.0"
-                prefWidth="130.0" text="Cancel" AnchorPane.rightAnchor="15.0"/>
-        <TextField layoutX="39.0" layoutY="51.0" prefHeight="31.0" prefWidth="130.0" AnchorPane.leftAnchor="40.0"
-                   AnchorPane.topAnchor="15.0" fx:id="x"/>
-        <TextField fx:id="y" layoutX="193.0" layoutY="51.0" prefHeight="31.0" prefWidth="130.0"
-                   AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0"/>
-        <Label layoutX="14.0" layoutY="15.0" text="X" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="343.0"
-               AnchorPane.topAnchor="15.0">
-            <font>
-                <Font name="System Bold" size="24.0"/>
-            </font>
-        </Label>
-        <Label layoutX="167.0" layoutY="56.0" text="Y" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="15.0">
-            <font>
-                <Font name="System Bold" size="24.0"/>
-            </font>
-        </Label>
-    </children>
+    <Button layoutX="40.0" layoutY="67.0" mnemonicParsing="false" onAction="#calc" prefHeight="31.0"
+            prefWidth="130.0" text="Ok" AnchorPane.leftAnchor="40.0"/>
+    <Button layoutX="228.0" layoutY="67.0" mnemonicParsing="false" onAction="#cancel" prefHeight="31.0"
+            prefWidth="130.0" text="Cancel" AnchorPane.rightAnchor="15.0"/>
+    <TextField layoutX="39.0" layoutY="51.0" prefHeight="31.0" prefWidth="130.0" AnchorPane.leftAnchor="40.0"
+               AnchorPane.topAnchor="15.0" fx:id="x"/>
+    <TextField fx:id="y" layoutX="193.0" layoutY="51.0" prefHeight="31.0" prefWidth="130.0"
+               AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0"/>
+    <Label layoutX="14.0" layoutY="15.0" text="X" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="343.0"
+           AnchorPane.topAnchor="15.0">
+        <font>
+            <Font name="System Bold" size="24.0"/>
+        </font>
+    </Label>
+    <Label layoutX="167.0" layoutY="56.0" text="Y" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="15.0">
+        <font>
+            <Font name="System Bold" size="24.0"/>
+        </font>
+    </Label>
 </AnchorPane>

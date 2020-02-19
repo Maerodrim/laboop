@@ -21,15 +21,6 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
     private boolean isUnmodifiable;
     private MathFunction mathFunction;
 
-    public MathFunction getMathFunction() {
-        return mathFunction;
-    }
-
-    @Override
-    public void setMathFunction(MathFunction mathFunction) {
-        this.mathFunction = mathFunction;
-    }
-
     private LinkedListTabulatedFunction() {
         head = null;
     }
@@ -86,6 +77,15 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     public static TabulatedFunction getIdentity() {
         return new LinkedListTabulatedFunction();
+    }
+
+    public MathFunction getMathFunction() {
+        return mathFunction;
+    }
+
+    @Override
+    public void setMathFunction(MathFunction mathFunction) {
+        this.mathFunction = mathFunction;
     }
 
     void addNode(double x, double y) {

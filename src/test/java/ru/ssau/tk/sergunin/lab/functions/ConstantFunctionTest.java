@@ -11,7 +11,7 @@ public class ConstantFunctionTest {
 
     @Test
     public void testApply() {
-        assertEquals(x.apply(5), 10, ACCURACY);
+        assertEquals(x.apply(5.), 10, ACCURACY);
     }
 
     @Test

@@ -4,6 +4,7 @@ import ru.ssau.tk.sergunin.lab.functions.Insertable;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.Removable;
+import ru.ssau.tk.sergunin.lab.operations.TabulatedDifferentialOperator;
 import ru.ssau.tk.sergunin.lab.ui.ExplicitAccessControllable;
 
 import java.util.Objects;
@@ -42,15 +43,21 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point>, Explic
                 && getCount() == function.getCount();
     }
 
-    default String printMathFunction(){
+    @Override
+    default String getName() {
         if (!Objects.isNull(getMathFunction())) {
-            return getMathFunction().toString();
+            return getMathFunction().getName();
         } else {
             return "TF(x)";
         }
     }
 
+    MathFunction getMathFunction();
+
     void setMathFunction(MathFunction math);
 
-    MathFunction getMathFunction();
+    @Override
+    default MathFunction differentiate() {
+        return new TabulatedDifferentialOperator().derive(this);
+    }
 }

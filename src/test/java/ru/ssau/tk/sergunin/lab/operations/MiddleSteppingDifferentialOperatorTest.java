@@ -14,8 +14,8 @@ public class MiddleSteppingDifferentialOperatorTest {
         double STEP = 1E-6;
         SteppingDifferentialOperator differentialOperator = new MiddleSteppingDifferentialOperator(STEP);
         double ACCURACY = 1E-3;
-        assertEquals(differentialOperator.derive(new SqrFunction()).apply(1), 2, ACCURACY);
-        assertEquals(differentialOperator.derive(new ExponentialFunction(2)).apply(5), 32 * Math.log(2), ACCURACY);
+        assertEquals(differentialOperator.derive(new SqrFunction()).apply(1.), 2, ACCURACY);
+        assertEquals(differentialOperator.derive(new ExponentialFunction(2)).apply(5.), 32 * Math.log(2), ACCURACY);
         differentialOperator.setStep(2 * STEP);
         assertEquals(differentialOperator.getStep(), 2 * STEP);
         assertThrows(IllegalArgumentException.class, () -> differentialOperator.setStep(Double.POSITIVE_INFINITY));

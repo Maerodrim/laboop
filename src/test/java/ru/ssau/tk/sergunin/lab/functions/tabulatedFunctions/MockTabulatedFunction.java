@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 public class MockTabulatedFunction extends AbstractTabulatedFunction {
 
+    private static final long serialVersionUID = 8807641477090582045L;
     private final double x0 = 0;
     private final double x1 = 1;
     private double y0 = 5;
@@ -72,7 +73,8 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     @Override
-    public void setY(TabulatedFunction function) {}
+    public void setY(TabulatedFunction function) {
+    }
 
     @Override
     public int indexOfX(double x) {
@@ -107,7 +109,9 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     @Override
-    public TabulatedFunction copy() { return null; }
+    public TabulatedFunction copy() {
+        return null;
+    }
 
     @Override
     public boolean isStrict() {
@@ -125,13 +129,13 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
     }
 
     @Override
-    public void setMathFunction(MathFunction math) {
-
+    public MathFunction getMathFunction() {
+        return null;
     }
 
     @Override
-    public MathFunction getMathFunction() {
-        return null;
+    public void setMathFunction(MathFunction math) {
+
     }
 
     @Override

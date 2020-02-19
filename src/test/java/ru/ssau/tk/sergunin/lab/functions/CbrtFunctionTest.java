@@ -11,6 +11,6 @@ public class CbrtFunctionTest {
     public void testApply() {
         MathFunction x = new CbrtFunction();
         double ACCURACY = 0.00001;
-        assertEquals(x.apply(5), Math.pow(5, 1. / 3), ACCURACY);
+        assertEquals(x.apply(5.), Math.pow(5, 1. / 3), ACCURACY);
     }
 }

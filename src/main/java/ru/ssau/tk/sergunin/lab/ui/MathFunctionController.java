@@ -10,8 +10,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
-import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -86,8 +86,8 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
 
     @FXML
     private void doOnClickOnComboBox(ActionEvent event) {
-        if (!Objects.isNull(functionMap.get(((ComboBox) event.getSource()).getValue()))) {
-            ConnectableItem item = functionMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass()
+        if (!Objects.isNull(functionMap.get(((ComboBox<String>) event.getSource()).getValue()))) {
+            ConnectableItem item = functionMap.get(((ComboBox<String>) event.getSource()).getValue().toString()).getClass()
                     .getDeclaredAnnotation(ConnectableItem.class);
             if (!Objects.isNull(item) && item.hasParameter()) {
                 inputParameterController.getStage().show();
@@ -98,11 +98,6 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
 
     public void setFactory(TabulatedFunctionFactory factory) {
         this.factory = factory;
-    }
-
-    @Override
-    public void setParentController(Openable controller) {
-        parentController = controller;
     }
 
     @Override
@@ -127,6 +122,11 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
     @Override
     public Openable getParentController() {
         return parentController;
+    }
+
+    @Override
+    public void setParentController(Openable controller) {
+        parentController = controller;
     }
 
     @Override

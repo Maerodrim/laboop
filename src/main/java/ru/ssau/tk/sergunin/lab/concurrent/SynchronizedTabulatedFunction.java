@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class SynchronizedTabulatedFunction implements TabulatedFunction {
+    private static final long serialVersionUID = -1376170918005747022L;
     private final TabulatedFunction function;
 
     public SynchronizedTabulatedFunction(TabulatedFunction function) {
@@ -134,15 +135,14 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
-    public void setMathFunction(MathFunction math) {
-        function.setMathFunction(math);
-    }
-
-    @Override
-    public MathFunction getMathFunction(){
+    public MathFunction getMathFunction() {
         return function.getMathFunction();
     }
 
+    @Override
+    public void setMathFunction(MathFunction math) {
+        function.setMathFunction(math);
+    }
 
     @Override
     public void offerStrict(boolean isStrict) {

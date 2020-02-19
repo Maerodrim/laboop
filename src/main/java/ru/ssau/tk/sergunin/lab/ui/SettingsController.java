@@ -76,7 +76,7 @@ public class SettingsController implements Initializable, Openable {
     @FXML
     @SuppressWarnings("SuspiciousMethodCalls")
     private void doOnClickOnComboBox(ActionEvent event) {
-        factory = comboBoxMap.get(((ComboBox) event.getSource()).getValue());
+        factory = comboBoxMap.get(((ComboBox<String>) event.getSource()).getValue());
     }
 
     @FXML

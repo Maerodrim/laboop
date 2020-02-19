@@ -1,30 +1,30 @@
 package ru.ssau.tk.sergunin.lab.ui;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
-import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @ConnectableItem(name = "Differentiate/Integrate", type = Item.CONTROLLER, pathFXML = "operator.fxml")
 public class OperatorController implements Initializable, Openable {
 
-    private Stage stage;
-    private Openable parentController;
     @FXML
     ComboBox<String> comboBox;
+    TabulatedFunctionFactory factory;
+    private Stage stage;
+    private Openable parentController;
     private Map<String, Method> operatorMap;
     private Map<Method, Class<?>> classes;
 
@@ -46,6 +46,16 @@ public class OperatorController implements Initializable, Openable {
         comboBox.setValue(comboBox.getItems().get(0));
     }
 
+    public void doOnClickOnTheComboBox(ActionEvent event) {
+        ConnectableItem item = operatorMap.get(((ComboBox<String>) event.getSource()).getValue().toString())
+                .getDeclaredAnnotation(ConnectableItem.class);
+        if (!Objects.isNull(item) && !item.numericalOperator()
+                && Objects.isNull(((TableController) parentController).getFunction().getMathFunction())) {
+            AlertWindows.showWarning("Function doesn't have base math function");
+            comboBox.getSelectionModel().select(0);
+        }
+    }
+
     @Override
     public Stage getStage() {
         return stage;
@@ -57,7 +67,9 @@ public class OperatorController implements Initializable, Openable {
     }
 
     @Override
-    public void setFactory(TabulatedFunctionFactory factory) { }
+    public void setFactory(TabulatedFunctionFactory factory) {
+        this.factory = factory;
+    }
 
     @Override
     public void setParentController(Openable controller) {
@@ -71,17 +83,42 @@ public class OperatorController implements Initializable, Openable {
 
     @FXML
     public void ok() {
-        try {
-            TabulatedFunction function = (TabulatedFunction) operatorMap.get(comboBox.getValue()).invoke(
-                    classes.get(operatorMap.get(comboBox.getValue())).getDeclaredConstructor(TabulatedFunctionFactory.class)
-                            .newInstance(((TableController) parentController).getFactory()),
-                    ((TableController) parentController).getFunction());
+        TabulatedFunction sourceFunction = ((TableController) parentController).getFunction();
+        TabulatedFunction function = null;
+        ConnectableItem item = operatorMap.get(comboBox.getSelectionModel().getSelectedItem())
+                .getDeclaredAnnotation(ConnectableItem.class);
+        if (item.numericalOperator()) {
+            try {
+                function = (TabulatedFunction) operatorMap.get(comboBox.getValue()).invoke(
+                        classes.get(operatorMap.get(comboBox.getValue())).getDeclaredConstructor(TabulatedFunctionFactory.class)
+                                .newInstance(((TableController) parentController).getFactory()),
+                        ((TableController) parentController).getFunction());
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
+                e.printStackTrace();
+            }
+        } else {
+            MathFunction mathFunction = null;
+            try {
+                mathFunction = (MathFunction) operatorMap.get(comboBox.getValue()).invoke(
+                        classes.get(operatorMap.get(comboBox.getValue())).getDeclaredConstructor().newInstance(), sourceFunction.getMathFunction());
+            } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            function = factory.create(
+                    mathFunction,
+                    sourceFunction.leftBound(), sourceFunction.rightBound(),
+                    sourceFunction.getCount(),
+                    ((TableController) parentController).isStrict(),
+                    ((TableController) parentController).isUnmodifiable());
+            function.setMathFunction(mathFunction);
+        }
+        if (function != null) {
             function.offerStrict(((TableController) parentController).isStrict());
             function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
-            ((TableController) parentController).createTab(function);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
-            e.printStackTrace();
         }
+        ((TableController) parentController).createTab(function);
         stage.close();
     }
+
 }
+

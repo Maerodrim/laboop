@@ -1,10 +1,10 @@
 package ru.ssau.tk.sergunin.lab.functions.factory;
 
-import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.ArrayTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.ArrayTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
-import ru.ssau.tk.sergunin.lab.ui.Item;
 import ru.ssau.tk.sergunin.lab.ui.ConnectableItem;
+import ru.ssau.tk.sergunin.lab.ui.Item;
 
 @ConnectableItem(name = "Array tabulated function", priority = 1, type = Item.FACTORY)
 public class ArrayTabulatedFunctionFactory implements TabulatedFunctionFactory {

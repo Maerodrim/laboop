@@ -1,8 +1,8 @@
 package ru.ssau.tk.sergunin.lab.concurrent;
 
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.UnitFunction;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.LinkedListTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.powerFunctions.UnitFunction;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +24,7 @@ public class MultiplyingTaskExecutor {
             thread.start();
         }
         while (!collection.isEmpty()) {
-            Thread.onSpinWait();
+            //Thread.onSpinWait();
             collection.removeIf(MultiplyingTask::isCompleted);
         }
         System.out.println(function);

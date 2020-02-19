@@ -10,7 +10,24 @@ public class MiddleSteppingDifferentialOperator extends SteppingDifferentialOper
 
     @Override
     public MathFunction derive(MathFunction function) {
-        return x -> (function.apply(x + step) - function.apply(x - step)) / (2 * step);
+        return new MathFunction() {
+            private static final long serialVersionUID = -8920707897773883408L;
+
+            @Override
+            public double apply(double x) {
+                return (function.apply(x + step) - function.apply(x - step)) / (2 * step);
+            }
+
+            @Override
+            public MathFunction differentiate() {
+                return derive(function);
+            }
+
+            @Override
+            public String getName() {
+                return "d(" + function.getName() + ")/d" + VARIABLE;
+            }
+        };
     }
 
 }

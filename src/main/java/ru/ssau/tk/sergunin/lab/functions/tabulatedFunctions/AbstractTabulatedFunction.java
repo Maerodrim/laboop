@@ -4,9 +4,9 @@ import ru.ssau.tk.sergunin.lab.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.sergunin.lab.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 
-import java.util.Objects;
-
 public abstract class AbstractTabulatedFunction implements TabulatedFunction {
+
+    private static final long serialVersionUID = 4087048866240456298L;
 
     protected static void checkLengthIsTheSame(double[] xValues, double[] yValues) {
         if (xValues.length != yValues.length) {

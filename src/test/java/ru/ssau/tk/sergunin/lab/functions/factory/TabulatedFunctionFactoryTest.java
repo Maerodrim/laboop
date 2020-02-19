@@ -25,7 +25,7 @@ public class TabulatedFunctionFactoryTest {
         TabulatedFunction array = (new ArrayTabulatedFunctionFactory()).createStrict(xValues, yValues);
         TabulatedFunction list = (new LinkedListTabulatedFunctionFactory()).createStrict(xValues, yValues);
         assertTrue(array instanceof StrictTabulatedFunction);
-        assertEquals(array.apply(2), 4);
+        assertEquals(array.apply(2.), 4);
         assertEquals(array.getCount(), 5);
         assertEquals(array.getX(0), 1);
         assertEquals(array.getY(0), 2);
@@ -39,7 +39,7 @@ public class TabulatedFunctionFactoryTest {
         assertThrows(UnsupportedOperationException.class, () -> array.apply(2.5));
 
         assertTrue(list instanceof StrictTabulatedFunction);
-        assertEquals(list.apply(2), 4);
+        assertEquals(list.apply(2.), 4);
         assertEquals(list.getCount(), 5);
         assertEquals(list.getX(0), 1);
         assertEquals(list.getY(0), 2);
@@ -58,7 +58,7 @@ public class TabulatedFunctionFactoryTest {
         TabulatedFunctionFactory arrayTabulatedFunctionFactory = new ArrayTabulatedFunctionFactory();
         TabulatedFunction func = arrayTabulatedFunctionFactory.createStrictUnmodifiable(xValues, yValues);
         assertTrue(func instanceof UnmodifiableTabulatedFunction);
-        assertEquals(func.apply(2), 4);
+        assertEquals(func.apply(2.), 4);
         assertEquals(func.getCount(), 5);
         assertEquals(func.getX(0), 1);
         assertEquals(func.getY(0), 2);
@@ -76,7 +76,7 @@ public class TabulatedFunctionFactoryTest {
         TabulatedFunction array = (new ArrayTabulatedFunctionFactory()).createUnmodifiable(xValues, yValues);
         TabulatedFunction list = (new LinkedListTabulatedFunctionFactory()).createUnmodifiable(xValues, yValues);
         assertTrue(array instanceof UnmodifiableTabulatedFunction);
-        assertEquals(array.apply(2), 4);
+        assertEquals(array.apply(2.), 4);
         assertEquals(array.getCount(), 5);
         assertEquals(array.getX(0), 1);
         assertEquals(array.getY(0), 2);
@@ -89,7 +89,7 @@ public class TabulatedFunctionFactoryTest {
         assertThrows(UnsupportedOperationException.class, () -> array.setY(1, 0));
 
         assertTrue(list instanceof UnmodifiableTabulatedFunction);
-        assertEquals(list.apply(2), 4);
+        assertEquals(list.apply(2.), 4);
         assertEquals(list.getCount(), 5);
         assertEquals(list.getX(0), 1);
         assertEquals(list.getY(0), 2);

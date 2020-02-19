@@ -6,41 +6,39 @@
 <?import javafx.scene.web.WebView?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="564.0" prefWidth="815.0" xmlns="http://javafx.com/javafx/8"
             fx:controller="ru.ssau.tk.sergunin.lab.ui.SettingsController">
-    <children>
-        <ComboBox fx:id="comboBox" layoutX="22.0" layoutY="62.0" onAction="#doOnClickOnComboBox" prefHeight="31.0"
-                  prefWidth="200.0" AnchorPane.leftAnchor="20.0"/>
-        <Button layoutX="698.0" layoutY="496.0" mnemonicParsing="false" onAction="#cancel" prefWidth="70.0"
-                text="Cancel"/>
-        <Button layoutX="591.0" layoutY="496.0" mnemonicParsing="false" onAction="#save" prefHeight="31.0"
-                prefWidth="70.0" text="Save"/>
-        <Button layoutX="20.0" layoutY="129.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" text="Button"
-                AnchorPane.leftAnchor="20.0"/>
-        <Button layoutX="20.0" layoutY="196.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" text="Button"
-                AnchorPane.leftAnchor="20.0"/>
-        <Label layoutX="20.0" layoutY="240.0" prefHeight="42.0" prefWidth="200.0" text="Operation">
-            <font>
-                <Font name="System Bold" size="18.0"/>
-            </font>
-        </Label>
-        <Label layoutX="22.0" layoutY="102.0" prefHeight="21.0" prefWidth="150.0" text="In developing"/>
-        <Label layoutX="22.0" layoutY="154.0" prefHeight="42.0" prefWidth="150.0" text="In developing"/>
-        <WebView fx:id="webView" layoutX="235.0" layoutY="24.0" prefHeight="456.0" prefWidth="560.0"/>
-        <Label layoutX="20.0" layoutY="269.0" prefHeight="42.0" prefWidth="210.0"
-               text="Is create new function as strict?" AnchorPane.leftAnchor="20.0"/>
-        <ComboBox fx:id="strictComboBox" layoutX="20.0" layoutY="311.0" onAction="#doOnClickOnStrictComboBox"
-                  prefHeight="30.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0"/>
-        <Label layoutX="20.0" layoutY="352.0" prefHeight="31.0" prefWidth="210.0" text="Is create new function"
-               AnchorPane.leftAnchor="20.0"/>
-        <ComboBox fx:id="unmodifiableComboBox" layoutX="20.0" layoutY="405.0"
-                  onAction="#doOnClickOnUnmodifiableComboBox"
-                  prefHeight="30.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0"/>
-        <Label layoutX="20.0" layoutY="374.0" prefHeight="31.0" prefWidth="210.0" text="as unmodifiable?"
-               AnchorPane.leftAnchor="20.0"/>
-        <Label layoutX="20.0" layoutY="14.0" prefHeight="42.0" prefWidth="200.0" text="Factory"
-               AnchorPane.leftAnchor="20.0">
-            <font>
-                <Font name="System Bold" size="18.0"/>
-            </font>
-        </Label>
-    </children>
+    <ComboBox fx:id="comboBox" layoutX="22.0" layoutY="62.0" onAction="#doOnClickOnComboBox" prefHeight="31.0"
+              prefWidth="200.0" AnchorPane.leftAnchor="20.0"/>
+    <Button layoutX="698.0" layoutY="496.0" mnemonicParsing="false" onAction="#cancel" prefWidth="70.0"
+            text="Cancel"/>
+    <Button layoutX="591.0" layoutY="496.0" mnemonicParsing="false" onAction="#save" prefHeight="31.0"
+            prefWidth="70.0" text="Save"/>
+    <Button layoutX="20.0" layoutY="129.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" text="Button"
+            AnchorPane.leftAnchor="20.0"/>
+    <Button layoutX="20.0" layoutY="196.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="200.0" text="Button"
+            AnchorPane.leftAnchor="20.0"/>
+    <Label layoutX="20.0" layoutY="240.0" prefHeight="42.0" prefWidth="200.0" text="Operation">
+        <font>
+            <Font name="System Bold" size="18.0"/>
+        </font>
+    </Label>
+    <Label layoutX="22.0" layoutY="102.0" prefHeight="21.0" prefWidth="150.0" text="In developing"/>
+    <Label layoutX="22.0" layoutY="154.0" prefHeight="42.0" prefWidth="150.0" text="In developing"/>
+    <WebView fx:id="webView" layoutX="235.0" layoutY="24.0" prefHeight="456.0" prefWidth="560.0"/>
+    <Label layoutX="20.0" layoutY="269.0" prefHeight="42.0" prefWidth="210.0"
+           text="Is create new function as strict?" AnchorPane.leftAnchor="20.0"/>
+    <ComboBox fx:id="strictComboBox" layoutX="20.0" layoutY="311.0" onAction="#doOnClickOnStrictComboBox"
+              prefHeight="30.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0"/>
+    <Label layoutX="20.0" layoutY="352.0" prefHeight="31.0" prefWidth="210.0" text="Is create new function"
+           AnchorPane.leftAnchor="20.0"/>
+    <ComboBox fx:id="unmodifiableComboBox" layoutX="20.0" layoutY="405.0"
+              onAction="#doOnClickOnUnmodifiableComboBox"
+              prefHeight="30.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0"/>
+    <Label layoutX="20.0" layoutY="374.0" prefHeight="31.0" prefWidth="210.0" text="as unmodifiable?"
+           AnchorPane.leftAnchor="20.0"/>
+    <Label layoutX="20.0" layoutY="14.0" prefHeight="42.0" prefWidth="200.0" text="Factory"
+           AnchorPane.leftAnchor="20.0">
+        <font>
+            <Font name="System Bold" size="18.0"/>
+        </font>
+    </Label>
 </AnchorPane>

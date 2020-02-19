@@ -10,7 +10,7 @@ public class StrictTabulatedFunctionTest {
     @Test
     public void test() {
         TabulatedFunction array = new StrictTabulatedFunction(new ArrayTabulatedFunction(new double[]{1., 2., 3., 4., 5.}, new double[]{2., 4., 6., 8., 10.}));
-        assertEquals(array.apply(2), 4);
+        assertEquals(array.apply(2.), 4);
         assertEquals(array.getCount(), 5);
         assertEquals(array.getX(0), 1);
         array.setY(1, 0);
@@ -26,7 +26,7 @@ public class StrictTabulatedFunctionTest {
     @Test
     public void test2() {
         TabulatedFunction array = new StrictTabulatedFunction(new UnmodifiableTabulatedFunction(new ArrayTabulatedFunction(new double[]{1., 2., 3., 4., 5.}, new double[]{2., 4., 6., 8., 10.})));
-        assertEquals(array.apply(2), 4);
+        assertEquals(array.apply(2.), 4);
         assertEquals(array.getCount(), 5);
         assertEquals(array.getX(0), 1);
         assertEquals(array.getY(0), 2);

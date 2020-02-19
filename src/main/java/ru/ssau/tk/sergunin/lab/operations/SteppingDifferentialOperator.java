@@ -3,7 +3,7 @@ package ru.ssau.tk.sergunin.lab.operations;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 
 public abstract class SteppingDifferentialOperator implements DifferentialOperator<MathFunction> {
-
+    protected static final String VARIABLE = "x";
     protected double step;
 
     SteppingDifferentialOperator(double step) {

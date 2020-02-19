@@ -1,16 +1,16 @@
 package ru.ssau.tk.sergunin.lab.operations;
 
-import ru.ssau.tk.sergunin.lab.functions.*;
+import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.exponentialFunctions.ExpFunction;
 import ru.ssau.tk.sergunin.lab.functions.powerFunctions.ConstantFunction;
 import ru.ssau.tk.sergunin.lab.functions.powerFunctions.IdentityFunction;
 import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PowFunction;
 import ru.ssau.tk.sergunin.lab.functions.powerFunctions.ZeroFunction;
 
-public class MathFunctionIntegralOperator implements IntegralOperator<MathFunction> {
+public class SteppingIntegralOperator implements IntegralOperator<MathFunction> {
     private final double AROUND;
 
-    public MathFunctionIntegralOperator(double around) {
+    public SteppingIntegralOperator(double around) {
         AROUND = around;
     }
 
@@ -31,12 +31,12 @@ public class MathFunctionIntegralOperator implements IntegralOperator<MathFuncti
             resultFunction = resultFunction.sum((new PowFunction(i).andThen(
                     new IdentityFunction().subtract(new ConstantFunction(AROUND)))).multiply(tempFunction.apply(AROUND) / k));
             if (!isUnmodifiableTempFunction) {
-                temp = tempFunction.apply(1);
+                temp = tempFunction.apply(1.);
                 tempFunction = differentialOperator.derive(tempFunction);
                 // 2^(-10)
                 double ACCURACY = 9.765625E-4;
-                n += Math.abs(temp - tempFunction.apply(1)) < ACCURACY ? 1 : 0;
-                if (n == 2 && tempFunction.apply(1) != 0) {
+                n += Math.abs(temp - tempFunction.apply(1.)) < ACCURACY ? 1 : 0;
+                if (n == 2 && tempFunction.apply(1.) != 0) {
                     tempFunction = new ExpFunction();
                     isUnmodifiableTempFunction = true;
                 }

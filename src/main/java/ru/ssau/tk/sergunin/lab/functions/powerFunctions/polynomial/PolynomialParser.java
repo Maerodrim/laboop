@@ -1,7 +1,10 @@
 package ru.ssau.tk.sergunin.lab.functions.powerFunctions.polynomial;
 
-import java.util.*;
-import java.util.regex.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PolynomialParser {
 
@@ -10,7 +13,8 @@ public class PolynomialParser {
     private final static String NEGATIVE_SIGN = "-";
     private final static String MONOMIAL_TEMPLATE =
             "([+-])?(?:(?:(\\d*)(x)(?:\\^(\\d+)))|(?:(\\d*\\.\\d*)(x)(?:\\^(\\d+)))|(?:(\\d*)(x)())|(?:(\\d*\\.\\d*)(x)())|(?:(\\d*\\.\\d*)()())|(?:(\\d+)()()))";
-             //1            2    3        4           5            6        7           8     9 10       11         12 13      14          1516      17   1819
+    //1            2    3        4           5            6        7           8     9 10       11         12 13      14          1516      17   1819
+
     /**
      * Получение многочлена одной переменной из строки, записанной в
      * стандартной математической форме.
@@ -28,8 +32,8 @@ public class PolynomialParser {
         while ((!m.hitEnd() && (m.find()))) {
             boolean isNegative = NEGATIVE_SIGN.equals(m.group(INDEX_SIGN_COEFF));
             int indexActual = 0;
-            for (int i = 2; i < 18; i+=3) {
-                if (!Objects.isNull(m.group(i))){
+            for (int i = 2; i < 18; i += 3) {
+                if (!Objects.isNull(m.group(i))) {
                     indexActual = i;
                 }
             }

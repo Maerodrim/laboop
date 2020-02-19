@@ -8,8 +8,8 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
-import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -31,7 +31,7 @@ public class ComposeController implements Initializable, Openable, MathFunctionA
 
     @FXML
     public void doOnClickOnComboBox(ActionEvent event) {
-        ConnectableItem item = functionMap.get(((ComboBox) event.getSource()).getValue().toString()).getClass()
+        ConnectableItem item = functionMap.get(((ComboBox<String>) event.getSource()).getValue().toString()).getClass()
                 .getDeclaredAnnotation(ConnectableItem.class);
         if (!Objects.isNull(item) && item.hasParameter()) {
             inputParameterController.getStage().show();

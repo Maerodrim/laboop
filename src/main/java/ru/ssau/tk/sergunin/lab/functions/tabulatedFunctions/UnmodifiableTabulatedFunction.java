@@ -8,6 +8,7 @@ import ru.ssau.tk.sergunin.lab.functions.Point;
 import java.util.Iterator;
 
 public class UnmodifiableTabulatedFunction implements TabulatedFunction {
+    private static final long serialVersionUID = -1282071485672901934L;
     private TabulatedFunction tabulatedFunction;
 
     public UnmodifiableTabulatedFunction(TabulatedFunction tabulatedFunction) {
@@ -84,15 +85,14 @@ public class UnmodifiableTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
-    public void setMathFunction(MathFunction math) {
-        tabulatedFunction.setMathFunction(math);
-    }
-
-    @Override
-    public MathFunction getMathFunction(){
+    public MathFunction getMathFunction() {
         return tabulatedFunction.getMathFunction();
     }
 
+    @Override
+    public void setMathFunction(MathFunction math) {
+        tabulatedFunction.setMathFunction(math);
+    }
 
     @Override
     public void offerStrict(boolean isStrict) {
@@ -101,7 +101,6 @@ public class UnmodifiableTabulatedFunction implements TabulatedFunction {
 
     @Override
     public void offerUnmodifiable(boolean isUnmodifiable) {
-        throw new UnsupportedOperationException("The unmodifiable parameter cannot be changed");
     }
 
     @NotNull

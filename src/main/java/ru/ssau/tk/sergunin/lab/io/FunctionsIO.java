@@ -3,9 +3,10 @@ package ru.ssau.tk.sergunin.lab.io;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.xstream.XStream;
+import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
-import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.io.*;
 import java.text.NumberFormat;
@@ -27,15 +28,16 @@ public final class FunctionsIO {
     }
 
     public static void writeTabulatedFunction(BufferedOutputStream outputStream, TabulatedFunction function) throws IOException {
-        DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-        dataOutputStream.writeInt(function.getCount());
-        dataOutputStream.writeBoolean(function.isStrict());
-        dataOutputStream.writeBoolean(function.isUnmodifiable());
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+        objectOutputStream.writeObject(function.getMathFunction());
+        objectOutputStream.writeInt(function.getCount());
+        objectOutputStream.writeBoolean(function.isStrict());
+        objectOutputStream.writeBoolean(function.isUnmodifiable());
         for (Point point : function) {
-            dataOutputStream.writeDouble(point.x);
-            dataOutputStream.writeDouble(point.y);
+            objectOutputStream.writeDouble(point.x);
+            objectOutputStream.writeDouble(point.y);
         }
-        dataOutputStream.flush();
+        objectOutputStream.flush();
     }
 
     public static TabulatedFunction readTabulatedFunction(BufferedReader reader, TabulatedFunctionFactory factory) throws IOException {
@@ -61,18 +63,20 @@ public final class FunctionsIO {
         return factory.create(xValues, yValues);
     }
 
-    public static TabulatedFunction readTabulatedFunction(BufferedInputStream inputStream, TabulatedFunctionFactory factory) throws IOException {
-        DataInputStream dataInputStream = new DataInputStream(inputStream);
-        int count = dataInputStream.readInt();
-        boolean isStrict = dataInputStream.readBoolean();
-        boolean isUnmodifiable = dataInputStream.readBoolean();
+    public static TabulatedFunction readTabulatedFunction(BufferedInputStream inputStream, TabulatedFunctionFactory factory) throws IOException, ClassNotFoundException {
+        ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        MathFunction mathFunction = (MathFunction) objectInputStream.readObject();
+        int count = objectInputStream.readInt();
+        boolean isStrict = objectInputStream.readBoolean();
+        boolean isUnmodifiable = objectInputStream.readBoolean();
         double[] xValues = new double[count];
         double[] yValues = new double[count];
         for (int i = 0; i < count; i++) {
-            xValues[i] = dataInputStream.readDouble();
-            yValues[i] = dataInputStream.readDouble();
+            xValues[i] = objectInputStream.readDouble();
+            yValues[i] = objectInputStream.readDouble();
         }
         TabulatedFunction function = factory.create(xValues, yValues);
+        function.setMathFunction(mathFunction);
         function.offerStrict(isStrict);
         function.offerUnmodifiable(isUnmodifiable);
         return function;

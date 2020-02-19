@@ -7,6 +7,7 @@ import ru.ssau.tk.sergunin.lab.functions.Point;
 import java.util.Iterator;
 
 public class StrictTabulatedFunction implements TabulatedFunction {
+    private static final long serialVersionUID = -3410726428353433261L;
     private TabulatedFunction tabulatedFunction;
 
     public StrictTabulatedFunction(TabulatedFunction tabulatedFunction) {
@@ -94,18 +95,17 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
+    public MathFunction getMathFunction() {
+        return tabulatedFunction.getMathFunction();
+    }
+
+    @Override
     public void setMathFunction(MathFunction math) {
         tabulatedFunction.setMathFunction(math);
     }
 
     @Override
-    public MathFunction getMathFunction(){
-        return tabulatedFunction.getMathFunction();
-    }
-
-    @Override
     public void offerStrict(boolean isStrict) {
-        throw new UnsupportedOperationException("The strict parameter cannot be changed");
     }
 
     @Override

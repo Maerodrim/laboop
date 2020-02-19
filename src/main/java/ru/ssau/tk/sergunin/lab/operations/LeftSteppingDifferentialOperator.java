@@ -10,6 +10,23 @@ public class LeftSteppingDifferentialOperator extends SteppingDifferentialOperat
 
     @Override
     public MathFunction derive(MathFunction function) {
-        return x -> (function.apply(x) - function.apply(x - step)) / step;
+        return new MathFunction() {
+            private static final long serialVersionUID = -8920707897773883408L;
+
+            @Override
+            public double apply(double x) {
+                return (function.apply(x) - function.apply(x - step)) / step;
+            }
+
+            @Override
+            public MathFunction differentiate() {
+                return derive(function);
+            }
+
+            @Override
+            public String getName() {
+                return "d(" + function.getName() + ")/d" + VARIABLE;
+            }
+        };
     }
 }

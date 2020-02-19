@@ -11,6 +11,6 @@ public class IdentityFunctionTest {
     public void testApply() {
         MathFunction x = new IdentityFunction();
         double ACCURACY = 0.0001;
-        assertEquals(x.apply(5), 5, ACCURACY);
+        assertEquals(x.apply(5.), 5, ACCURACY);
     }
 }

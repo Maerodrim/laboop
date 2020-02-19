@@ -11,6 +11,6 @@ public class UnitFunctionTest {
     public void testApply() {
         MathFunction x = new UnitFunction();
         double ACCURACY = 0.0001;
-        assertEquals(x.apply(5), 1, ACCURACY);
+        assertEquals(x.apply(5.), 1, ACCURACY);
     }
 }

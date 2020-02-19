@@ -6,10 +6,10 @@ import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.StrictTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.UnmodifiableTabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.io.FunctionsIO;
 
 import java.io.*;
@@ -19,21 +19,22 @@ import java.util.List;
 class IO {
     static final String FXML_PATH = "fxml/";
     static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions"; // будеть работать только
+    private static Collection<FileChooser.ExtensionFilter> EXTENSION_FILTERS = List.of(
+        new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
+        new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
+        new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
+
     // на компьютерах под управлением OS Windows 7/8/8.1/10
     private final TabulatedFunctionFactory factory;
-    private static final Collection<FileChooser.ExtensionFilter> EXTENSION_FILTERS = List.of(
-            new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
-            new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
-            new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
 
     IO(TabulatedFunctionFactory factory) {
         this.factory = factory;
     }
 
-    static File load(Stage stage, String defaultPath) {
+    static File load(Stage stage) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load function");
-        fileChooser.setInitialDirectory(new File(defaultPath));
+        fileChooser.setInitialDirectory(new File(IO.DEFAULT_DIRECTORY));
         fileChooser.getExtensionFilters().addAll(EXTENSION_FILTERS);
         return fileChooser.showOpenDialog(stage);
     }
@@ -91,7 +92,7 @@ class IO {
 
     void saveFunctionAs(File file, TabulatedFunction function) {
         switch (file.getPath().split("(?=[.])")[1]) {
-            case (".json") : {
+            case (".json"): {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                     FunctionsIO.serializeJson(writer, unwrap(function));
                 } catch (IOException e) {
@@ -99,7 +100,7 @@ class IO {
                 }
                 break;
             }
-            case (".xml") : {
+            case (".xml"): {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                     FunctionsIO.serializeXml(writer, unwrap(function));
                 } catch (IOException e) {
@@ -107,7 +108,7 @@ class IO {
                 }
                 break;
             }
-            case (".fnc") : {
+            case (".fnc"): {
                 try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
                     FunctionsIO.writeTabulatedFunction(outputStream, function);
                 } catch (IOException e) {
@@ -121,7 +122,7 @@ class IO {
     TabulatedFunction loadFunctionAs(File file) {
         TabulatedFunction function = null;
         switch (file.getPath().split("(?=[.])")[1]) {
-            case (".json") : {
+            case (".json"): {
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                     function = wrap(FunctionsIO.deserializeJson(reader, factory.getTabulatedFunctionClass()));
                 } catch (IOException e) {
@@ -129,7 +130,7 @@ class IO {
                 }
                 break;
             }
-            case (".xml") : {
+            case (".xml"): {
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                     function = wrap(FunctionsIO.deserializeXml(reader, factory.getTabulatedFunctionClass()));
                 } catch (IOException e) {
@@ -137,10 +138,10 @@ class IO {
                 }
                 break;
             }
-            case (".fnc") : {
+            case (".fnc"): {
                 try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
                     function = wrap(FunctionsIO.readTabulatedFunction(inputStream, factory));
-                } catch (IOException e) {
+                } catch (IOException | ClassNotFoundException e) {
                     AlertWindows.showError(e);
                 }
                 break;

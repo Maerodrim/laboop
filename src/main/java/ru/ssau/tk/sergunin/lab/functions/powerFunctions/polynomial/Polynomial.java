@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Polynomial {
 
@@ -86,6 +87,15 @@ public class Polynomial {
             }
         });
         return new Polynomial(result);
+    }
+
+    /**
+     * Вычисление значения в точке
+     */
+    public double apply(double x) {
+        AtomicReference<Double> result = new AtomicReference<>(0.);
+        members.forEach((degree, coefficient) -> result.updateAndGet(v -> v + coefficient * Math.pow(x, degree)));
+        return result.get();
     }
 
     public Map<Integer, Double> getMembers() {

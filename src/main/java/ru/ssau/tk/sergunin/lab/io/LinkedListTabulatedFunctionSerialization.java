@@ -1,9 +1,9 @@
 package ru.ssau.tk.sergunin.lab.io;
 
-import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.LinkedListTabulatedFunction;
-import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PowFunction;
-import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.LinkedListTabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PowFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.LinkedListTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.operations.TabulatedDifferentialOperator;
 
 import java.io.*;

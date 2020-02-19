@@ -11,6 +11,6 @@ public class SinhFunctionTest {
     public void testApply() {
         MathFunction x = new SinhFunction();
         double ACCURACY = 0.0001;
-        assertEquals(x.apply(1), Math.sinh(1), ACCURACY);
+        assertEquals(x.apply(1.), Math.sinh(1), ACCURACY);
     }
 }

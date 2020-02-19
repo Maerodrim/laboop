@@ -9,11 +9,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import org.atteo.classindex.ClassIndex;
-import ru.ssau.tk.sergunin.lab.functions.CompositeFunction;
-import ru.ssau.tk.sergunin.lab.numericalMethods.NumericalMethods;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.numericalMethods.NumericalMethods;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,7 +32,6 @@ public class SolvePolynomialController implements Initializable, Openable {
     private Stage stage;
     private Openable parentController;
     private Map<String, Method> numericalMethodMap;
-    private NumericalMethods numMethod;
     private Map<Method, Class<?>> classes;
 
     @Override
@@ -56,22 +53,11 @@ public class SolvePolynomialController implements Initializable, Openable {
     }
 
     @FXML
-    public void doOnClickOnComboBox(ActionEvent event){
-        ConnectableItem item = numericalMethodMap.get(((ComboBox) event.getSource()).getValue().toString())
-                .getDeclaredAnnotation(ConnectableItem.class);
-        if (!Objects.isNull(item) && item.methodOnlyForPolynomialFunction()
-                && ((TableController)parentController).getFunction().getMathFunction() instanceof CompositeFunction) {
-            AlertWindows.showWarning("In the current version of the program, the Newton method only works for polynomial functions");
-            numericalMethodsBox.getSelectionModel().select(0);
-        }
-    }
-
-    @FXML
     private void ok() {
-        numMethod = new NumericalMethods(Double.parseDouble(left.getText()), Double.parseDouble(right.getText()),
+        NumericalMethods numMethod = new NumericalMethods(Double.parseDouble(left.getText()), Double.parseDouble(right.getText()),
                 Integer.parseInt(count.getText()), Double.parseDouble(eps.getText()));
         try {
-            listOfRoots.setItems(FXCollections.observableList((List<Double>)numericalMethodMap
+            listOfRoots.setItems(FXCollections.observableList((List<Double>) numericalMethodMap
                     .get(numericalMethodsBox.getValue()).invoke(numMethod,
                             ((TableController) parentController).getFunction().getMathFunction())));
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -95,7 +81,7 @@ public class SolvePolynomialController implements Initializable, Openable {
     }
 
     @Override
-    public void setFactory(TabulatedFunctionFactory factory){
+    public void setFactory(TabulatedFunctionFactory factory) {
     }
 
     @Override

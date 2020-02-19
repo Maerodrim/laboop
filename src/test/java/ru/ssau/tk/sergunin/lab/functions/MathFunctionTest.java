@@ -18,7 +18,7 @@ public class MathFunctionTest {
     @Test
     public void testAndThen() {
         double ACCURACY = 0.0001;
-        assertEquals(composite.apply(8), Math.sinh(4), ACCURACY);
-        assertEquals(composite.andThen(id).apply(8), Math.sinh(4), ACCURACY);
+        assertEquals(composite.apply(8.), Math.sinh(4), ACCURACY);
+        assertEquals(composite.andThen(id).apply(8.), Math.sinh(4), ACCURACY);
     }
 }

@@ -9,8 +9,8 @@ import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
 import ru.ssau.tk.sergunin.lab.exceptions.NaNException;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
-import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -76,11 +76,6 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
         this.factory = factory;
     }
 
-    @Override
-    public void setParentController(Openable controller) {
-        parentController = controller;
-    }
-
     @FXML
     public void apply() {
         try {
@@ -95,7 +90,7 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {
             AlertWindows.showError(e);
         } catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof NaNException){
+            if (e.getTargetException() instanceof NaNException) {
                 AlertWindows.showWarning("Результат не существует");
             } else {
                 AlertWindows.showError(e);
@@ -112,6 +107,11 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
     @Override
     public Openable getParentController() {
         return parentController;
+    }
+
+    @Override
+    public void setParentController(Openable controller) {
+        parentController = controller;
     }
 
     public Map<String, ? super MathFunction> getTabulatedFunctionMap() {
@@ -140,7 +140,7 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
 
     @FXML
     public void load() {
-        File file = IO.load(stage, IO.DEFAULT_DIRECTORY);
+        File file = IO.load(stage);
         if (!Objects.equals(file, null)) {
             currentFunction = new IO(factory).loadFunctionAs(file);
         }

@@ -18,6 +18,7 @@ import java.util.*;
 
 @ConnectableItem(name = "Create new tabulated function", type = Item.CONTROLLER, pathFXML = "tabulatedFunction.fxml")
 public class TabulatedFunctionController implements Initializable, Openable {
+    private final Map<String, Boolean> existingPoints = new LinkedHashMap<>();
     @FXML
     TextField textX;
     @FXML
@@ -32,8 +33,6 @@ public class TabulatedFunctionController implements Initializable, Openable {
     TableColumn<Point, Double> x;
     @FXML
     TableColumn<Point, Double> y;
-    private final Map<String, Boolean> existingPoints = new LinkedHashMap<>();
-
     private Stage stage;
     private Openable parentController;
     private ObservableList<Point> list;

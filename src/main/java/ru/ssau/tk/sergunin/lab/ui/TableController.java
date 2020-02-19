@@ -13,13 +13,11 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
 import org.jetbrains.annotations.NotNull;
-import ru.ssau.tk.sergunin.lab.functions.CompositeFunction;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.Point;
-import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PolynomialFunction;
-import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -54,7 +52,7 @@ public class TableController implements Initializable, Openable {
     private Label label;
 
     @Override
-    @SuppressWarnings(value= "ResultOfMethodCallIgnored")
+    @SuppressWarnings(value = "ResultOfMethodCallIgnored")
     public void initialize(URL location, ResourceBundle resources) {
         controllerMap = new HashMap<>();
         tabulatedFunctionMap = new LinkedHashMap<>();
@@ -156,7 +154,7 @@ public class TableController implements Initializable, Openable {
 
     void createTab(TableView<Point> table) {
         TabulatedFunction function = getFunction(table.getItems());
-        TabulatedFunctionController controller = (TabulatedFunctionController)getController("tabulatedFunction");
+        TabulatedFunctionController controller = (TabulatedFunctionController) getController("tabulatedFunction");
         function.offerUnmodifiable(controller.isUnmodifiable());
         function.offerStrict(controller.isStrict());
         io.wrap(function);
@@ -188,7 +186,9 @@ public class TableController implements Initializable, Openable {
     private void notifyAboutAccessibility(TabulatedFunction function) {
         boolean isStrict = function.isStrict();
         boolean isUnmodifiable = function.isUnmodifiable();
-        List<Node> list = List.of(calculateValueButton, label);
+        List<Node> list = new ArrayList<>();//List.of(calculateValueButton, label);
+        list.add(calculateValueButton);
+        list.add(label);
         if (tabulatedFunctionMap.size() == 1) {
             mainPane.setBottom(bottomPane);
         }
@@ -242,7 +242,8 @@ public class TableController implements Initializable, Openable {
     }
 
     @Override
-    public void setParentController(Openable controller) {}
+    public void setParentController(Openable controller) {
+    }
 
     @FXML
     private void plot() {
@@ -253,7 +254,7 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void loadFunction() {
-        File file = IO.load(stage, IO.DEFAULT_DIRECTORY);
+        File file = IO.load(stage);
         if (!Objects.equals(file, null)) {
             createTab(io.loadFunctionAs(file));
         }
@@ -325,11 +326,11 @@ public class TableController implements Initializable, Openable {
         sort(getObservableList());
     }
 
-    private Openable getController(){
+    private Openable getController() {
         return getController(Thread.currentThread().getStackTrace()[2].getMethodName());
     }
 
-    private Openable getController(String path){
+    private Openable getController(String path) {
         Openable controller = controllerMap.get(path + ".fxml");
         if (controller instanceof TabulatedFunctionAccessible) {
             ((TabulatedFunctionAccessible) controller).connectTabulatedFunctionMap();
@@ -382,7 +383,7 @@ public class TableController implements Initializable, Openable {
     private void about() {
         if (isTabExist()) {
             Openable controller = getController();
-            ((AboutController)controller).setInfo();
+            ((AboutController) controller).setInfo();
             controller.getStage().show();
         }
     }
@@ -397,6 +398,7 @@ public class TableController implements Initializable, Openable {
             }
         }
     }
+
     @FXML
     private void solvePolynomial() {
         if (isTabExist()) {
@@ -407,9 +409,10 @@ public class TableController implements Initializable, Openable {
             }
         }
     }
+
     @FXML
     private void settings() {
-        ((SettingsController)getController()).start();
+        ((SettingsController) getController()).start();
     }
 
     @FXML

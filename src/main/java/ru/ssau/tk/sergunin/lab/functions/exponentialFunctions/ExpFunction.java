@@ -1,17 +1,15 @@
 package ru.ssau.tk.sergunin.lab.functions.exponentialFunctions;
 
-import ru.ssau.tk.sergunin.lab.ui.Item;
 import ru.ssau.tk.sergunin.lab.ui.ConnectableItem;
+import ru.ssau.tk.sergunin.lab.ui.Item;
 
-@ConnectableItem(name = "Экспонента", priority = 10, type = Item.FUNCTION)
+@ConnectableItem(name = "Экспонента", priority = 102, type = Item.FUNCTION)
 public class ExpFunction extends ExponentialFunction {
+
+    private static final long serialVersionUID = -4803949844687254247L;
 
     public ExpFunction() {
         super(Math.E);
-    }
-
-    @Override
-    public String toString(){
-        return "e^x";
+        name = "e^x";
     }
 }

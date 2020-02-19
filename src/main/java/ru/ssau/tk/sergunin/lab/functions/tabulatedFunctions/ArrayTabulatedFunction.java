@@ -32,15 +32,6 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @JsonSerialize(using = ToStringSerializer.class)
     private MathFunction mathFunction;
 
-    public MathFunction getMathFunction() {
-        return mathFunction;
-    }
-
-    @Override
-    public void setMathFunction(MathFunction mathFunction) {
-        this.mathFunction = mathFunction;
-    }
-
     private ArrayTabulatedFunction() {
         xValues = new double[]{};
         yValues = new double[]{};
@@ -90,6 +81,15 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     public static TabulatedFunction getIdentity() {
         return new ArrayTabulatedFunction();
+    }
+
+    public MathFunction getMathFunction() {
+        return mathFunction;
+    }
+
+    @Override
+    public void setMathFunction(MathFunction mathFunction) {
+        this.mathFunction = mathFunction;
     }
 
     @Override

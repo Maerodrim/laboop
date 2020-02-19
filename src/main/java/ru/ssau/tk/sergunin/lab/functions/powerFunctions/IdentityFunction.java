@@ -1,17 +1,15 @@
 package ru.ssau.tk.sergunin.lab.functions.powerFunctions;
 
-import ru.ssau.tk.sergunin.lab.ui.Item;
 import ru.ssau.tk.sergunin.lab.ui.ConnectableItem;
+import ru.ssau.tk.sergunin.lab.ui.Item;
 
-@ConnectableItem(name = "Линейная функция", priority = 4, type = Item.FUNCTION)
+@ConnectableItem(name = "Линейная функция", priority = 11, type = Item.FUNCTION)
 
-public final class IdentityFunction extends PowFunction{
+public final class IdentityFunction extends PowFunction {
+    private static final long serialVersionUID = -2513148644855402989L;
+
     public IdentityFunction() {
         super(1);
-    }
-
-    @Override
-    public String toString(){
-        return "x";
+        name = "x";
     }
 }

@@ -1,10 +1,9 @@
 package ru.ssau.tk.sergunin.lab.numericalMethods;
 
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
-import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PolynomialFunction;
 import ru.ssau.tk.sergunin.lab.operations.DifferentialOperator;
+import ru.ssau.tk.sergunin.lab.operations.MathFunctionDifferentialOperator;
 import ru.ssau.tk.sergunin.lab.operations.MiddleSteppingDifferentialOperator;
-import ru.ssau.tk.sergunin.lab.operations.PolynomialDifferentialOperator;
 import ru.ssau.tk.sergunin.lab.ui.ConnectableItem;
 import ru.ssau.tk.sergunin.lab.ui.Item;
 
@@ -22,7 +21,7 @@ public class NumericalMethods {
         this.eps = eps;
     }
 
-    public List<Double> newtonMethod(MathFunction func, DifferentialOperator differentialOperator) {
+    public List<Double> newtonMethod(MathFunction func, DifferentialOperator<MathFunction> differentialOperator) {
         double x1, x0, x = left, step;
         List<Double> X = new ArrayList<>();
         step = (right - left) / count;
@@ -64,9 +63,9 @@ public class NumericalMethods {
         return X;
     }
 
-    @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 2, methodOnlyForPolynomialFunction = true)
-    public List<Double> solveWithNewtonMethod(PolynomialFunction func) {
-        return newtonMethod(func, new PolynomialDifferentialOperator());
+    @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 2)
+    public List<Double> solveWithNewtonMethod(MathFunction func) {
+        return newtonMethod(func, new MathFunctionDifferentialOperator());
     }
 
     @ConnectableItem(name = "Secant method", type = Item.NUMERICAL_METHOD, priority = 3)

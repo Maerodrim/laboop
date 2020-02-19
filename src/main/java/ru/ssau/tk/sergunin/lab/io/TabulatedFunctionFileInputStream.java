@@ -12,14 +12,14 @@ public class TabulatedFunctionFileInputStream {
     public static void main(String[] args) {
         try (BufferedInputStream reader = new BufferedInputStream(new FileInputStream("output/array_function.bin"))) {
             System.out.println(FunctionsIO.readTabulatedFunction(reader, new LinkedListTabulatedFunctionFactory()).toString());
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         BufferedInputStream readerStream = null;
         try {
             readerStream = new BufferedInputStream(new FileInputStream("input/binary_function.bin"));
             System.out.println(FunctionsIO.readTabulatedFunction(readerStream, new ArrayTabulatedFunctionFactory()).toString());
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             try {
                 readerStream.close();
             } catch (IOException ex) {
