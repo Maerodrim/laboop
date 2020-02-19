@@ -29,6 +29,7 @@ public class AddPointController implements Initializable, Openable {
                 ((TableController) parentController).getObservableList().add(point);
                 ((TableController) parentController).sort();
                 ((TableController) parentController).getFunction().insert(point.x, point.y);
+                ((TableController) parentController).getFunction().setMathFunction(null);
                 stage.close();
             } else {
                 AlertWindows.showWarning("Point already exists");

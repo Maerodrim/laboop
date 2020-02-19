@@ -30,7 +30,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     private boolean isUnmodifiable = false;
     @JsonProperty("math function")
     @JsonSerialize(using = ToStringSerializer.class)
-    private MathFunction mathFunction;
+    private MathFunction mathFunction = null;
 
     private ArrayTabulatedFunction() {
         xValues = new double[]{};

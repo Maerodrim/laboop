@@ -246,13 +246,6 @@ public class TableController implements Initializable, Openable {
     }
 
     @FXML
-    private void plot() {
-        if (isTabExist()) {
-            Plot.plotFunction(stage, getObservableList());
-        }
-    }
-
-    @FXML
     private void loadFunction() {
         File file = IO.load(stage);
         if (!Objects.equals(file, null)) {
@@ -382,9 +375,20 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void about() {
         if (isTabExist()) {
-            Openable controller = getController();
-            ((AboutController) controller).setInfo();
-            controller.getStage().show();
+            if (!Objects.isNull(getFunction().getMathFunction())) {
+                Openable controller = getController();
+                ((AboutController) controller).setInfo();
+                controller.getStage().show();
+            } else {
+                AlertWindows.showWarning("Function doesn't have base math function");
+            }
+        }
+    }
+
+    @FXML
+    private void plot() {
+        if (isTabExist()) {
+            Plot.plotFunction(stage, getObservableList(), getFunction().getName());
         }
     }
 

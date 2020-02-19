@@ -56,7 +56,7 @@ public class TabulatedFunctionController implements Initializable, Openable {
                 }
                 existingPoints.putIfAbsent(textX.getText(), true);
                 ((TableController) parentController).sort(list);
-                functionTable.setItems(list);
+                //functionTable.setItems(list);
             } else if (textX.getText().isEmpty()) {
                 AlertWindows.showWarning("X field is empty");
             } else if (textY.getText().isEmpty()) {

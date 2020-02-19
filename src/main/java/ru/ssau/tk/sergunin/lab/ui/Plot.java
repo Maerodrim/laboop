@@ -12,7 +12,7 @@ import java.util.Collection;
 
 class Plot {
 
-    static void plotFunction(Stage stage, Collection<Point> list) {
+    static void plotFunction(Stage stage, Collection<Point> list, String name) {
         Stage newWindow = new Stage();
         newWindow.setTitle("Add");
         newWindow.initModality(Modality.WINDOW_MODAL);
@@ -22,8 +22,9 @@ class Plot {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
         final AreaChart<Number, Number> areaChart = new AreaChart<>(xAxis, yAxis);
-        areaChart.setTitle("Function");
+        //areaChart.setTitle(name);
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.setName(name);
         list.forEach(point -> series.getData().add(new XYChart.Data<>(point.x, point.y)));
         newWindow.setTitle("Plot");
         Scene scene = new Scene(areaChart, 400, 300);
