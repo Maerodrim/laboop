@@ -20,9 +20,9 @@ class IO {
     static final String FXML_PATH = "fxml/";
     static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions"; // будеть работать только
     private static Collection<FileChooser.ExtensionFilter> EXTENSION_FILTERS = List.of(
-        new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
-        new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
-        new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
+            new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
+            new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
+            new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
 
     // на компьютерах под управлением OS Windows 7/8/8.1/10
     private final TabulatedFunctionFactory factory;

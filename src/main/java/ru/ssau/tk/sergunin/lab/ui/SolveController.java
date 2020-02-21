@@ -1,7 +1,6 @@
 package ru.ssau.tk.sergunin.lab.ui;
 
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -20,8 +19,8 @@ import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-@ConnectableItem(name = "Solve polynomial", type = Item.CONTROLLER, pathFXML = "solvePolynomial.fxml")
-public class SolvePolynomialController implements Initializable, Openable {
+@ConnectableItem(name = "Solve", type = Item.CONTROLLER, pathFXML = "solve.fxml")
+public class SolveController implements Initializable, Openable {
     @FXML
     ComboBox<String> numericalMethodsBox;
     @FXML

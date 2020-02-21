@@ -87,16 +87,19 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
             function.offerStrict(((TableController) parentController).isStrict());
             function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
             ((TableController) parentController).createTab(function);
+            //todo add math determination
+            stage.close();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {
             AlertWindows.showError(e);
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof NaNException) {
                 AlertWindows.showWarning("Результат не существует");
+            } else if (e.getTargetException() instanceof NullPointerException) {
+                AlertWindows.showWarning("Выберите функцию");
             } else {
                 AlertWindows.showError(e);
             }
         }
-        stage.close();
     }
 
     @FXML

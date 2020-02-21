@@ -27,11 +27,11 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Operation">
                 <MenuItem mnemonicParsing="false" onAction="#apply" text="Apply"/>
-                <MenuItem mnemonicParsing="false" onAction="#plot" text="Plot"/>
+                <!--<MenuItem mnemonicParsing="false" onAction="#plot" text="Plot"/>-->
                 <MenuItem mnemonicParsing="false" onAction="#calculate" text="Calculate"/>
                 <MenuItem mnemonicParsing="false" onAction="#compose" text="Compose"/>
                 <MenuItem mnemonicParsing="false" onAction="#operator" text="Operate"/>
-                <MenuItem mnemonicParsing="false" onAction="#solvePolynomial" text="Solve"/>
+                <MenuItem mnemonicParsing="false" onAction="#solve" text="Solve"/>
             </Menu>
             <Menu mnemonicParsing="false" text="Settings">
                 <MenuItem mnemonicParsing="false" onAction="#settings" text="Settings"/>

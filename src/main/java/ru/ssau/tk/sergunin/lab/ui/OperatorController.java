@@ -47,7 +47,7 @@ public class OperatorController implements Initializable, Openable {
     }
 
     public void doOnClickOnTheComboBox(ActionEvent event) {
-        ConnectableItem item = operatorMap.get(((ComboBox<String>) event.getSource()).getValue().toString())
+        ConnectableItem item = operatorMap.get(((ComboBox<String>) event.getSource()).getValue())
                 .getDeclaredAnnotation(ConnectableItem.class);
         if (!Objects.isNull(item) && !item.numericalOperator()
                 && Objects.isNull(((TableController) parentController).getFunction().getMathFunction())) {

@@ -31,7 +31,7 @@ public class ComposeController implements Initializable, Openable, MathFunctionA
 
     @FXML
     public void doOnClickOnComboBox(ActionEvent event) {
-        ConnectableItem item = functionMap.get(((ComboBox<String>) event.getSource()).getValue().toString()).getClass()
+        ConnectableItem item = functionMap.get(((ComboBox<String>) event.getSource()).getValue()).getClass()
                 .getDeclaredAnnotation(ConnectableItem.class);
         if (!Objects.isNull(item) && item.hasParameter()) {
             inputParameterController.getStage().show();

@@ -87,7 +87,7 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
     @FXML
     private void doOnClickOnComboBox(ActionEvent event) {
         if (!Objects.isNull(functionMap.get(((ComboBox<String>) event.getSource()).getValue()))) {
-            ConnectableItem item = functionMap.get(((ComboBox<String>) event.getSource()).getValue().toString()).getClass()
+            ConnectableItem item = functionMap.get(((ComboBox<String>) event.getSource()).getValue()).getClass()
                     .getDeclaredAnnotation(ConnectableItem.class);
             if (!Objects.isNull(item) && item.hasParameter()) {
                 inputParameterController.getStage().show();
