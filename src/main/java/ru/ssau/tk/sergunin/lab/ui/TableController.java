@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
 import org.jetbrains.annotations.NotNull;
@@ -401,7 +402,7 @@ public class TableController implements Initializable, Openable, Nameable {
         controller.getStage().show();*/
         if (isTabExist()) {
             PlotController controller = (PlotController) getController();
-            controller.setSeries(getObservableList(), getName(), "blue");
+            controller.setSeries(getObservableList(), getName(), "red");
             controller.getStage().show();
         }
     }

@@ -1,18 +1,20 @@
 package ru.ssau.tk.sergunin.lab.functions.powerFunctions.polynomial;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Polynomial {
+public class Polynomial implements Serializable {
 
     final static String EMPTY_STRING = "";
     final static String POSITIVE_SIGN = " + ";
     final static String NEGATIVE_SIGN = " - ";
     final static String DEGREE_MARK_1 = "x";
     final static String DEGREE_MARK_NTH = "x^";
+    private static final long serialVersionUID = -2068989728687790446L;
 
     private final Map<Integer, Double> members
             = new TreeMap<>(Collections.reverseOrder());
