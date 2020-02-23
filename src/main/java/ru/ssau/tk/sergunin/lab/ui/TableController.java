@@ -304,6 +304,11 @@ public class TableController implements Initializable, Openable, Nameable {
     }
 
     private TabulatedFunction getFunction(ObservableList<Point> points) {
+        for (Tab tab : tabulatedFunctionMap.keySet()) {
+            if (((TableView<Point>)tab.getContent()).getItems().equals(points)) {
+                return tabulatedFunctionMap.get(tab);
+            }
+        }
         double[] valuesX = new double[points.size()];
         double[] valuesY = new double[points.size()];
         int i = 0;
@@ -396,13 +401,9 @@ public class TableController implements Initializable, Openable, Nameable {
 
     @FXML
     private void plot() {
-        /*PlotController controller = (PlotController)getController();
-        controller.getStage().getScene().setOnMouseClicked(
-                mouseEvent -> System.out.println("X: " + mouseEvent.getX() + " Y: " + mouseEvent.getY()));
-        controller.getStage().show();*/
         if (isTabExist()) {
             PlotController controller = (PlotController) getController();
-            controller.setSeries(getObservableList(), getName(), "red");
+            controller.setSeries();
             controller.getStage().show();
         }
     }

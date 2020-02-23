@@ -1,12 +1,15 @@
 package ru.ssau.tk.sergunin.lab.ui;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+import javafx.css.Style;
+import javafx.css.StyleableProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.chart.Axis;
-import javafx.scene.chart.Chart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
@@ -21,28 +24,35 @@ import javafx.stage.Stage;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
-import ru.ssau.tk.sergunin.lab.testAxes.MultipleAxesLineChart;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
+
+import static java.lang.String.format;
 
 @ConnectableItem(name = "Plot", type = Item.CONTROLLER, pathFXML = "plot.fxml")
 public class PlotController implements Initializable, Openable {
+    private final int NUMBER_OF_METHOD = 41;
+
     private Stage stage;
     @FXML
     private StackPane stackPane;
     @FXML
-    private LineChart<Number, Number> baseChart;
+    private LineChart lineChart;
+    private final Map<TabulatedFunction, Color> functionColorMap = new HashMap<>();
     private AnchorPane detailsWindow;
     private Openable parentController;
-    private double strokeWidth = 0.3;
+    private PlotController.DetailsPopup detailsPopup;
+    private double strokeWidth = 1;
+    private int numberOfSeries = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         detailsWindow = new AnchorPane();
-        baseChart.setCreateSymbols(false);
+        lineChart.setCreateSymbols(false);
+        bindMouseEvents(lineChart, this.strokeWidth);
     }
 
     @Override
@@ -64,25 +74,69 @@ public class PlotController implements Initializable, Openable {
         parentController = controller;
     }
 
-    public void addSeries(ObservableList<Point> data, String name, String color) {
-        stackPane.getChildren().add(baseChart);
-        baseChart.setStyle("CHART_COLOR_1: " + color + " ;");
+    public void addSeriesInGeneral(ObservableList<Point> data, TabulatedFunction function) {
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
-        baseChart.getData().add(series);
-        series.setName(name);
+        series.setName(function.getName());
+        lineChart.getData().add(series);
+        Color color = getColor(series);
+        functionColorMap.put(function, color);
+        detailsPopup.addPopupRow(function);
         data.forEach(point -> series.getData().add(new XYChart.Data<>(point.x, point.y)));
-        baseChart.lookup(".series" + 0).setStyle("-fx-stroke: " + color + "; -fx-stroke-width: 1;");
-        bindMouseEvents(baseChart, ((TableController)parentController).getFunction(), this.strokeWidth);
+        numberOfSeries++;
     }
 
-    public void setSeries(ObservableList<Point> data, String name, String color) {
-        stackPane.getChildren().clear();
-        baseChart.getData().clear();
-        addSeries(data, name, color);
+    // хождение за два привата
+    private Color getColor(XYChart.Series<Number, Number> series) {
+        Method getPrivate = series.getClass().getClass().getDeclaredMethods()[NUMBER_OF_METHOD];
+        getPrivate.setAccessible(true);
+        Method getStyleMap = null;
+        Color color = null;
+        try {
+            Method[] methods = (Method[]) getPrivate.invoke(series.getNode().getClass().getSuperclass().getSuperclass(), false);
+            for (int i = 0; i < methods.length; i++) {
+                if (methods[i].getName().equals("getStyleMap")) {
+                    getStyleMap = methods[i];
+                    break;
+                }
+            }
+            getStyleMap.setAccessible(true);
+            Object[] arrayOfListsOfStyles = ((ObservableMap<StyleableProperty<?>, List<Style>>) getStyleMap.invoke(series.getNode())).values().toArray();
+            for (int i = 0; i < arrayOfListsOfStyles.length; i++) {
+                Object value = ((Style) (((ArrayList<Style>) (arrayOfListsOfStyles[i])).toArray())[0]).getDeclaration().getParsedValue().getValue();
+                if (value instanceof Color) {
+                    color = (Color)value;
+                }
+            }
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            AlertWindows.showError(e);
+        }
+        return color;
     }
 
-    private void bindMouseEvents(LineChart<Number, Number> baseChart, TabulatedFunction baseFunction, Double strokeWidth) {
-        final PlotController.DetailsPopup detailsPopup = new PlotController.DetailsPopup(baseFunction);
+    public void setSeriesInGeneral(ObservableList<Point> data, TabulatedFunction function) {
+        lineChart.getData().clear();
+        detailsPopup.clear();
+        numberOfSeries = 0;
+        addSeriesInGeneral(data, function);
+    }
+
+    public void addSeries() {
+        addSeriesInGeneral(((TableController) parentController).getObservableList(), ((TableController) parentController).getFunction());
+    }
+
+    public void setSeries() {
+        setSeriesInGeneral(((TableController) parentController).getObservableList(), ((TableController) parentController).getFunction());
+    }
+
+    private String toRGBCode(Color color) {
+        return format("#%02X%02X%02X",
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
+    }
+
+    private void bindMouseEvents(LineChart<Number, Number> baseChart, Double strokeWidth) {
+        detailsPopup = new PlotController.DetailsPopup();
         stackPane.getChildren().add(detailsWindow);
         detailsWindow.getChildren().add(detailsPopup);
         detailsWindow.prefHeightProperty().bind(stackPane.heightProperty());
@@ -159,40 +213,39 @@ public class PlotController implements Initializable, Openable {
 
     private class DetailsPopup extends VBox {
 
-        private TabulatedFunction function;
+        private ObservableList<TabulatedFunction> functions = FXCollections.observableArrayList();
 
-        private DetailsPopup(TabulatedFunction function) {
-            this.function = function;
+        private DetailsPopup() {
             setStyle("-fx-border-width: 1px; -fx-padding: 5 5 5 5px; -fx-border-color: gray; -fx-background-color: whitesmoke;");
             setVisible(false);
         }
 
-        public void showChartDescription(MouseEvent event) {
-            getChildren().clear();
-            Number xValueLong = baseChart.getXAxis().getValueForDisplay(event.getX());
-
-            HBox baseChartPopupRow = buildPopupRow(event, xValueLong, baseChart);
-            if (baseChartPopupRow != null) {
-                getChildren().add(baseChartPopupRow);
-            }
-
-            /*for (LineChart lineChart : backgroundCharts) {
-                HBox popupRow = buildPopupRow(event, xValueLong, lineChart);
-                if (popupRow == null) continue;
-
-                getChildren().add(popupRow);
-            }*/
+        public void addPopupRow(TabulatedFunction function) {
+            functions.add(function);
         }
 
-        private HBox buildPopupRow(MouseEvent event, Number xValueLong, LineChart lineChart) {
-            Label seriesName = new Label(function.getName());
-            //Label seriesName = new Label(lineChart.getYAxis().getLabel());
-            //seriesName.setTextFill(chartColorMap.get(lineChart));
+        public void clear() {
+            functions.clear();
+        }
 
-            Number yValueForChart = getYValueForX(lineChart, xValueLong.doubleValue());
-            if (yValueForChart == null) {
-                return null;
+        public void showChartDescription(MouseEvent event) {
+            getChildren().clear();
+            double x = (Double) lineChart.getXAxis().getValueForDisplay(event.getX());
+
+            for (TabulatedFunction function : functions) {
+                HBox popupRow = buildPopupRow(event, x, function);
+                getChildren().add(popupRow);
             }
+        }
+
+        private HBox buildPopupRow(MouseEvent event, double x, TabulatedFunction function) {
+            Label seriesName = new Label(function.getName());
+            seriesName.setTextFill(functionColorMap.get(function));
+
+            double y = Objects.isNull(function.getMathFunction())
+                    ? function.apply(x)
+                    : function.getMathFunction().apply(x);
+
             /*Number yValueLower = Math.round(normalizeYValue(lineChart, event.getY() - 10));
             Number yValueUpper = Math.round(normalizeYValue(lineChart, event.getY() + 10));
             Number yValueUnderMouse = Math.round((double) lineChart.getYAxis().getValueForDisplay(event.getY()));
@@ -202,32 +255,17 @@ public class PlotController implements Initializable, Openable {
                 seriesName.setStyle("-fx-font-weight: bold");
             }*/
 
-            HBox popupRow = new HBox(10, seriesName, new Label("[" + yValueForChart + "]"));
+            HBox popupRow = new HBox(10, seriesName, new Label("x: [" + x + "]\ny: [" + y + "]"));
             return popupRow;
         }
 
-        private double normalizeYValue(LineChart<Number, Number> lineChart, double value) {
+        /*private double normalizeYValue(LineChart<Number, Number> lineChart, double value) {
             return lineChart.getYAxis().getValueForDisplay(value).doubleValue();
         }
 
         private boolean isMouseNearLine(Number realYValue, Number yValueUnderMouse, Double tolerance) {
             return (Math.abs(yValueUnderMouse.doubleValue() - realYValue.doubleValue()) < tolerance);
-        }
-
-        public Number getYValueForX(LineChart<Double, Double> chart, Double xValue) {
-//            List<XYChart.Data> dataList = ((List<XYChart.Data>) ((XYChart.Series) chart.getData().get(0)).getData());
-//            for (XYChart.Data data : dataList) {
-//                if (Math.abs((Double)data.getXValue() - xValue.doubleValue()) < 1E-6 ) {
-//                    return (Number) data.getYValue();
-//                }
-//            }
-//            return null;
-            if (Objects.isNull(function.getMathFunction())) {
-                return function.apply(xValue);
-            } else {
-                return function.getMathFunction().apply(xValue);
-            }
-        }
+        }*/
     }
 
 }
