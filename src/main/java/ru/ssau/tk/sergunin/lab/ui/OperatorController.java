@@ -32,16 +32,9 @@ public class OperatorController implements Initializable, Openable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         operatorMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.OPERATOR)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
-                .forEach(clazz -> Stream.of(clazz.getMethods())
-                        .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
-                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
-                        .forEach(method -> {
-                            operatorMap.put(method.getDeclaredAnnotation(ConnectableItem.class).name(), method);
-                            classes.put(method, clazz);
-                        }));
+        Map[] maps = IO.initializeMap(classes, operatorMap, Item.OPERATOR);
+        classes = (Map<Method, Class<?>>)maps[0];
+        operatorMap = (Map<String, Method>)maps[1];
         comboBox.getItems().addAll(operatorMap.keySet());
         comboBox.setValue(comboBox.getItems().get(0));
     }
@@ -50,7 +43,7 @@ public class OperatorController implements Initializable, Openable {
         ConnectableItem item = operatorMap.get(((ComboBox<String>) event.getSource()).getValue())
                 .getDeclaredAnnotation(ConnectableItem.class);
         if (!Objects.isNull(item) && !item.numericalOperator()
-                && Objects.isNull(((TableController) parentController).getFunction().getMathFunction())) {
+                && !((TableController) parentController).getFunction().isMathFunctionExist()) {
             AlertWindows.showWarning("Function doesn't have base math function");
             comboBox.getSelectionModel().select(0);
         }
@@ -112,10 +105,9 @@ public class OperatorController implements Initializable, Openable {
                     ((TableController) parentController).isUnmodifiable());
             function.setMathFunction(mathFunction);
         }
-        if (function != null) {
-            function.offerStrict(((TableController) parentController).isStrict());
-            function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
-        }
+        assert function != null;
+        function.offerStrict(((TableController) parentController).isStrict());
+        function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
         ((TableController) parentController).createTab(function);
         stage.close();
     }

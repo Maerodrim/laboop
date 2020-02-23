@@ -9,6 +9,8 @@ import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.ui.ConnectableItem;
 import ru.ssau.tk.sergunin.lab.ui.Item;
 
+import java.util.Objects;
+
 @ConnectableItem(name = "", type = Item.OPERATION)
 public class TabulatedFunctionOperationService {
 
@@ -99,24 +101,75 @@ public class TabulatedFunctionOperationService {
         return factory.create(xValues, yValues);
     }
 
+    private TabulatedFunction doOperation(TabulatedFunction a, MathFunction b, String operation) {
+        TabulatedFunction function = null;
+        if (!a.isMathFunctionExist()) {
+            switch (operation) {
+                case "+" : {
+                    function = doOperation(a, b, Double::sum);
+                    break;
+                }
+                case "-" : {
+                    function = doOperation(a, b, (u, v) -> u - v);
+                    break;
+                }
+                case "*" : {
+                    function = doOperation(a, b, (u, v) -> u * v);
+                    break;
+                }
+                case "/" : {
+                    function = doOperation(a, b, (u, v) -> u / v);
+                    break;
+                }
+            }
+        }
+        else {
+            MathFunction mathFunction = a.getMathFunction();
+            switch (operation) {
+                case "+" : {
+                    mathFunction = mathFunction.sum(b);
+                    break;
+                }
+                case "-" : {
+                    mathFunction = mathFunction.subtract(b);
+                    break;
+                }
+                case "*" : {
+                    mathFunction = mathFunction.multiply(b);
+                    break;
+                }
+                case "/" : {
+                    mathFunction = mathFunction.divide(b);
+                    break;
+                }
+            }
+            function = factory.create(
+                    mathFunction,
+                    a.leftBound(), a.rightBound(),
+                    a.getCount());
+            function.setMathFunction(mathFunction);
+        }
+        return function;
+    }
+
     @ConnectableItem(name = "+", priority = 1, type = Item.OPERATION)
     public TabulatedFunction sum(TabulatedFunction a, MathFunction b) {
-        return doOperation(a, b, Double::sum);
+        return doOperation(a, b, "+");
     }
 
     @ConnectableItem(name = "-", priority = 2, type = Item.OPERATION)
     public TabulatedFunction subtract(TabulatedFunction a, MathFunction b) {
-        return doOperation(a, b, (u, v) -> u - v);
+        return doOperation(a, b, "-");
     }
 
     @ConnectableItem(name = "*", priority = 3, type = Item.OPERATION)
     public TabulatedFunction multiplication(TabulatedFunction a, MathFunction b) {
-        return doOperation(a, b, (u, v) -> u * v);
+        return doOperation(a, b, "*");
     }
 
     @ConnectableItem(name = "/", priority = 4, type = Item.OPERATION)
     public TabulatedFunction division(TabulatedFunction a, MathFunction b) {
-        return doOperation(a, b, (u, v) -> u / v);
+        return doOperation(a, b, "/");
     }
 
     @FunctionalInterface

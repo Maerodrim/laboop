@@ -54,6 +54,10 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point>, Explic
 
     MathFunction getMathFunction();
 
+    default boolean isMathFunctionExist() {
+        return !Objects.isNull(getMathFunction());
+    }
+
     void setMathFunction(MathFunction math);
 
     @Override

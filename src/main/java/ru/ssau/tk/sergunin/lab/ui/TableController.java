@@ -13,6 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
+import org.gillius.jfxutils.tab.TabUtil;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.Nameable;
@@ -134,9 +135,8 @@ public class TableController implements Initializable, Openable, Nameable {
 
     @SuppressWarnings("unchecked")
     void createTab(TabulatedFunction function) {
-        Tab tab = new Tab();
-        tab.setText("Function" + numberId);
-        tab.setId("function" + numberId++);
+        Tab tab = TabUtil.newDraggableTab("Function" + numberId++);
+        TabUtil.makeDroppable(tabPane);
         tab.setClosable(true);
         tabPane.getTabs().add(tab);
         ObservableList<Point> list = getList(function);
@@ -169,9 +169,7 @@ public class TableController implements Initializable, Openable, Nameable {
         function.offerUnmodifiable(controller.isUnmodifiable());
         function.offerStrict(controller.isStrict());
         io.wrap(function);
-        Tab tab = new Tab();
-        tab.setText("Function" + numberId);
-        tab.setId("function" + numberId++);
+        Tab tab = TabUtil.newDraggableTab("Function" + numberId++);
         tab.setClosable(true);
         tabPane.getTabs().add(tab);
         tab.setContent(table);
@@ -389,7 +387,7 @@ public class TableController implements Initializable, Openable, Nameable {
     @FXML
     private void about() {
         if (isTabExist()) {
-            if (!Objects.isNull(getFunction().getMathFunction())) {
+            if (getFunction().isMathFunctionExist()) {
                 Openable controller = getController();
                 ((AboutController) controller).setInfo();
                 controller.getStage().show();
@@ -403,7 +401,7 @@ public class TableController implements Initializable, Openable, Nameable {
     private void plot() {
         if (isTabExist()) {
             PlotController controller = (PlotController) getController();
-            controller.addSeries();
+            controller.setSeries();
             controller.getStage().show();
         }
     }

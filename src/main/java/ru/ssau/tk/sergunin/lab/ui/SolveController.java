@@ -37,16 +37,9 @@ public class SolveController implements Initializable, Openable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         numericalMethodMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.NUMERICAL_METHOD)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
-                .forEach(clazz -> Stream.of(clazz.getMethods())
-                        .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
-                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
-                        .forEach(method -> {
-                            numericalMethodMap.put(method.getDeclaredAnnotation(ConnectableItem.class).name(), method);
-                            classes.put(method, clazz);
-                        }));
+        Map[] maps = IO.initializeMap(classes, numericalMethodMap, Item.NUMERICAL_METHOD);
+        classes = (Map<Method, Class<?>>)maps[0];
+        numericalMethodMap = (Map<String, Method>)maps[1];
         numericalMethodsBox.getItems().addAll(numericalMethodMap.keySet());
         numericalMethodsBox.setValue(numericalMethodsBox.getItems().get(0));
     }

@@ -22,6 +22,53 @@ public class PolynomialFunction extends AbstractMathFunction implements MathFunc
         name = polynomial.toString();
     }
 
+    @Override
+    //todo continue to override
+    public MathFunction multiply(MathFunction afterFunction){
+        if (afterFunction instanceof PolynomialFunction) {
+            Polynomial polynomial = this.polynomial.multiply(((PolynomialFunction) afterFunction).getPolynomial());
+            PolynomialFunction polynomialFunction = new PolynomialFunction(polynomial);
+            return new MathFunction() {
+                private static final long serialVersionUID = -703750867224392469L;
+
+                @Override
+                public double apply(double x) {
+                    return polynomial.apply(x);
+                }
+
+                @Override
+                public MathFunction differentiate() {
+                    return polynomialFunction.differentiate();
+                }
+
+                @Override
+                public String getName() {
+                    return polynomial.toString();
+                }
+            };
+        } else {
+            MathFunction function = this;
+            return new MathFunction() {
+                private static final long serialVersionUID = 4507943343697267559L;
+
+                @Override
+                public double apply(double x) {
+                    return function.apply(x) * afterFunction.apply(x);
+                }
+
+                @Override
+                public MathFunction differentiate() {
+                    return function.differentiate().multiply(afterFunction).sum(afterFunction.differentiate().multiply(function));
+                }
+
+                @Override
+                public String getName() {
+                    return "(" + function.getName() + ") * (" + afterFunction.getName() + ")";
+                }
+            };
+        }
+    }
+
     public Polynomial getPolynomial() {
         return polynomial;
     }

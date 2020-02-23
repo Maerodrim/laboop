@@ -40,19 +40,12 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        operationMap = new LinkedHashMap<>();
         tabulatedFunctionMap = new LinkedHashMap<>();
+        operationMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.OPERATION)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
-                .forEach(clazz -> Stream.of(clazz.getMethods())
-                        .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
-                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
-                        .forEach(method -> {
-                            operationMap.put(method.getDeclaredAnnotation(ConnectableItem.class).name(), method);
-                            classes.put(method, clazz);
-                        }));
+        Map[] maps = IO.initializeMap(classes, operationMap, Item.OPERATION);
+        classes = (Map<Method, Class<?>>)maps[0];
+        operationMap = (Map<String, Method>)maps[1];
         operationComboBox.getItems().addAll(operationMap.keySet());
         operationComboBox.setValue(operationComboBox.getItems().get(0));
     }
@@ -87,7 +80,6 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
             function.offerStrict(((TableController) parentController).isStrict());
             function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
             ((TableController) parentController).createTab(function);
-            //todo add math determination
             stage.close();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {
             AlertWindows.showError(e);
@@ -146,6 +138,9 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
         File file = IO.load(stage);
         if (!Objects.equals(file, null)) {
             currentFunction = new IO(factory).loadFunctionAs(file);
+            if (((TabulatedFunction)currentFunction).isMathFunctionExist()){
+                currentFunction = ((TabulatedFunction) currentFunction).getMathFunction();
+            }
         }
     }
 

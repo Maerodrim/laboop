@@ -89,19 +89,19 @@ public class PlotController implements Initializable, Openable {
         numberOfSeries++;
         ChartPanManager panner = new ChartPanManager(lineChart);
         panner.setMouseFilter(mouseEvent -> {
-            if (mouseEvent.getButton() != MouseButton.PRIMARY) {
+            if (mouseEvent.getButton() != MouseButton.SECONDARY) {
                 mouseEvent.consume();
             }
         });
         panner.start();
         JFXChartUtil.setupZooming(lineChart, mouseEvent -> {
-            if (mouseEvent.getButton() != MouseButton.SECONDARY)
+            if (mouseEvent.getButton() != MouseButton.PRIMARY)
                 mouseEvent.consume();
         });
     }
 
-    public static void removeLegend(LineChart<Double, Double> lineChart){
-        ((Legend)lineChart.lookup(".chart-legend")).getItems().clear();
+    public static void removeLegend(LineChart<Double, Double> lineChart) {
+        ((Legend) lineChart.lookup(".chart-legend")).getItems().clear();
     }
 
     // хождение за два привата
@@ -123,7 +123,7 @@ public class PlotController implements Initializable, Openable {
             for (int i = 0; i < arrayOfListsOfStyles.length; i++) {
                 Object value = ((Style) (((ArrayList<Style>) (arrayOfListsOfStyles[i])).toArray())[0]).getDeclaration().getParsedValue().getValue();
                 if (value instanceof Color) {
-                    color = (Color)value;
+                    color = (Color) value;
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -261,30 +261,35 @@ public class PlotController implements Initializable, Openable {
             Label seriesName = new Label(function.getName());
             seriesName.setTextFill(functionColorMap.get(function));
 
-            double y = Objects.isNull(function.getMathFunction())
-                    ? function.apply(x)
-                    : function.getMathFunction().apply(x);
+            double y = function.isMathFunctionExist()
+                    ? function.getMathFunction().apply(x)
+                    : function.apply(x);
 
-            /*Number yValueLower = Math.round(normalizeYValue(lineChart, event.getY() - 10));
-            Number yValueUpper = Math.round(normalizeYValue(lineChart, event.getY() + 10));
-            Number yValueUnderMouse = Math.round((double) lineChart.getYAxis().getValueForDisplay(event.getY()));
+            double yValueLower = normalizeYValue(lineChart, event.getY() - 2);
+            double yValueUpper = normalizeYValue(lineChart, event.getY() + 2);
+            double yValueUnderMouse = lineChart.getYAxis().getValueForDisplay(event.getY());
 
             // make series name bold when mouse is near given chart's line
-            if (isMouseNearLine(yValueForChart, yValueUnderMouse, Math.abs(yValueLower.doubleValue() - yValueUpper.doubleValue()))) {
+            if (isMouseNearLine(y, yValueUnderMouse, Math.abs(yValueLower - yValueUpper))) {
                 seriesName.setStyle("-fx-font-weight: bold");
-            }*/
+            }
 
             HBox popupRow = new HBox(10, seriesName, new Label("x: [" + x + "]\ny: [" + y + "]"));
             return popupRow;
         }
 
-        /*private double normalizeYValue(LineChart<Number, Number> lineChart, double value) {
-            return lineChart.getYAxis().getValueForDisplay(value).doubleValue();
+        private double normalizeYValue(LineChart<Double, Double> lineChart, double value) {
+            return lineChart.getYAxis().getValueForDisplay(value);
         }
 
-        private boolean isMouseNearLine(Number realYValue, Number yValueUnderMouse, Double tolerance) {
-            return (Math.abs(yValueUnderMouse.doubleValue() - realYValue.doubleValue()) < tolerance);
-        }*/
+        private boolean isMouseNearLine(Double realYValue, Double yValueUnderMouse, Double tolerance) {
+            return (Math.abs(yValueUnderMouse - realYValue) < tolerance);
+        }
     }
+
+    public int getNumberOfSeries() {
+        return numberOfSeries;
+    }
+
 
 }

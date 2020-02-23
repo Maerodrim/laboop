@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.atteo.classindex.ClassIndex;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.StrictTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
@@ -13,8 +14,12 @@ import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.UnmodifiableTabulate
 import ru.ssau.tk.sergunin.lab.io.FunctionsIO;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 class IO {
     static final String FXML_PATH = "fxml/";
@@ -63,6 +68,20 @@ class IO {
         return modalityWindow;
     }
 
+    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item){
+        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == item)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
+                .forEach(clazz -> Stream.of(clazz.getMethods())
+                        .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
+                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
+                        .forEach(method -> {
+                            map.put(method.getDeclaredAnnotation(ConnectableItem.class).name(), method);
+                            classes.put(method, clazz);
+                        }));
+        return new Map[]{classes, map};
+    }
+
     private TabulatedFunction unwrap(TabulatedFunction function) {
         boolean isStrict = function.isStrict();
         boolean isUnmodifiable = function.isUnmodifiable();
@@ -91,30 +110,33 @@ class IO {
     }
 
     void saveFunctionAs(File file, TabulatedFunction function) {
-        switch (file.getPath().split("(?=[.])")[1]) {
-            case (".json"): {
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                    FunctionsIO.serializeJson(writer, unwrap(function));
-                } catch (IOException e) {
-                    AlertWindows.showError(e);
+        Matcher m = Pattern.compile(".*\\.(...)").matcher(file.getPath());
+        if ((!m.hitEnd() && (m.find()))) {
+            switch (m.group(1)) {
+                case ("json"): {
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                        FunctionsIO.serializeJson(writer, unwrap(function));
+                    } catch (IOException e) {
+                        AlertWindows.showError(e);
+                    }
+                    break;
                 }
-                break;
-            }
-            case (".xml"): {
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                    FunctionsIO.serializeXml(writer, unwrap(function));
-                } catch (IOException e) {
-                    AlertWindows.showError(e);
+                case ("xml"): {
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                        FunctionsIO.serializeXml(writer, unwrap(function));
+                    } catch (IOException e) {
+                        AlertWindows.showError(e);
+                    }
+                    break;
                 }
-                break;
-            }
-            case (".fnc"): {
-                try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
-                    FunctionsIO.writeTabulatedFunction(outputStream, function);
-                } catch (IOException e) {
-                    AlertWindows.showError(e);
+                case ("fnc"): {
+                    try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+                        FunctionsIO.writeTabulatedFunction(outputStream, function);
+                    } catch (IOException e) {
+                        AlertWindows.showError(e);
+                    }
+                    break;
                 }
-                break;
             }
         }
     }
