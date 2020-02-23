@@ -1,12 +1,3 @@
-.default-color0.chart-line-symbol { -fx-background-color: red, white; }
-.default-color1.chart-line-symbol { -fx-background-color: blue, white; }
-.default-color2.chart-line-symbol { -fx-background-color: yellow, white; }
-.default-color3.chart-line-symbol { -fx-background-color: pink, white; }
-.default-color4.chart-line-symbol { -fx-background-color: green, white; }
-.default-color5.chart-line-symbol { -fx-background-color: khaki, white; }
-.default-color6.chart-line-symbol { -fx-background-color: brown, white; }
-.default-color7.chart-line-symbol { -fx-background-color: black, white; }
-
 .default-color0.chart-series-line { -fx-stroke: red; }
 .default-color1.chart-series-line { -fx-stroke: blue; }
 .default-color2.chart-series-line { -fx-stroke: yellow; }

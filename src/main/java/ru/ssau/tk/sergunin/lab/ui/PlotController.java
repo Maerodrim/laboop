@@ -1,5 +1,6 @@
 package ru.ssau.tk.sergunin.lab.ui;
 
+import com.sun.javafx.charts.Legend;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -40,7 +41,7 @@ public class PlotController implements Initializable, Openable {
     @FXML
     private StackPane stackPane;
     @FXML
-    private LineChart lineChart;
+    private LineChart<Double, Double> lineChart;
     private final Map<TabulatedFunction, Color> functionColorMap = new HashMap<>();
     private AnchorPane detailsWindow;
     private Openable parentController;
@@ -75,18 +76,22 @@ public class PlotController implements Initializable, Openable {
     }
 
     public void addSeriesInGeneral(ObservableList<Point> data, TabulatedFunction function) {
-        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        XYChart.Series<Double, Double> series = new XYChart.Series<>();
         series.setName(function.getName());
         lineChart.getData().add(series);
-        Color color = getColor(series);
-        functionColorMap.put(function, color);
+        removeLegend(lineChart);
         detailsPopup.addPopupRow(function);
         data.forEach(point -> series.getData().add(new XYChart.Data<>(point.x, point.y)));
+        functionColorMap.put(function, getColorFromCSS(series));
         numberOfSeries++;
     }
 
+    public static void removeLegend(LineChart<Double, Double> lineChart){
+        ((Legend)lineChart.lookup(".chart-legend")).getItems().clear();
+    }
+
     // хождение за два привата
-    private Color getColor(XYChart.Series<Number, Number> series) {
+    private Color getColorFromCSS(XYChart.Series<Double, Double> series) {
         Method getPrivate = series.getClass().getClass().getDeclaredMethods()[NUMBER_OF_METHOD];
         getPrivate.setAccessible(true);
         Method getStyleMap = null;
@@ -135,7 +140,7 @@ public class PlotController implements Initializable, Openable {
                 (int) (color.getBlue() * 255));
     }
 
-    private void bindMouseEvents(LineChart<Number, Number> baseChart, Double strokeWidth) {
+    private void bindMouseEvents(LineChart<Double, Double> baseChart, Double strokeWidth) {
         detailsPopup = new PlotController.DetailsPopup();
         stackPane.getChildren().add(detailsWindow);
         detailsWindow.getChildren().add(detailsPopup);
