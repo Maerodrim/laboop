@@ -14,6 +14,7 @@ import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -22,6 +23,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import org.gillius.jfxutils.chart.ChartPanManager;
+import org.gillius.jfxutils.chart.JFXChartUtil;
 import ru.ssau.tk.sergunin.lab.functions.Point;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
@@ -84,6 +87,17 @@ public class PlotController implements Initializable, Openable {
         data.forEach(point -> series.getData().add(new XYChart.Data<>(point.x, point.y)));
         functionColorMap.put(function, getColorFromCSS(series));
         numberOfSeries++;
+        ChartPanManager panner = new ChartPanManager(lineChart);
+        panner.setMouseFilter(mouseEvent -> {
+            if (mouseEvent.getButton() != MouseButton.PRIMARY) {
+                mouseEvent.consume();
+            }
+        });
+        panner.start();
+        JFXChartUtil.setupZooming(lineChart, mouseEvent -> {
+            if (mouseEvent.getButton() != MouseButton.SECONDARY)
+                mouseEvent.consume();
+        });
     }
 
     public static void removeLegend(LineChart<Double, Double> lineChart){

@@ -403,7 +403,7 @@ public class TableController implements Initializable, Openable, Nameable {
     private void plot() {
         if (isTabExist()) {
             PlotController controller = (PlotController) getController();
-            controller.setSeries();
+            controller.addSeries();
             controller.getStage().show();
         }
     }
