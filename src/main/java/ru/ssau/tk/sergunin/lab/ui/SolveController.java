@@ -8,16 +8,16 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.atteo.classindex.ClassIndex;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.numericalMethods.NumericalMethods;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.*;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 @ConnectableItem(name = "Solve", type = Item.CONTROLLER, pathFXML = "solve.fxml")
 public class SolveController implements Initializable, Openable {
@@ -38,8 +38,8 @@ public class SolveController implements Initializable, Openable {
         numericalMethodMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
         Map[] maps = IO.initializeMap(classes, numericalMethodMap, Item.NUMERICAL_METHOD);
-        classes = (Map<Method, Class<?>>)maps[0];
-        numericalMethodMap = (Map<String, Method>)maps[1];
+        classes = (Map<Method, Class<?>>) maps[0];
+        numericalMethodMap = (Map<String, Method>) maps[1];
         numericalMethodsBox.getItems().addAll(numericalMethodMap.keySet());
         numericalMethodsBox.setValue(numericalMethodsBox.getItems().get(0));
     }
@@ -53,7 +53,7 @@ public class SolveController implements Initializable, Openable {
                     .get(numericalMethodsBox.getValue()).invoke(numMethod,
                             ((TableController) parentController).getFunction().getMathFunction())));
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            AlertWindows.showError(e);
         }
         listOfRoots.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listOfRoots.getSelectionModel().selectAll();

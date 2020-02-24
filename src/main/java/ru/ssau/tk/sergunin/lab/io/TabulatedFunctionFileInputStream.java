@@ -3,6 +3,7 @@ package ru.ssau.tk.sergunin.lab.io;
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.LinkedListTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.operations.TabulatedDifferentialOperator;
+import ru.ssau.tk.sergunin.lab.ui.AlertWindows;
 
 import java.io.*;
 
@@ -13,7 +14,7 @@ public class TabulatedFunctionFileInputStream {
         try (BufferedInputStream reader = new BufferedInputStream(new FileInputStream("output/array_function.bin"))) {
             System.out.println(FunctionsIO.readTabulatedFunction(reader, new LinkedListTabulatedFunctionFactory()).toString());
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            AlertWindows.showError(e);
         }
         BufferedInputStream readerStream = null;
         try {
@@ -23,15 +24,14 @@ public class TabulatedFunctionFileInputStream {
             try {
                 readerStream.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                AlertWindows.showError(ex);
             }
-            e.printStackTrace();
         }
         try {
             System.out.println("Введите размер и значения функции:");
             System.out.println(new TabulatedDifferentialOperator().derive(readTabulatedFunction(new BufferedReader(new InputStreamReader(System.in)), new LinkedListTabulatedFunctionFactory())));
         } catch (IOException e) {
-            e.printStackTrace();
+            AlertWindows.showError(e);
         }
     }
 }

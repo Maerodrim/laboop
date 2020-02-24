@@ -2,6 +2,7 @@ package ru.ssau.tk.sergunin.lab.io;
 
 import ru.ssau.tk.sergunin.lab.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.factory.LinkedListTabulatedFunctionFactory;
+import ru.ssau.tk.sergunin.lab.ui.AlertWindows;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,7 +13,7 @@ public class TabulatedFunctionFileReader {
         try (BufferedReader reader = new BufferedReader(new FileReader("input/function.txt"))) {
             System.out.println(FunctionsIO.readTabulatedFunction(reader, new LinkedListTabulatedFunctionFactory()).toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            AlertWindows.showError(e);
         }
         BufferedReader reader = null;
         try {
@@ -22,9 +23,8 @@ public class TabulatedFunctionFileReader {
             try {
                 reader.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                AlertWindows.showError(ex);
             }
-            e.printStackTrace();
         }
     }
 }

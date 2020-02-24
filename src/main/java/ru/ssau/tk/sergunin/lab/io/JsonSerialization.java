@@ -2,6 +2,7 @@ package ru.ssau.tk.sergunin.lab.io;
 
 import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PowFunction;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.ArrayTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.ui.AlertWindows;
 
 import java.io.*;
 
@@ -15,12 +16,12 @@ public class JsonSerialization {
         try (BufferedWriter outputStream = new BufferedWriter(new FileWriter("output/array_function.json"))) {
             serializeJson(outputStream, function);
         } catch (IOException e) {
-            e.printStackTrace();
+            AlertWindows.showError(e);
         }
         try (BufferedReader inputStream = new BufferedReader(new FileReader("output/array_function.json"))) {
             System.out.println(deserializeJson(inputStream, ArrayTabulatedFunction.class).toString());
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            AlertWindows.showError(ioe);
         }
     }
 }

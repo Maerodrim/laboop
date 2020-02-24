@@ -170,8 +170,9 @@ public class PlotController implements Initializable, Openable {
 
         final Line xLine = new Line();
         final Line yLine = new Line();
-        yLine.setFill(Color.GRAY);
-        xLine.setFill(Color.GRAY);
+
+        yLine.setFill(Color.GREEN);
+        xLine.setFill(Color.GREEN);
         yLine.setStrokeWidth(strokeWidth / 2);
         xLine.setStrokeWidth(strokeWidth / 2);
         xLine.setVisible(false);

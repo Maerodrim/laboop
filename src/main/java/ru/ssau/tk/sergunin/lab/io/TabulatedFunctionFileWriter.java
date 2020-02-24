@@ -4,6 +4,7 @@ import ru.ssau.tk.sergunin.lab.functions.exponentialFunctions.ExponentialFunctio
 import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PowFunction;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.ArrayTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.LinkedListTabulatedFunction;
+import ru.ssau.tk.sergunin.lab.ui.AlertWindows;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -17,7 +18,7 @@ public class TabulatedFunctionFileWriter {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter("output/array_function.txt"))) {
             FunctionsIO.writeTabulatedFunction(fileWriter, arrayTabulatedFunction);
         } catch (IOException e) {
-            e.printStackTrace();
+            AlertWindows.showError(e);
         }
         BufferedWriter fileWriter = null;
         try {
@@ -27,9 +28,8 @@ public class TabulatedFunctionFileWriter {
             try {
                 fileWriter.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                AlertWindows.showError(ex);
             }
-            e.printStackTrace();
         }
     }
 }

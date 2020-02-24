@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
 import org.gillius.jfxutils.tab.TabUtil;
@@ -28,7 +27,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
-public class TableController implements Initializable, Openable, Nameable {
+public class TableController implements Initializable, Openable {
 
     private final TableColumn<Point, Double> x = new TableColumn<>("X");
     private final TableColumn<Point, Double> y = new TableColumn<>("Y");
@@ -41,7 +40,7 @@ public class TableController implements Initializable, Openable, Nameable {
     private Map<String, MathFunction> compositeFunctionMap;
     private Tab currentTab;
     private IO io;
-    private boolean isStrict = true;
+    private boolean isStrict = false;
     private boolean isUnmodifiable = false;
     @FXML
     private TabPane tabPane;
@@ -102,7 +101,7 @@ public class TableController implements Initializable, Openable, Nameable {
                                     (MathFunction) clazz.getDeclaredConstructor().newInstance());
                         }
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
+                        AlertWindows.showError(e);
                     }
                 });
     }
@@ -115,7 +114,7 @@ public class TableController implements Initializable, Openable, Nameable {
                         controllerMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).pathFXML(),
                                 initializeWindowController((Openable) clazz.getConstructor().newInstance()));
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
+                        AlertWindows.showError(e);
                     }
                 });
         controllerMap.values().stream()
@@ -135,8 +134,9 @@ public class TableController implements Initializable, Openable, Nameable {
 
     @SuppressWarnings("unchecked")
     void createTab(TabulatedFunction function) {
-        Tab tab = TabUtil.newDraggableTab("Function" + numberId++);
-        TabUtil.makeDroppable(tabPane);
+        Tab tab = new Tab();
+        tab.setText("Function" + numberId);
+        tab.setId("function" + numberId++);
         tab.setClosable(true);
         tabPane.getTabs().add(tab);
         ObservableList<Point> list = getList(function);
@@ -169,10 +169,10 @@ public class TableController implements Initializable, Openable, Nameable {
         function.offerUnmodifiable(controller.isUnmodifiable());
         function.offerStrict(controller.isStrict());
         io.wrap(function);
-        Tab tab = TabUtil.newDraggableTab("Function" + numberId++);
+        Tab tab = new Tab("Function" + numberId, table);
+        tab.setId("function" + numberId++);
         tab.setClosable(true);
         tabPane.getTabs().add(tab);
-        tab.setContent(table);
         tabPane.getSelectionModel().select(tab);
         tabulatedFunctionMap.put(tab, function);
         notifyAboutAccessibility(function);
@@ -303,7 +303,7 @@ public class TableController implements Initializable, Openable, Nameable {
 
     private TabulatedFunction getFunction(ObservableList<Point> points) {
         for (Tab tab : tabulatedFunctionMap.keySet()) {
-            if (((TableView<Point>)tab.getContent()).getItems().equals(points)) {
+            if (((TableView<Point>) tab.getContent()).getItems().equals(points)) {
                 return tabulatedFunctionMap.get(tab);
             }
         }
@@ -496,8 +496,8 @@ public class TableController implements Initializable, Openable, Nameable {
         return compositeFunctionMap;
     }
 
-    @Override
-    public String getName() {
-        return getFunction().getMathFunction().getName();
-    }
+    //@Override
+    //public String getName() {
+        //return getFunction().getMathFunction().getName();
+    //}
 }

@@ -50,12 +50,12 @@ public class AboutController implements Openable, Initializable {
         try {
             return ((Nameable) field.get(mathFunction)).getName();
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            AlertWindows.showError(e);
         } catch (ClassCastException e) {
             try {
                 getNameForce((MathFunction) field.get(mathFunction));
             } catch (IllegalAccessException ex) {
-                ex.printStackTrace();
+                AlertWindows.showError(ex);
             }
         }
         return "";

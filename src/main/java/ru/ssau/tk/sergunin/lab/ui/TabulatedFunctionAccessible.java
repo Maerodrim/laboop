@@ -3,19 +3,26 @@ package ru.ssau.tk.sergunin.lab.ui;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface TabulatedFunctionAccessible {
     default void connectTabulatedFunctionMap() {
+        AtomicBoolean isNotSuitableSet = new AtomicBoolean(true);
         ((TableController) getParentController()).getTabulatedFunctionMap().forEach((tab, function) -> {
             if (function != ((TableController) getParentController()).getFunction() &&
                     !function.isStrict() &&
                     ((TableController) getParentController()).getFunction().isCanBeComposed(function)) {
-                getTabulatedFunctionMap().put(tab.getText(), function);
+                String name = function.isMathFunctionExist()
+                        ? function.getName()
+                        : tab.getText();
+                getTabulatedFunctionMap().put(name, function);
+                isNotSuitableSet.set(false);
             }
         });
-        if (!getTabulatedFunctionMap().isEmpty()) {
-            updateTabulatedFunctionNode();
+        if (isNotSuitableSet.get()) {
+            getTabulatedFunctionMap().clear();
         }
+        updateTabulatedFunctionNode();
     }
 
     Openable getParentController();

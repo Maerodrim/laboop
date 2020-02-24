@@ -5,7 +5,7 @@ import ru.ssau.tk.sergunin.lab.ui.Item;
 
 @ConnectableItem(name = "Линейная функция", priority = 11, type = Item.FUNCTION)
 
-public final class IdentityFunction extends PowFunction {
+public final class IdentityFunction extends IntegerPowFunction {
     private static final long serialVersionUID = -2513148644855402989L;
 
     public IdentityFunction() {

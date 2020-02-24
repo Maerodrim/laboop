@@ -59,7 +59,7 @@ public class ComposeController implements Initializable, Openable, MathFunctionA
                             .getDeclaredConstructor(String.class).newInstance(inputParameterController.getParameter()));
                 }
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
+                AlertWindows.showError(e);
             }
         }
         try {

@@ -62,7 +62,7 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
                             .getDeclaredConstructor(String.class).newInstance(inputParameterController.getParameter()));
                 }
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
+                AlertWindows.showError(e);
             }
         }
         try {

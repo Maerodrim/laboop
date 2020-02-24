@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
-import org.atteo.classindex.ClassIndex;
 import ru.ssau.tk.sergunin.lab.functions.MathFunction;
 import ru.ssau.tk.sergunin.lab.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
@@ -13,9 +12,10 @@ import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.*;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 @ConnectableItem(name = "Differentiate/Integrate", type = Item.CONTROLLER, pathFXML = "operator.fxml")
 public class OperatorController implements Initializable, Openable {
@@ -33,8 +33,8 @@ public class OperatorController implements Initializable, Openable {
         operatorMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
         Map[] maps = IO.initializeMap(classes, operatorMap, Item.OPERATOR);
-        classes = (Map<Method, Class<?>>)maps[0];
-        operatorMap = (Map<String, Method>)maps[1];
+        classes = (Map<Method, Class<?>>) maps[0];
+        operatorMap = (Map<String, Method>) maps[1];
         comboBox.getItems().addAll(operatorMap.keySet());
         comboBox.setValue(comboBox.getItems().get(0));
     }
@@ -87,7 +87,7 @@ public class OperatorController implements Initializable, Openable {
                                 .newInstance(((TableController) parentController).getFactory()),
                         ((TableController) parentController).getFunction());
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
-                e.printStackTrace();
+                AlertWindows.showError(e);
             }
         } else {
             MathFunction mathFunction = null;
@@ -95,7 +95,7 @@ public class OperatorController implements Initializable, Openable {
                 mathFunction = (MathFunction) operatorMap.get(comboBox.getValue()).invoke(
                         classes.get(operatorMap.get(comboBox.getValue())).getDeclaredConstructor().newInstance(), sourceFunction.getMathFunction());
             } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
-                e.printStackTrace();
+                AlertWindows.showError(e);
             }
             function = factory.create(
                     mathFunction,

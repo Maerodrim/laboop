@@ -8,8 +8,8 @@ import javafx.scene.layout.VBox;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-class AlertWindows {
-    static void showError(Exception e) {
+public class AlertWindows {
+    public static void showError(Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error alert");
         alert.setHeaderText(e.getMessage());
@@ -29,7 +29,7 @@ class AlertWindows {
         return sw.toString();
     }
 
-    static void showWarning(String message) {
+    public static void showWarning(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning");
         alert.setHeaderText(null);

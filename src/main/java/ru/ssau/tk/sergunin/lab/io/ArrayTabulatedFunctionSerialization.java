@@ -5,6 +5,7 @@ import ru.ssau.tk.sergunin.lab.functions.powerFunctions.PowFunction;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.ArrayTabulatedFunction;
 import ru.ssau.tk.sergunin.lab.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.sergunin.lab.operations.TabulatedDifferentialOperator;
+import ru.ssau.tk.sergunin.lab.ui.AlertWindows;
 
 import java.io.*;
 
@@ -22,12 +23,12 @@ public class ArrayTabulatedFunctionSerialization {
             serialize(outputStream, firstDerivative);
             serialize(outputStream, secondDerivative);
         } catch (IOException e) {
-            e.printStackTrace();
+            AlertWindows.showError(e);
         }
         try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream("output/serialized_array_functions.bin"))) {
             System.out.println(deserialize(inputStream).toString() + '\n' + deserialize(inputStream).toString() + '\n' + deserialize(inputStream));
         } catch (IOException | ClassNotFoundException ioe) {
-            ioe.printStackTrace();
+            AlertWindows.showError(ioe);
         }
     }
 

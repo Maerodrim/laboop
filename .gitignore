@@ -7,7 +7,6 @@ temp
 *.txt
 *.json
 *.xml
-target/classes/1234.mp4
 /bin/
 Lab.jar
 *.jar

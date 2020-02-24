@@ -15,7 +15,10 @@ import ru.ssau.tk.sergunin.lab.io.FunctionsIO;
 
 import java.io.*;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -63,12 +66,12 @@ class IO {
             createNewFunctionStage.initModality(Modality.APPLICATION_MODAL);
             modalityWindow.setStage(createNewFunctionStage);
         } catch (IOException e) {
-            e.printStackTrace();
+            AlertWindows.showError(e);
         }
         return modalityWindow;
     }
 
-    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item){
+    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item) {
         StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
                 .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == item)
                 .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))

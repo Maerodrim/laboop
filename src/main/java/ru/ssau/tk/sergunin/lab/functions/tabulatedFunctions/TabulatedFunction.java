@@ -38,8 +38,8 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point>, Explic
     TabulatedFunction unwrap();
 
     default boolean isCanBeComposed(TabulatedFunction function) {
-        return leftBound() == function.leftBound()
-                && rightBound() == function.rightBound()
+        return Math.abs(leftBound() - function.leftBound()) < 1E-12
+                && Math.abs(rightBound() - function.rightBound()) < 1E-12
                 && getCount() == function.getCount();
     }
 

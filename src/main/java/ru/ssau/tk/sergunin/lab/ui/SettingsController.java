@@ -65,7 +65,7 @@ public class SettingsController implements Initializable, Openable {
                     try {
                         comboBoxMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(), (TabulatedFunctionFactory) clazz.getDeclaredConstructor().newInstance());
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
+                        AlertWindows.showError(e);
                     }
                 });
         comboBox.getItems().addAll(comboBoxMap.keySet());

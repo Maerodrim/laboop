@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BinaryOperator;
 
 public class Polynomial implements Serializable {
 
@@ -47,7 +48,6 @@ public class Polynomial implements Serializable {
      */
     public Polynomial subtract(Polynomial other) {
         Map<Integer, Double> result = new TreeMap<>(members);
-
         for (Integer currentKey : other.members.keySet()) {
             Double currentValue = result.get(currentKey);
             if (currentValue != null) {
