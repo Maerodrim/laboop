@@ -172,8 +172,8 @@ public class PlotController implements Initializable, Openable {
         final Line xLine = new Line();
         final Line yLine = new Line();
 
-        yLine.setFill(Color.GREEN);
-        xLine.setFill(Color.GREEN);
+        yLine.setFill(Color.GRAY);
+        xLine.setFill(Color.GRAY);
         yLine.setStrokeWidth(strokeWidth / 2);
         xLine.setStrokeWidth(strokeWidth / 2);
         xLine.setVisible(false);
@@ -241,7 +241,7 @@ public class PlotController implements Initializable, Openable {
         private ObservableList<TabulatedFunction> functions = FXCollections.observableArrayList();
 
         private DetailsPopup() {
-            setStyle("-fx-border-width: 1px; -fx-padding: 5 5 5 5px; -fx-border-color: gray; -fx-background-color: whitesmoke;");
+            setStyle("-fx-border-width: 1; -fx-padding: 5 5 5 5; -fx-border-color: gray; -fx-background-color: whitesmoke;");
             setVisible(false);
         }
 

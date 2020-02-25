@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class PolynomialParser {
 
-    private final static int INDEX_SIGN_COEFF = 1;
+    private final static int INDEX_SIGN_COEFFICIENT = 1;
 
     private final static String NEGATIVE_SIGN = "-";
     private final static String MONOMIAL_TEMPLATE =
@@ -30,7 +30,7 @@ public class PolynomialParser {
         Pattern monomial = Pattern.compile(MONOMIAL_TEMPLATE);
         Matcher m = monomial.matcher(source);
         while ((!m.hitEnd() && (m.find()))) {
-            boolean isNegative = NEGATIVE_SIGN.equals(m.group(INDEX_SIGN_COEFF));
+            boolean isNegative = NEGATIVE_SIGN.equals(m.group(INDEX_SIGN_COEFFICIENT));
             int indexActual = 0;
             for (int i = 2; i < 18; i += 3) {
                 if (!Objects.isNull(m.group(i))) {
