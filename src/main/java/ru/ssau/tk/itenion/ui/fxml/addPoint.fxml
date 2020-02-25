@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308"
+            minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="126.0" prefWidth="467.0" xmlns="http://javafx.com/javafx/8"
+            fx:controller="ru.ssau.tk.itenion.ui.AddPointController">
+    <TextField fx:id="y" layoutX="270.0" layoutY="20.0" prefHeight="30.0" prefWidth="180.0"
+               AnchorPane.leftAnchor="270.0" AnchorPane.topAnchor="20.0"/>
+    <Button layoutX="40.0" layoutY="62.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false"
+            onAction="#add" prefHeight="35.0" prefWidth="180.0" text="Add" AnchorPane.leftAnchor="40.0"
+            AnchorPane.topAnchor="65.0"/>
+    <TextField layoutX="40.0" layoutY="20.0" prefHeight="30.0" prefWidth="180.0" AnchorPane.leftAnchor="40.0"
+               AnchorPane.topAnchor="20.0" fx:id="x"/>
+    <Button layoutX="270.0" layoutY="64.0" mnemonicParsing="false" onAction="#cancel" prefHeight="35.0"
+            prefWidth="180.0" text="Cancel" AnchorPane.leftAnchor="270.0" AnchorPane.topAnchor="65.0"/>
+    <Label layoutX="25.0" layoutY="25.0" text="X" AnchorPane.leftAnchor="15.0">
+        <font>
+            <Font name="System Bold" size="15.0"/>
+        </font>
+    </Label>
+    <Label layoutX="245.0" layoutY="25.0" text="Y" AnchorPane.leftAnchor="245.0">
+        <font>
+            <Font name="System Bold" size="15.0"/>
+        </font>
+    </Label>
+</AnchorPane>
