@@ -1,10 +1,12 @@
 package ru.ssau.tk.itenion.functions;
 
 import ru.ssau.tk.itenion.functions.powerFunctions.ZeroFunction;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions.VectorArgumentMathFunction;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
-public interface MathFunction extends Serializable, Differentiable, Nameable {
+public interface MathFunction extends Serializable, Nameable, VectorArgumentMathFunction, Differentiable {
 
     double apply(double x);
 
@@ -129,4 +131,34 @@ public interface MathFunction extends Serializable, Differentiable, Nameable {
             }
         };
     }
+
+    default VectorArgumentMathFunction differentiate(Variable variable) {
+        return differentiate();
+    }
+
+    @Override
+    default MathFunction get(Variable variable) {
+        return this;
+    }
+
+    @Override
+    default void put(Variable variable, MathFunction mathFunction){}
+
+    @Override
+    default int getDim(){
+        return 1;
+    }
+
+    default String getName(Variable variable){
+        if (!variable.equals(Variable.x)) {
+            return getName().replaceAll("x", variable.toString());
+        } else {
+            return getName();
+        }
+    }
+
+    default double apply(ArrayList<Double> x) {
+        throw new UnsupportedOperationException();
+    }
+
 }
