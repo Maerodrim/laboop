@@ -31,6 +31,6 @@ public class CompositeFunction extends AbstractMathFunction implements MathFunct
     @Override
     public MathFunction differentiate() {
         DifferentialOperator<MathFunction> differentialOperator = new MathFunctionDifferentialOperator();
-        return differentialOperator.derive(getOuter()).andThen(differentialOperator.derive(getInner()));
+        return differentialOperator.derive(getOuter()).andThen(getInner()).multiply(differentialOperator.derive(getInner()));
     }
 }

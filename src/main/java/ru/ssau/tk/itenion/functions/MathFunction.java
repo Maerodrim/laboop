@@ -1,7 +1,8 @@
 package ru.ssau.tk.itenion.functions;
 
-import ru.ssau.tk.itenion.functions.powerFunctions.ZeroFunction;
+import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions.VectorArgumentMathFunction;
+import ru.ssau.tk.itenion.functions.powerFunctions.ZeroFunction;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -142,14 +143,15 @@ public interface MathFunction extends Serializable, Nameable, VectorArgumentMath
     }
 
     @Override
-    default void put(Variable variable, MathFunction mathFunction){}
+    default void put(Variable variable, MathFunction mathFunction) {
+    }
 
     @Override
-    default int getDim(){
+    default int getDimension() {
         return 1;
     }
 
-    default String getName(Variable variable){
+    default String getName(Variable variable) {
         if (!variable.equals(Variable.x)) {
             return getName().replaceAll("x", variable.toString());
         } else {
@@ -161,4 +163,7 @@ public interface MathFunction extends Serializable, Nameable, VectorArgumentMath
         throw new UnsupportedOperationException();
     }
 
+    default double apply(Matrix x) {
+        throw new UnsupportedOperationException();
+    }
 }

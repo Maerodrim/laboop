@@ -1,11 +1,12 @@
 package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions;
 
+import Jama.Matrix;
 import ru.ssau.tk.itenion.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.itenion.exceptions.InconsistentFunctionsException;
+import ru.ssau.tk.itenion.exceptions.InconsistentMatrixSize;
 import ru.ssau.tk.itenion.functions.Variable;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions.AdditiveVectorArgumentMathFunction;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions.VectorArgumentMathFunction;
-import ru.ssau.tk.itenion.matrix.Matrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class VectorMathFunctionSV implements VectorMathFunction {
     VectorMathFunctionSV(AdditiveVectorArgumentMathFunction additiveVectorArgumentMathFunction) {
         this();
         functionList.add(additiveVectorArgumentMathFunction);
-        requiredDim = additiveVectorArgumentMathFunction.getDim();
+        requiredDim = additiveVectorArgumentMathFunction.getDimension();
         dim++;
         joiner.add(additiveVectorArgumentMathFunction.toString());
     }
@@ -35,15 +36,16 @@ public class VectorMathFunctionSV implements VectorMathFunction {
         return dim == requiredDim;
     }
 
-    public Matrix getJacobiMatrix(ArrayList<Double> x) {
+    public Matrix getJacobiMatrix(Matrix x) {
+        if (x.getRowDimension() != 1 || x.getColumnDimension() != requiredDim) {
+            throw new UnsupportedOperationException();
+        }
         Matrix matrix = new Matrix(dim, dim);
+        Variable[] variables = Variable.values();
         if (isCanBeSolved()) {
             for (int i = 0; i < dim; i++) {
-                for (Variable variable : Variable.values()) {
-                    matrix.set(i + 1,
-                            variable.ordinal() + 1,
-                            functionList.get(i).differentiate(variable).apply(x.get(variable.ordinal()))
-                    );
+                for (int j = 0; j < dim; j++) {
+                    matrix.set(i, j, functionList.get(i).differentiate(variables[j]).apply(x.get(0, j)));
                 }
             }
         } else {
@@ -55,9 +57,9 @@ public class VectorMathFunctionSV implements VectorMathFunction {
     @Override
     public void add(VectorArgumentMathFunction vectorArgumentMathFunction) {
         if (vectorArgumentMathFunction instanceof AdditiveVectorArgumentMathFunction) {
-            if (requiredDim == 0 || requiredDim == vectorArgumentMathFunction.getDim()) {
+            if (requiredDim == 0 || requiredDim == vectorArgumentMathFunction.getDimension()) {
                 if (requiredDim == 0) {
-                    requiredDim = vectorArgumentMathFunction.getDim();
+                    requiredDim = vectorArgumentMathFunction.getDimension();
                 }
                 functionList.add((AdditiveVectorArgumentMathFunction) vectorArgumentMathFunction);
                 joiner.add(vectorArgumentMathFunction.toString());
@@ -74,6 +76,18 @@ public class VectorMathFunctionSV implements VectorMathFunction {
     public ArrayList<Double> apply(ArrayList<Double> x) {
         ArrayList<Double> y = new ArrayList<>();
         functionList.forEach(function -> y.add(function.apply(x)));
+        return y;
+    }
+
+    @Override
+    public Matrix apply(Matrix x) {
+        if (x.getRowDimension() != 1 || x.getColumnDimension() != requiredDim) {
+            throw new InconsistentMatrixSize();
+        }
+        Matrix y = new Matrix(functionList.size(), 1);
+        for (int i = 0; i < functionList.size(); i++) {
+            y.set(i, 0, functionList.get(i).apply(x.getMatrix(0, 0, 0, x.getColumnDimension() - 1)));
+        }
         return y;
     }
 
