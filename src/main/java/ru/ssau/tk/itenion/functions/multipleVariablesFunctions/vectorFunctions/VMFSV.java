@@ -5,31 +5,31 @@ import ru.ssau.tk.itenion.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.itenion.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.itenion.exceptions.InconsistentMatrixSize;
 import ru.ssau.tk.itenion.functions.Variable;
-import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions.AdditiveVectorArgumentMathFunction;
-import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions.VectorArgumentMathFunction;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.AbstractVAMF;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
-public class VectorMathFunctionSV implements VectorMathFunction {
-    private List<AdditiveVectorArgumentMathFunction> functionList;
+public class VMFSV implements VMF {
+    private List<AbstractVAMF> functionList;
     private int dim;
     private int requiredDim;
     private StringJoiner joiner;
 
-    public VectorMathFunctionSV() {
+    public VMFSV() {
         functionList = new ArrayList<>();
         dim = 0;
-        joiner = new StringJoiner("; ");
+        joiner = new StringJoiner(";\n");
     }
 
-    VectorMathFunctionSV(AdditiveVectorArgumentMathFunction additiveVectorArgumentMathFunction) {
+    VMFSV(AbstractVAMF abstractVAMF) {
         this();
-        functionList.add(additiveVectorArgumentMathFunction);
-        requiredDim = additiveVectorArgumentMathFunction.getDimension();
+        functionList.add(abstractVAMF);
+        requiredDim = abstractVAMF.getDimension();
         dim++;
-        joiner.add(additiveVectorArgumentMathFunction.toString());
+        joiner.add(abstractVAMF.toString());
     }
 
     public boolean isCanBeSolved() {
@@ -55,14 +55,14 @@ public class VectorMathFunctionSV implements VectorMathFunction {
     }
 
     @Override
-    public void add(VectorArgumentMathFunction vectorArgumentMathFunction) {
-        if (vectorArgumentMathFunction instanceof AdditiveVectorArgumentMathFunction) {
-            if (requiredDim == 0 || requiredDim == vectorArgumentMathFunction.getDimension()) {
+    public void add(VAMF vamf) {
+        if (vamf instanceof AbstractVAMF) {
+            if (requiredDim == 0 || requiredDim == vamf.getDimension()) {
                 if (requiredDim == 0) {
-                    requiredDim = vectorArgumentMathFunction.getDimension();
+                    requiredDim = vamf.getDimension();
                 }
-                functionList.add((AdditiveVectorArgumentMathFunction) vectorArgumentMathFunction);
-                joiner.add(vectorArgumentMathFunction.toString());
+                functionList.add((AbstractVAMF) vamf);
+                joiner.add(vamf.toString());
                 dim++;
             } else {
                 throw new DifferentLengthOfArraysException();
@@ -89,6 +89,11 @@ public class VectorMathFunctionSV implements VectorMathFunction {
             y.set(i, 0, functionList.get(i).apply(x.getMatrix(0, 0, 0, x.getColumnDimension() - 1)));
         }
         return y;
+    }
+
+    @Override
+    public String toString(){
+        return joiner.toString();
     }
 
 }

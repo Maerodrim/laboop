@@ -2,7 +2,7 @@ package ru.ssau.tk.itenion.numericalMethods;
 
 import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VectorMathFunction;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.operations.DifferentialOperator;
 import ru.ssau.tk.itenion.operations.MathFunctionDifferentialOperator;
 import ru.ssau.tk.itenion.operations.MiddleSteppingDifferentialOperator;
@@ -24,19 +24,19 @@ public class NumericalMethods {
         this.eps = eps;
     }
 
-    public static Matrix solveNonlinearSystem(VectorMathFunction vectorMathFunction, Matrix initialApproximation, boolean isModified) {
+    public static Matrix solveNonlinearSystem(VMF VMF, Matrix initialApproximation, boolean isModified) {
         final double EPS = 1E-6;
         Matrix x1;
         Matrix x0 = initialApproximation.copy();
-        Matrix jacobian = vectorMathFunction.getJacobiMatrix(x0.transpose());
-        Matrix y = vectorMathFunction.apply(x0.transpose());
+        Matrix jacobian = VMF.getJacobiMatrix(x0.transpose());
+        Matrix y = VMF.apply(x0.transpose());
         Matrix p = jacobian.solve(y.timesEquals(-1));
         x1 = x0.plus(p);
         while (x0.minus(x1).norm2() > EPS) {
             x0 = x1;
-            y = vectorMathFunction.apply(x0.transpose());
+            y = VMF.apply(x0.transpose());
             if (!isModified) {
-                jacobian = vectorMathFunction.getJacobiMatrix(x0.transpose());
+                jacobian = VMF.getJacobiMatrix(x0.transpose());
             }
             p = jacobian.solve(y.timesEquals(-1));
             x1 = x0.plus(p);

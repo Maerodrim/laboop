@@ -1,13 +1,13 @@
 package ru.ssau.tk.itenion.functions;
 
 import Jama.Matrix;
-import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions.VectorArgumentMathFunction;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 import ru.ssau.tk.itenion.functions.powerFunctions.ZeroFunction;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public interface MathFunction extends Serializable, Nameable, VectorArgumentMathFunction, Differentiable {
+public interface MathFunction extends Serializable, Nameable, VAMF, Differentiable {
 
     double apply(double x);
 
@@ -133,7 +133,7 @@ public interface MathFunction extends Serializable, Nameable, VectorArgumentMath
         };
     }
 
-    default VectorArgumentMathFunction differentiate(Variable variable) {
+    default VAMF differentiate(Variable variable) {
         return differentiate();
     }
 
