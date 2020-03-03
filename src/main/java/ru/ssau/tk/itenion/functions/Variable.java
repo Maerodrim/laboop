@@ -1,6 +1,6 @@
 package ru.ssau.tk.itenion.functions;
 
-public enum Variable{
+public enum Variable {
     x,
     y
 }

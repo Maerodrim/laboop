@@ -31,10 +31,9 @@ class IO {
             new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
             new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
             new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
-
+    private static Pattern FILE_EXTENSION_PATTERN = Pattern.compile(".*\\.(...)");
     // на компьютерах под управлением OS Windows 7/8/8.1/10
     private final TabulatedFunctionFactory factory;
-    private static Pattern FILE_EXTENSION_PATTERN = Pattern.compile(".*\\.(...)");
 
     IO(TabulatedFunctionFactory factory) {
         this.factory = factory;

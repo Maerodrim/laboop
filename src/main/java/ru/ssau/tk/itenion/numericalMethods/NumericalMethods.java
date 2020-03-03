@@ -1,16 +1,14 @@
 package ru.ssau.tk.itenion.numericalMethods;
 
+import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.functions.Variable;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VectorMathFunction;
-import ru.ssau.tk.itenion.matrix.Matrices;
 import ru.ssau.tk.itenion.operations.DifferentialOperator;
 import ru.ssau.tk.itenion.operations.MathFunctionDifferentialOperator;
 import ru.ssau.tk.itenion.operations.MiddleSteppingDifferentialOperator;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +22,26 @@ public class NumericalMethods {
         this.right = right;
         this.initialApproximation = initialApproximation;
         this.eps = eps;
+    }
+
+    public static Matrix solveNonlinearSystem(VectorMathFunction vectorMathFunction, Matrix initialApproximation, boolean isModified) {
+        final double EPS = 1E-6;
+        Matrix x1;
+        Matrix x0 = initialApproximation.copy();
+        Matrix jacobian = vectorMathFunction.getJacobiMatrix(x0.transpose());
+        Matrix y = vectorMathFunction.apply(x0.transpose());
+        Matrix p = jacobian.solve(y.timesEquals(-1));
+        x1 = x0.plus(p);
+        while (x0.minus(x1).norm2() > EPS) {
+            x0 = x1;
+            y = vectorMathFunction.apply(x0.transpose());
+            if (!isModified) {
+                jacobian = vectorMathFunction.getJacobiMatrix(x0.transpose());
+            }
+            p = jacobian.solve(y.timesEquals(-1));
+            x1 = x0.plus(p);
+        }
+        return x1;
     }
 
     @ConnectableItem(name = "Half-division method (all roots)", type = Item.NUMERICAL_METHOD, priority = 1)
@@ -83,27 +101,6 @@ public class NumericalMethods {
     @ConnectableItem(name = "Secant method", type = Item.NUMERICAL_METHOD, priority = 4)
     public Map<Double, Map.Entry<Double, Integer>> solveWithSecantMethod(MathFunction func) {
         return newtonMethod(func, new MiddleSteppingDifferentialOperator(eps));
-    }
-
-    public ArrayList<Double> solveNonlinearSystem(VectorMathFunction vectorMathFunction, ArrayList<Double> initialApproximation){
-        ArrayList<Double> x0 = new ArrayList<>(initialApproximation);
-        ArrayList<Double> x1 = new ArrayList<>();
-        ArrayList<Double> y = vectorMathFunction.apply(x0);
-        y.forEach(y1 -> y1 = -y1);
-        ArrayList<Double> p = Matrices.solve(vectorMathFunction.getJacobiMatrix(x0), y);
-        for (int i = 0; i < x0.size(); i++) {
-            x1.add(x0.get(i) + p.get(i));
-        }
-        while (Matrices.normOfDifference(x0, x1) > eps) {
-            x0 = x1;
-            y = vectorMathFunction.apply(x0);
-            y.forEach(y1 -> y1 = -y1);
-            p = Matrices.solve(vectorMathFunction.getJacobiMatrix(x0), y);
-            for (int i = 0; i < x0.size(); i++) {
-                x1.set(i, x0.get(i) + p.get(i));
-            }
-        }
-        return x1;
     }
 
 }

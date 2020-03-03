@@ -1,5 +1,6 @@
 package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions;
 
+import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Variable;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.MultipleVariableDifferentiable;
@@ -17,5 +18,7 @@ public interface VectorArgumentMathFunction extends MultipleVariableDifferentiab
 
     double apply(ArrayList<Double> x);
 
-    int getDim();
+    double apply(Matrix x);
+
+    int getDimension();
 }

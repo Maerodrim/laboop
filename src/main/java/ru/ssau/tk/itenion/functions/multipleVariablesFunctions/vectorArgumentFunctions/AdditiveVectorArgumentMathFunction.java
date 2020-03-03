@@ -1,5 +1,6 @@
 package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions;
 
+import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Variable;
 
@@ -59,7 +60,17 @@ public class AdditiveVectorArgumentMathFunction implements VectorArgumentMathFun
         return y.get();
     }
 
-    public int getDim() {
+    @Override
+    public double apply(Matrix x) {
+        double y = 0;
+        Variable[] variables = Variable.values();
+        for (int i = 0; i < functionMap.size(); i++) {
+            y += functionMap.get(variables[i]).apply(x.get(0, i));
+        }
+        return y;
+    }
+
+    public int getDimension() {
         return dim;
     }
 }
