@@ -97,7 +97,8 @@ public class Matrices {
     }
 
     public static ArrayList<Double> solve(Matrix matrix, ArrayList<Double> rightPart) {
-        return new ArrayList<>();
+        //TODO сделать гаусса с выбором главного
+    return new ArrayList<>();
     }
 
     public static double norm(ArrayList<Double> x) {
