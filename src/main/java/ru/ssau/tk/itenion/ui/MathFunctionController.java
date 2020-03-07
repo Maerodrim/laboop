@@ -2,8 +2,6 @@ package ru.ssau.tk.itenion.ui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -13,16 +11,15 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Create new math function", type = Item.CONTROLLER, pathFXML = "mathFunction.fxml")
-public class MathFunctionController implements Initializable, Openable, MathFunctionAccessible, CompositeFunctionAccessible {
+public class MathFunctionController implements Openable, MathFunctionAccessible, CompositeFunctionAccessible {
     @FXML
-    ComboBox<String> comboBox;
+    private ComboBox<String> comboBox;
     @FXML
     TextField leftBorder;
     @FXML
@@ -33,38 +30,18 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
     CheckBox isUnmodifiable;
     @FXML
     CheckBox isStrict;
-    @FXML
-    Button create;
     private Stage stage;
-    private InputParameterController inputParameterController = new InputParameterController();
+    private boolean isEditing = true;
+
+    private Optional<?> value = Optional.empty();
     private Openable parentController;
     private TabulatedFunctionFactory factory;
     private Map<String, MathFunction> functionMap;
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        inputParameterController = IO.initializeModalityWindow(
-                IO.FXML_PATH + "inputParameter.fxml", inputParameterController);
-        inputParameterController.getStage().initOwner(stage);
-        inputParameterController.getStage().setTitle("Input parameter");
-    }
+    private Map<String, MathFunction> compositeFunctionMap;
 
     @FXML
     private void createFunction() {
-        ConnectableItem item = functionMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(ConnectableItem.class);
-        if (!Objects.isNull(item) && item.hasParameter()) {
-            try {
-                if (item.parameterInstanceOfDouble()) {
-                    functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
-                            .getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getDoubleParameter()));
-                } else {
-                    functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
-                            .getDeclaredConstructor(String.class).newInstance(inputParameterController.getParameter()));
-                }
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                AlertWindows.showError(e);
-            }
-        }
+        value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
         try {
             TabulatedFunction function = factory.create(functionMap.get(comboBox.getValue()),
                     Double.parseDouble(leftBorder.getText()),
@@ -74,6 +51,8 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
                     isUnmodifiable.isSelected());
             function.setMathFunction(functionMap.get(comboBox.getValue()));
             ((TableController) parentController).createTab(function);
+            value = Optional.empty();
+            isEditing = true;
             stage.close();
         } catch (NullPointerException | NumberFormatException nfe) {
             AlertWindows.showWarning("Введите корректные значения");
@@ -85,14 +64,18 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
     }
 
     @FXML
-    private void doOnClickOnComboBox(ActionEvent event) {
-        if (!Objects.isNull(functionMap.get(((ComboBox<String>) event.getSource()).getValue()))) {
-            ConnectableItem item = functionMap.get(((ComboBox<String>) event.getSource()).getValue()).getClass()
-                    .getDeclaredAnnotation(ConnectableItem.class);
-            if (!Objects.isNull(item) && item.hasParameter()) {
-                inputParameterController.getStage().show();
-                inputParameterController.setTypeOfParameter(item.parameterInstanceOfDouble() ? Double.TYPE : String.class);
+    public void doOnAction() {
+        if (isEditing) {
+            synchronized (comboBox) {
+                functionMap.putAll(compositeFunctionMap);
+                comboBox.getItems().addAll(new ArrayList<>(compositeFunctionMap.keySet()).stream()
+                        .filter(item -> !comboBox.getItems().contains(item))
+                        .collect(Collectors.toList()));
+                isEditing = false;
             }
+        } else {
+            value = IO.getValue(functionMap.get(comboBox.getSelectionModel().getSelectedItem())
+                    .getClass().getDeclaredAnnotation(ConnectableItem.class));
         }
     }
 
@@ -117,6 +100,10 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
 
     public void setStage(Stage stage) {
         this.stage = stage;
+        this.stage.setOnCloseRequest(windowEvent -> {
+            value = Optional.empty();
+            isEditing = true;
+        });
     }
 
     @Override
@@ -131,13 +118,12 @@ public class MathFunctionController implements Initializable, Openable, MathFunc
 
     @Override
     public void updateCompositeFunctionNode() {
-        comboBox.getItems().clear();
-        comboBox.getItems().setAll(functionMap.keySet());
-        comboBox.setValue(comboBox.getItems().get(0));
+        comboBox.fireEvent(new ActionEvent());
     }
 
     @Override
-    public void updateCompositeFunctionMap(Map<String, MathFunction> functionMap) {
-        this.functionMap.putAll(functionMap);
+    public void updateCompositeFunctionMap(Map<String, MathFunction> compositeFunctionMap) {
+        this.compositeFunctionMap = compositeFunctionMap;
     }
+
 }

@@ -10,7 +10,11 @@ public class ConstantFunction extends AbstractMathFunction implements MathFuncti
     private static final long serialVersionUID = 4711466148660044986L;
     final private double constant;
 
-    public ConstantFunction(double constant) {
+    public ConstantFunction() {
+        this(0.);
+    }
+
+    public ConstantFunction(Double constant) {
         this.constant = constant;
         name = constant + "";
     }

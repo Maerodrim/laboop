@@ -1,5 +1,6 @@
 package ru.ssau.tk.itenion.ui;
 
+import javafx.concurrent.Task;
 import ru.ssau.tk.itenion.functions.MathFunction;
 
 import java.util.Map;

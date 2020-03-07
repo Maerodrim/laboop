@@ -3,6 +3,7 @@ package ru.ssau.tk.itenion.functions;
 import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 import ru.ssau.tk.itenion.functions.powerFunctions.ZeroFunction;
+import ru.ssau.tk.itenion.functions.wrapFunctions.MultiplyOnConstantMF;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public interface MathFunction extends Serializable, Nameable, VAMF, Differentiab
     }
 
     default MathFunction multiply(double number) {
-        MathFunction function = this;
+        /*MathFunction function = this;
         return new MathFunction() {
             private static final long serialVersionUID = 4507943343697267559L;
 
@@ -64,7 +65,8 @@ public interface MathFunction extends Serializable, Nameable, VAMF, Differentiab
             public String getName() {
                 return number + "*(" + function.getName() + ")";
             }
-        };
+        };*/
+        return new MultiplyOnConstantMF(this, number);
     }
 
     default MathFunction negate() {

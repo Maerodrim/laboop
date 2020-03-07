@@ -77,6 +77,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             }
             buff += step;
         }
+        mathFunction = source;
     }
 
     public static TabulatedFunction getIdentity() {

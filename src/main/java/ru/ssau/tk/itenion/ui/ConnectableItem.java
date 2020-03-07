@@ -20,9 +20,11 @@ public @interface ConnectableItem {
 
     boolean hasParameter() default false;
 
-    boolean parameterInstanceOfDouble() default true;
+    //boolean parameterInstanceOfDouble() default true;
+    Class<?> parameterInstance() default Double.class;
 
-    //boolean methodOnlyForPolynomialFunction() default false;
+    String inputParameterName() default "Parameter:";
+
     boolean numericalOperator() default true;
 
     String pathFXML() default "";

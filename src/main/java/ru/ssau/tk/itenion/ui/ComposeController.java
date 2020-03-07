@@ -2,7 +2,6 @@ package ru.ssau.tk.itenion.ui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
@@ -11,71 +10,43 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Compose", type = Item.CONTROLLER, pathFXML = "compose.fxml")
-public class ComposeController implements Initializable, Openable, MathFunctionAccessible {
+public class ComposeController implements Openable, MathFunctionAccessible, CompositeFunctionAccessible {
     @FXML
-    public CheckBox isSaveable;
+    public CheckBox isStorable;
     @FXML
     ComboBox<String> comboBox;
     private Stage stage;
     private Openable parentController;
     private Map<String, MathFunction> functionMap;
-    private InputParameterController inputParameterController = new InputParameterController();
+    private Map<String, MathFunction> compositeFunctionMap;
     private TabulatedFunctionFactory factory;
-
-    @FXML
-    public void doOnClickOnComboBox(ActionEvent event) {
-        ConnectableItem item = functionMap.get(((ComboBox<String>) event.getSource()).getValue()).getClass()
-                .getDeclaredAnnotation(ConnectableItem.class);
-        if (!Objects.isNull(item) && item.hasParameter()) {
-            inputParameterController.getStage().show();
-            inputParameterController.setTypeOfParameter(item.parameterInstanceOfDouble() ? Double.TYPE : String.class);
-        }
-    }
-
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        inputParameterController = IO.initializeModalityWindow(IO.FXML_PATH + "inputParameter.fxml", inputParameterController);
-        inputParameterController.getStage().initOwner(stage);
-        inputParameterController.getStage().setTitle("Input parameter");
-    }
+    private Optional<?> value = Optional.empty();
+    private boolean isEditing = true;
 
     @FXML
     public void composeFunction() {
         TabulatedFunction parentFunction = ((TableController) parentController).getFunction();
-        ConnectableItem item = functionMap.get(comboBox.getValue()).getClass().getDeclaredAnnotation(ConnectableItem.class);
-        if (!Objects.isNull(item) && item.hasParameter()) {
-            try {
-                if (item.parameterInstanceOfDouble()) {
-                    functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
-                            .getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getDoubleParameter()));
-                } else {
-                    functionMap.replace(comboBox.getValue(), functionMap.get(comboBox.getValue()).getClass()
-                            .getDeclaredConstructor(String.class).newInstance(inputParameterController.getParameter()));
-                }
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                AlertWindows.showError(e);
-            }
-        }
+        value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
         try {
-            MathFunction mathFunction = functionMap.get(comboBox.getValue()).andThen(parentFunction);
+            MathFunction mathFunction = functionMap.get(comboBox.getValue()).andThen(parentFunction.getMathFunction());
             TabulatedFunction function = factory.create(
-                    functionMap.get(comboBox.getValue()).andThen(parentFunction),
+                    mathFunction,
                     parentFunction.leftBound(), parentFunction.rightBound(),
                     parentFunction.getCount(),
                     ((TableController) parentController).isStrict(),
                     ((TableController) parentController).isUnmodifiable());
-            function.setMathFunction(mathFunction);
-            if (isSaveable.isSelected()) {
-                ((TableController) parentController)
-                        .addCompositeFunction(mathFunction.toString(), mathFunction);
+            if (isStorable.isSelected()) {
+                ((TableController) parentController).addCompositeFunction(mathFunction);
             }
             ((TableController) parentController).createTab(function);
+            value = Optional.empty();
+            isEditing = true;
             stage.close();
         } catch (NullPointerException | NumberFormatException nfe) {
             AlertWindows.showWarning("Введите корректные значения");
@@ -96,6 +67,10 @@ public class ComposeController implements Initializable, Openable, MathFunctionA
     }
 
     public void setStage(Stage stage) {
+        stage.setOnCloseRequest(windowEvent -> {
+            value = Optional.empty();
+            isEditing = true;
+        });
         this.stage = stage;
     }
 
@@ -118,5 +93,36 @@ public class ComposeController implements Initializable, Openable, MathFunctionA
     @Override
     public void setMathFunctionMap(Map<String, MathFunction> functionMap) {
         this.functionMap = functionMap;
+    }
+
+    @FXML
+    public void doOnAction() {
+        if (isEditing) {
+            synchronized (comboBox) {
+                functionMap.putAll(compositeFunctionMap);
+                comboBox.getItems().addAll(new ArrayList<>(compositeFunctionMap.keySet()).stream()
+                        .filter(item -> !comboBox.getItems().contains(item))
+                        .collect(Collectors.toList()));
+                isEditing = false;
+            }
+        } else {
+            value = IO.getValue(functionMap.get(comboBox.getSelectionModel().getSelectedItem())
+                    .getClass().getDeclaredAnnotation(ConnectableItem.class));
+        }
+    }
+
+    @Override
+    public Openable getParentController() {
+        return parentController;
+    }
+
+    @Override
+    public void updateCompositeFunctionNode() {
+        comboBox.fireEvent(new ActionEvent());
+    }
+
+    @Override
+    public void updateCompositeFunctionMap(Map<String, MathFunction> compositeFunctionMap) {
+        this.compositeFunctionMap = compositeFunctionMap;
     }
 }

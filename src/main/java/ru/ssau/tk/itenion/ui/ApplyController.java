@@ -1,5 +1,6 @@
 package ru.ssau.tk.itenion.ui;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -15,10 +16,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Apply", type = Item.CONTROLLER, pathFXML = "apply.fxml")
@@ -39,8 +37,8 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
     private Map<String, MathFunction> compositeFunctionMap;
     private Map<Method, Class<?>> classes;
     private MathFunction currentFunction;
-    private InputParameterController inputParameterController = new InputParameterController();
     private String selectedMathMenuItem;
+    private Optional<?> value;
     @FXML
     private Menu mathFunctionMenu, compositeFunctionMenu, currentFunctionMenu;
 
@@ -57,10 +55,6 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
         operationMap = (Map<String, Method>) maps[1];
         operationComboBox.getItems().addAll(operationMap.keySet());
         operationComboBox.setValue(operationComboBox.getItems().get(0));
-        inputParameterController = IO.initializeModalityWindow(
-                IO.FXML_PATH + "inputParameter.fxml", inputParameterController);
-        inputParameterController.getStage().initOwner(stage);
-        inputParameterController.getStage().setTitle("Input parameter");
     }
 
     @Override
@@ -82,23 +76,8 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
     @FXML
     public void apply() {
         if (chosenMenu == 0) {
-            ConnectableItem item = currentFunction.getClass()
-                    .getDeclaredAnnotation(ConnectableItem.class);
-            if (!Objects.isNull(item) && item.hasParameter()) {
-                try {
-                    if (item.parameterInstanceOfDouble()) {
-                        mathFunctionMap.replace(selectedMathMenuItem, mathFunctionMap.get(selectedMathMenuItem).getClass()
-                                .getDeclaredConstructor(Double.TYPE).newInstance(inputParameterController.getDoubleParameter()));
-                        currentFunction = mathFunctionMap.get(selectedMathMenuItem);
-                    } else {
-                        mathFunctionMap.replace(selectedMathMenuItem, mathFunctionMap.get(selectedMathMenuItem).getClass()
-                                .getDeclaredConstructor(String.class).newInstance(inputParameterController.getParameter()));
-                        currentFunction = mathFunctionMap.get(selectedMathMenuItem);
-                    }
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
-                    AlertWindows.showError(ex);
-                }
-            }
+            IO.setActualParameter(mathFunctionMap, selectedMathMenuItem, value);
+            currentFunction = mathFunctionMap.get(selectedMathMenuItem);
         }
         try {
             if (currentFunction instanceof TabulatedFunction) {
@@ -112,7 +91,6 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
             function.offerStrict(((TableController) parentController).isStrict());
             function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
             ((TableController) parentController).createTab(function);
-            //tabulatedFunctionMap.clear();
             stage.close();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {
             AlertWindows.showError(e);
@@ -153,13 +131,9 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
             currentFunction = function;
             selectedMathMenuItem = chosenMenu == 0 ? f.getText() : "";
             this.chosenMenu = chosenMenu;
-            if (!Objects.isNull(function)) {
-                ConnectableItem item = function.getClass()
-                        .getDeclaredAnnotation(ConnectableItem.class);
-                if (!Objects.isNull(item) && item.hasParameter()) {
-                    inputParameterController.getStage().show();
-                    inputParameterController.setTypeOfParameter(item.parameterInstanceOfDouble() ? Double.TYPE : String.class);
-                }
+            ConnectableItem item = (function.getClass().getDeclaredAnnotation(ConnectableItem.class));
+            if (!Objects.isNull(item)) {
+                value = IO.getValue(item);
             }
         }));
     }
@@ -201,7 +175,7 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
     }
 
     @Override
-    public void updateCompositeFunctionMap(Map<String, MathFunction> functionMap) {
-        compositeFunctionMap = functionMap;
+    public void updateCompositeFunctionMap(Map<String, MathFunction> compositeFunctionMap) {
+        this.compositeFunctionMap = compositeFunctionMap;
     }
 }

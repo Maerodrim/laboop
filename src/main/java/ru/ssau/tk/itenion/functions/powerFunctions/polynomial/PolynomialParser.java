@@ -3,6 +3,7 @@ package ru.ssau.tk.itenion.functions.powerFunctions.polynomial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +14,7 @@ public class PolynomialParser {
     private final static String NEGATIVE_SIGN = "-";
     private final static String MONOMIAL_TEMPLATE =
             "([+-])?(?:(?:(\\d*)(x)(?:\\^(\\d+)))|(?:(\\d*\\.\\d*)(x)(?:\\^(\\d+)))|(?:(\\d*)(x)())|(?:(\\d*\\.\\d*)(x)())|(?:(\\d*\\.\\d*)()())|(?:(\\d+)()()))";
-    //1            2    3        4           5            6        7           8     9 10       11         12 13      14          1516      17   1819
+    //         1            2    3        4           5            6        7           8     9 10       11         12 13      14          1516      17   1819
 
     /**
      * Получение многочлена одной переменной из строки, записанной в
@@ -46,6 +47,12 @@ public class PolynomialParser {
     }
 
     /**
+     * Предикат, выполняющий проверку, является ли строка полиномом
+     */
+    public static Predicate<String> isPolynomial =
+            s -> Pattern.compile("([+-])").splitAsStream(normalizeSourceString(s)).allMatch(s1 -> s1.matches(MONOMIAL_TEMPLATE));
+
+    /**
      * Вычисление коэффициента одночлена
      */
     private double calcCoeff(boolean isNegative, String coefficient) {
@@ -65,10 +72,7 @@ public class PolynomialParser {
      * Удаление из строки всех пробелов и
      * преобразование всех символов в нижний регистр
      */
-    private String normalizeSourceString(String source) {
-        final String EMPTY_STRING = "";
-        final String WHITESPACE_TEMPLATE = "\\s+";
-        String result = source.replaceAll(WHITESPACE_TEMPLATE, EMPTY_STRING);
-        return result.toLowerCase();
+    private static String normalizeSourceString(String source) {
+        return source.replaceAll(" ", "").toLowerCase();
     }
 }

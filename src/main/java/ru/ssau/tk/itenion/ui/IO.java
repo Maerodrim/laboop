@@ -1,24 +1,33 @@
 package ru.ssau.tk.itenion.ui;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
+import org.jetbrains.annotations.NotNull;
+import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.functions.powerFunctions.polynomial.PolynomialParser;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.StrictTabulatedFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.UnmodifiableTabulatedFunction;
 import ru.ssau.tk.itenion.io.FunctionsIO;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -34,6 +43,10 @@ class IO {
     private static Pattern FILE_EXTENSION_PATTERN = Pattern.compile(".*\\.(...)");
     // на компьютерах под управлением OS Windows 7/8/8.1/10
     private final TabulatedFunctionFactory factory;
+    private static final TextInputDialog dialog = new TextInputDialog();
+    private static BooleanBinding booleanBinding;
+    private static Button textInputDialogOkButton;
+    private static TextField textInputDialogInputField;
 
     IO(TabulatedFunctionFactory factory) {
         this.factory = factory;
@@ -176,6 +189,87 @@ class IO {
             }
         }
         return function;
+    }
+
+    public static Optional<String> getValue(String title, String headerText, String contentText, Predicate<String> isValid) {
+        dialog.setTitle(title);
+        dialog.setHeaderText(headerText);
+        dialog.setContentText(contentText);
+        textInputDialogOkButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+        textInputDialogInputField = dialog.getEditor();
+        booleanBinding = Bindings.createBooleanBinding(() -> isValid.test(textInputDialogInputField.getText()), textInputDialogInputField.textProperty());
+        textInputDialogOkButton.disableProperty().bind(booleanBinding.not());
+        return dialog.showAndWait();
+    }
+
+    public static Optional<String> getValue(String contentText, Predicate<String> isValid) {
+        return getValue("Input parameter window", null, contentText, isValid);
+    }
+
+    public static Predicate<String> isDouble = s -> {
+        try {
+            Double.parseDouble(s);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    };
+
+    public static Predicate<String> isInteger = s -> {
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    };
+
+    public static Optional<?> getValue(ConnectableItem item){
+        if (Objects.isNull(item)) {
+            return Optional.empty();
+        }
+        else return Optional.of(item).filter(ConnectableItem::hasParameter).map(itemOptionalFunction);
+    }
+
+    private static Function<ConnectableItem, ?> itemOptionalFunction = connectableItem -> {
+        if (connectableItem.parameterInstance().equals(Double.class)) {
+            AtomicReference<Double> doubleAtomicReference = new AtomicReference<>();
+            IO.getValue(connectableItem.inputParameterName(), IO.isDouble).ifPresent(s -> doubleAtomicReference.set(Double.parseDouble(s)));
+            return doubleAtomicReference.get();
+        } else if (connectableItem.parameterInstance().equals(Integer.class)) {
+            AtomicReference<Integer> integerAtomicReference = new AtomicReference<>();
+            IO.getValue(connectableItem.inputParameterName(), IO.isInteger).ifPresent(s -> integerAtomicReference.set(Integer.parseInt(s)));
+            return integerAtomicReference.get();
+        } else {
+            switch (connectableItem.name()) {
+                case "Полином": {
+                    AtomicReference<String> stringAtomicReference = new AtomicReference<>();
+                    IO.getValue(connectableItem.inputParameterName(), PolynomialParser.isPolynomial).ifPresent(stringAtomicReference::set);
+                    return stringAtomicReference.get();
+                }
+                // add rules for further functions here
+            }
+        }
+        return null;
+    };
+
+    public static void setActualParameter(Map<String, MathFunction> map, String selectedValue, Optional<?> value) {
+        ConnectableItem item = map.get(selectedValue).getClass().getDeclaredAnnotation(ConnectableItem.class);
+        if (Objects.isNull(item)) {
+            return;
+        }
+        value.ifPresent(value1 -> {
+            if (item.hasParameter()) {
+                try {
+                    if (item.hasParameter()) {
+                        map.replace(selectedValue, map.get(selectedValue).getClass()
+                                .getDeclaredConstructor(item.parameterInstance()).newInstance(value1));
+                    }
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    AlertWindows.showError(e);
+                }
+            }
+        });
     }
 
 }

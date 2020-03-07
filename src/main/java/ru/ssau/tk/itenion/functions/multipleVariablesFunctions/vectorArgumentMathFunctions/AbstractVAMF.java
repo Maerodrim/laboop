@@ -15,18 +15,18 @@ import java.util.function.DoubleBinaryOperator;
 public abstract class AbstractVAMF implements VAMF {
     protected Map<Variable, MathFunction> functionMap;
     protected StringJoiner name;
-    protected int dim;
+    protected int dimension;
 
     public AbstractVAMF(String delimiter) {
         functionMap = new HashMap<>();
-        dim = 0;
+        dimension = 0;
         name = new StringJoiner(delimiter);
     }
 
     AbstractVAMF(Variable variable, MathFunction mathFunction, String delimiter) {
         this(delimiter);
         functionMap.put(variable, mathFunction);
-        dim++;
+        dimension++;
         name.add(mathFunction.getName(variable));
     }
 
@@ -48,7 +48,7 @@ public abstract class AbstractVAMF implements VAMF {
     public void put(Variable variable, MathFunction function, BinaryOperator<MathFunction> operator) {
         functionMap.computeIfPresent(variable, (a, b) -> operator.apply(b, function));
         functionMap.putIfAbsent(variable, function);
-        dim++;
+        dimension++;
         name.add(function.getName(variable));
     }
 
@@ -70,7 +70,7 @@ public abstract class AbstractVAMF implements VAMF {
     }
 
     public int getDimension() {
-        return dim;
+        return dimension;
     }
 }
 

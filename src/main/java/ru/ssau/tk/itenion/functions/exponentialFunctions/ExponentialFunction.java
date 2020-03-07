@@ -6,11 +6,15 @@ import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
 @ConnectableItem(name = "Показательная функция", priority = 101, type = Item.FUNCTION, hasParameter = true)
-public class ExponentialFunction extends AbstractMathFunction implements MathFunction {
+public class ExponentialFunction extends AbstractMathFunction {
     private static final long serialVersionUID = 8190276995050776178L;
     private final double exp;
 
-    public ExponentialFunction(double exp) {
+    public ExponentialFunction(){
+        this(0.);
+    }
+
+    public ExponentialFunction(Double exp) {
         this.exp = exp;
         name = exp + "^x";
     }

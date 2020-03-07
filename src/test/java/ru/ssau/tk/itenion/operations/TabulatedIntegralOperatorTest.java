@@ -12,8 +12,8 @@ public class TabulatedIntegralOperatorTest {
 
     @Test
     public void testIntegrate() {
-        TabulatedFunction actual = new ArrayTabulatedFunction(new PowFunction(2), 1, 5, 5000001);
-        TabulatedFunction expected = new ArrayTabulatedFunction(new PowFunction(2), 1, 5, 1001);
+        TabulatedFunction actual = new ArrayTabulatedFunction(new PowFunction(2.), 1, 5, 5000001);
+        TabulatedFunction expected = new ArrayTabulatedFunction(new PowFunction(2.), 1, 5, 1001);
         TabulatedIntegralOperator integralOperator = new TabulatedIntegralOperator();
         integralOperator.setFactory(new ArrayTabulatedFunctionFactory());
         assertTrue(integralOperator.getFactory() instanceof ArrayTabulatedFunctionFactory);

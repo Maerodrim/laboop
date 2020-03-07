@@ -29,11 +29,19 @@ public class AlertWindows {
         return sw.toString();
     }
 
-    public static void showWarning(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+    private static void doOperation(String message, Alert.AlertType messageType) {
+        Alert alert = new Alert(messageType);
         alert.setTitle("Warning");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public static void showWarning(String message) {
+        doOperation(message, Alert.AlertType.WARNING);
+    }
+
+    public static void showNotification(String message) {
+        doOperation(message, Alert.AlertType.INFORMATION);
     }
 }

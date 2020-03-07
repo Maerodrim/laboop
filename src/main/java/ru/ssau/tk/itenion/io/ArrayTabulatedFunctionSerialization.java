@@ -11,7 +11,7 @@ import java.io.*;
 
 public class ArrayTabulatedFunctionSerialization {
     public static void main(String[] args) {
-        ArrayTabulatedFunction function = new ArrayTabulatedFunction(new PowFunction(3), 0, 20, 2001);
+        ArrayTabulatedFunction function = new ArrayTabulatedFunction(new PowFunction(3.), 0, 20, 2001);
         TabulatedDifferentialOperator differentialOperator = new TabulatedDifferentialOperator(new ArrayTabulatedFunctionFactory());
         TabulatedFunction firstDerivative = differentialOperator.derive(function);
         TabulatedFunction secondDerivative = differentialOperator.derive(firstDerivative);
