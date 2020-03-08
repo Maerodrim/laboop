@@ -37,7 +37,6 @@ import static java.lang.String.format;
 
 @ConnectableItem(name = "Plot", type = Item.CONTROLLER, pathFXML = "plot.fxml")
 public class PlotController implements Initializable, Openable {
-    private final int NUMBER_OF_METHOD = 41;
     private final Map<TabulatedFunction, Color> functionColorMap = new HashMap<>();
     private Stage stage;
     @FXML
@@ -105,12 +104,19 @@ public class PlotController implements Initializable, Openable {
 
     // хождение за два привата
     private Color getColorFromCSS(XYChart.Series<Number, Number> series) {
-        Method getPrivate = series.getClass().getClass().getDeclaredMethods()[NUMBER_OF_METHOD];
+        Method[] methods = series.getClass().getClass().getDeclaredMethods();
+        Method getPrivate = null;
+        for (Method method : methods) {
+            if (method.getName().equals("privateGetDeclaredMethods")) {
+                getPrivate = method;
+                break;
+            }
+        }
         getPrivate.setAccessible(true);
         Method getStyleMap = null;
         Color color = null;
         try {
-            Method[] methods = (Method[]) getPrivate.invoke(series.getNode().getClass().getSuperclass().getSuperclass(), false);
+            methods = (Method[]) getPrivate.invoke(series.getNode().getClass().getSuperclass().getSuperclass(), false);
             for (Method method : methods) {
                 if (method.getName().equals("getStyleMap")) {
                     getStyleMap = method;

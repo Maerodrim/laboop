@@ -162,32 +162,6 @@ public class TableController implements Initializable, Openable {
             }
         });
     }
-    private void createTab(ObservableList<Point> list,VMF vectorMathFunction) {
-        TableView<Point> table1 = new TableView<>();
-        table1.setItems(list);
-        table1.getColumns().addAll(x, y);
-        Tab tab = new Tab("Function" + numberId, table1);
-        tab.setId("function" + numberId++);
-        tab.setClosable(true);
-        tabPane.getTabs().add(tab);
-        tabPane.getSelectionModel().select(tab);
-        tabulatedFunctionMap.put(tab, (TabulatedFunction) vectorMathFunction);
-        notifyAboutAccessibility((TabulatedFunction) vectorMathFunction);
-        currentTab = tab;
-        tab.setOnSelectionChanged(event -> {
-            if (tab.isSelected()) {
-                currentTab = tab;
-                notifyAboutAccessibility(getFunction());
-            }
-        });
-        tab.setOnCloseRequest(event -> {
-            tabulatedFunctionMap.remove(tab);
-            if (tabulatedFunctionMap.isEmpty()) {
-                mainPane.getChildren().remove(bottomPane);
-                currentTab = null;
-            }
-        });
-    }
 
     private void notifyAboutAccessibility(TabulatedFunction function) {
         boolean isStrict = function.isStrict();

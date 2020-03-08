@@ -1,5 +1,7 @@
 package ru.ssau.tk.itenion.ui;
 
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,7 +32,8 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
     //функции, которые будут использоваться при сборке
     private Map<Pair<Integer, Integer>, MathFunction> currentFunctions;
     // карта текстовых полей, содержащих названия функций
-    private Map<Pair<Integer, Integer>, TextField> functionTextFields;
+    private Map<Pair<Integer, Integer>, JFXTextField> functionTextFields;
+    private Map<Pair<Integer, Integer>, JFXComboBox> operationComboBoxes;
     private Map<Pair<Integer, Integer>, Menu> currentFunctionMenuItems;
     private Map<Pair<Integer, Integer>, Menu> mathFunctionMenuItems;
     private Map<Pair<Integer, Integer>, Menu> compositeFunctionMenuItems;
@@ -75,7 +78,7 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
         functionMenu.getMenus().add(mathFunctionMenuItems.get(nodeGrid).getParentMenu());
         AnchorPane.setTopAnchor(functionMenu, 10.);
         AnchorPane.setLeftAnchor(functionMenu, 10. + (nodeGrid.getValue()-1)*150);
-        TextField textField = functionTextFields.get(nodeGrid);
+        JFXTextField textField = functionTextFields.get(nodeGrid);
         AnchorPane.setTopAnchor(textField, 50.);
         AnchorPane.setLeftAnchor(textField, 10. + (nodeGrid.getValue()-1)*150);
         pane.getChildren().addAll(functionMenu, textField);
@@ -112,7 +115,7 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
                     mathFunctionMenuItems.get(nodeGrid),
                     currentFunctionMenuItems.get(nodeGrid),
                     compositeFunctionMenuItems.get(nodeGrid));
-            functionTextFields.put(nodeGrid, new TextField());
+            functionTextFields.put(nodeGrid, new JFXTextField());
         });
         currentFunctions = FXCollections.observableHashMap();
         tabulatedFunctionMap = new LinkedHashMap<>();
