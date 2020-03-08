@@ -6,8 +6,8 @@
 <?import javafx.scene.text.Font?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="400.0" prefWidth="613.0"
-            xmlns="http://javafx.com/javafx/10.0.2-internal" fx:controller="ru.ssau.tk.itenion.ui.TableController">
+            minWidth="-Infinity" prefHeight="400.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/8"
+            fx:controller="ru.ssau.tk.itenion.ui.TableController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
@@ -18,6 +18,8 @@
                                 <MenuItem mnemonicParsing="false" onAction="#tabulatedFunction"
                                           text="As tabulated function"/>
                                 <MenuItem mnemonicParsing="false" onAction="#mathFunction" text="As function"/>
+                                <MenuItem mnemonicParsing="false" onAction="#vectorFunction"
+                                          text="As vector function"/>
                             </items>
                         </Menu>
                         <MenuItem mnemonicParsing="false" onAction="#loadFunction" text="Load"/>
@@ -49,7 +51,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="About">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#about" text="About function"/>
+                        <MenuItem mnemonicParsing="false" onAction="#about" text="About the function"/>
                     </items>
                 </Menu>
             </menus>

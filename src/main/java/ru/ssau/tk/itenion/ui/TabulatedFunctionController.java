@@ -14,7 +14,10 @@ import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 @ConnectableItem(name = "Create new tabulated function", type = Item.CONTROLLER, pathFXML = "tabulatedFunction.fxml")
 public class TabulatedFunctionController implements Initializable, Openable {
@@ -45,18 +48,21 @@ public class TabulatedFunctionController implements Initializable, Openable {
         functionTable.setItems(list);
     }
 
+    public void setFunctionTable(TableView<Point> functionTable) {
+        this.functionTable = functionTable;
+    }
+
     @FXML
     private void addRow() {
         try {
             double x = Double.parseDouble(textX.getText());
             double y = Double.parseDouble(textY.getText());
             if (!(textX.getText().isEmpty() && textY.getText().isEmpty())) {
-                if (Objects.equals(existingPoints.get(textX.getText()), null)) {
+                if (!existingPoints.getOrDefault(x + "", false)) {
                     list.add(new Point(x, y));
                 }
-                existingPoints.putIfAbsent(textX.getText(), true);
+                existingPoints.putIfAbsent(x + "", true);
                 ((TableController) parentController).sort(list);
-                //functionTable.setItems(list);
             } else if (textX.getText().isEmpty()) {
                 AlertWindows.showWarning("X field is empty");
             } else if (textY.getText().isEmpty()) {
@@ -78,7 +84,8 @@ public class TabulatedFunctionController implements Initializable, Openable {
     @FXML
     private void save() {
         if (list.size() > 1) {
-            ((TableController) parentController).createTab(functionTable);
+            ((TableController) parentController).createTab(functionTable.getItems());
+            functionTable.setItems(FXCollections.observableArrayList(new ArrayList<>()));
             stage.close();
         } else if (list.isEmpty()) {
             AlertWindows.showWarning("Empty function");
@@ -95,7 +102,9 @@ public class TabulatedFunctionController implements Initializable, Openable {
     @FXML
     private void deleteRow() {
         if (list.size() != 0) {
-            list.remove(list.size() - 1);
+            int index = functionTable.selectionModelProperty().getValue().getFocusedIndex();
+            existingPoints.remove(list.get(index).x + "");
+            list.remove(index);
         }
     }
 

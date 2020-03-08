@@ -1,13 +1,15 @@
 package ru.ssau.tk.itenion.functions;
 
 import Jama.Matrix;
-import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions.VectorArgumentMathFunction;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
+import ru.ssau.tk.itenion.functions.powerFunctions.ConstantFunction;
 import ru.ssau.tk.itenion.functions.powerFunctions.ZeroFunction;
+import ru.ssau.tk.itenion.functions.wrapFunctions.MultiplyOnConstantMF;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public interface MathFunction extends Serializable, Nameable, VectorArgumentMathFunction, Differentiable {
+public interface MathFunction extends Serializable, Nameable, VAMF, Differentiable {
 
     double apply(double x);
 
@@ -36,35 +38,35 @@ public interface MathFunction extends Serializable, Nameable, VectorArgumentMath
 
             @Override
             public String getName() {
-                return "(" + function.getName() + ") + (" + afterFunction.getName() + ")";
+                return function.getName() + " + " + afterFunction.getName();
             }
         };
     }
 
     default MathFunction subtract(MathFunction afterFunction) {
-        return sum(afterFunction.negate());
-    }
-
-    default MathFunction multiply(double number) {
         MathFunction function = this;
         return new MathFunction() {
-            private static final long serialVersionUID = 4507943343697267559L;
+            private static final long serialVersionUID = 1734329896572016553L;
 
             @Override
             public double apply(double x) {
-                return number * function.apply(x);
+                return function.apply(x) - afterFunction.apply(x);
             }
 
             @Override
             public MathFunction differentiate() {
-                return function.differentiate().multiply(number);
+                return function.differentiate().subtract(afterFunction.differentiate());
             }
 
             @Override
             public String getName() {
-                return number + "*(" + function.getName() + ")";
+                return function.getName() + " - " + afterFunction.getName();
             }
         };
+    }
+
+    default MathFunction multiply(double number) {
+        return new MultiplyOnConstantMF(this, number);
     }
 
     default MathFunction negate() {
@@ -73,6 +75,12 @@ public interface MathFunction extends Serializable, Nameable, VectorArgumentMath
 
     default MathFunction multiply(MathFunction afterFunction) {
         MathFunction function = this;
+        if (afterFunction instanceof ConstantFunction) {
+            return new MultiplyOnConstantMF(this, (ConstantFunction) afterFunction);
+        }
+        if (this instanceof ConstantFunction) {
+            return new MultiplyOnConstantMF(afterFunction, (ConstantFunction) this);
+        }
         return new MathFunction() {
             private static final long serialVersionUID = 4507943343697267559L;
 
@@ -133,7 +141,7 @@ public interface MathFunction extends Serializable, Nameable, VectorArgumentMath
         };
     }
 
-    default VectorArgumentMathFunction differentiate(Variable variable) {
+    default VAMF differentiate(Variable variable) {
         return differentiate();
     }
 

@@ -28,7 +28,7 @@ public class SteppingIntegralOperator implements IntegralOperator<MathFunction> 
         double LIMIT_NUMBER_OF_ITERATIONS = 20;
         for (int i = 0; i < LIMIT_NUMBER_OF_ITERATIONS; i++) {
             k *= i != 0 ? i : 1;
-            resultFunction = resultFunction.sum((new PowFunction(i).andThen(
+            resultFunction = resultFunction.sum((new PowFunction((double) i).andThen(
                     new IdentityFunction().subtract(new ConstantFunction(AROUND)))).multiply(tempFunction.apply(AROUND) / k));
             if (!isUnmodifiableTempFunction) {
                 temp = tempFunction.apply(1.);

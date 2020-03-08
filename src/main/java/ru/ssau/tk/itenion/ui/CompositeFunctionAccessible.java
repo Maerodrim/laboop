@@ -15,5 +15,5 @@ public interface CompositeFunctionAccessible {
 
     void updateCompositeFunctionNode();
 
-    void updateCompositeFunctionMap(Map<String, MathFunction> functionMap);
+    void updateCompositeFunctionMap(Map<String, MathFunction> compositeFunctionMap);
 }

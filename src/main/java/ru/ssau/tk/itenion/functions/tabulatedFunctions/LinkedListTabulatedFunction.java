@@ -73,6 +73,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
             this.addNode(buff, temp);
             buff += step;
         }
+        mathFunction = source;
     }
 
     public static TabulatedFunction getIdentity() {

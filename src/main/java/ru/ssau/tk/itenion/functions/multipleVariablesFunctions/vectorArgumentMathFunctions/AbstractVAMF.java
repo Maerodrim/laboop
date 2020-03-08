@@ -1,4 +1,4 @@
-package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions;
+package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions;
 
 import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.MathFunction;
@@ -9,22 +9,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BinaryOperator;
+import java.util.function.DoubleBinaryOperator;
 
-public class AdditiveVectorArgumentMathFunction implements VectorArgumentMathFunction {
-    private Map<Variable, MathFunction> functionMap;
-    private StringJoiner name;
-    private int dim;
+public abstract class AbstractVAMF implements VAMF {
+    protected Map<Variable, MathFunction> functionMap;
+    protected StringJoiner name;
+    protected int dimension;
 
-    public AdditiveVectorArgumentMathFunction() {
+    public AbstractVAMF(String delimiter) {
         functionMap = new HashMap<>();
-        dim = 0;
-        name = new StringJoiner(" + ");
+        dimension = 0;
+        name = new StringJoiner(delimiter);
     }
 
-    AdditiveVectorArgumentMathFunction(Variable variable, MathFunction mathFunction) {
-        this();
+    AbstractVAMF(Variable variable, MathFunction mathFunction, String delimiter) {
+        this(delimiter);
         functionMap.put(variable, mathFunction);
-        dim++;
+        dimension++;
         name.add(mathFunction.getName(variable));
     }
 
@@ -43,34 +45,32 @@ public class AdditiveVectorArgumentMathFunction implements VectorArgumentMathFun
         return functionMap.get(variable);
     }
 
-    @Override
-    public void put(Variable variable, MathFunction function) {
-        functionMap.computeIfPresent(variable, (a, b) -> b.sum(function));
+    public void put(Variable variable, MathFunction function, BinaryOperator<MathFunction> operator) {
+        functionMap.computeIfPresent(variable, (a, b) -> operator.apply(b, function));
         functionMap.putIfAbsent(variable, function);
-        dim++;
+        dimension++;
         name.add(function.getName(variable));
     }
 
-    @Override
-    public double apply(ArrayList<Double> x) {
+    public double apply(ArrayList<Double> x, DoubleBinaryOperator operator) {
         AtomicReference<Double> y = new AtomicReference<>(0.);
         functionMap.forEach(((variable, mathFunction) -> y.updateAndGet(
-                v -> v + mathFunction.apply(x.get(variable.ordinal()))
+                v -> operator.applyAsDouble(v, mathFunction.apply(x.get(variable.ordinal())))
         )));
         return y.get();
     }
 
-    @Override
-    public double apply(Matrix x) {
+    public double apply(Matrix x, DoubleBinaryOperator operator) {
         double y = 0;
         Variable[] variables = Variable.values();
         for (int i = 0; i < functionMap.size(); i++) {
-            y += functionMap.get(variables[i]).apply(x.get(0, i));
+            y = operator.applyAsDouble(y, functionMap.get(variables[i]).apply(x.get(0, i)));
         }
         return y;
     }
 
     public int getDimension() {
-        return dim;
+        return dimension;
     }
 }
+

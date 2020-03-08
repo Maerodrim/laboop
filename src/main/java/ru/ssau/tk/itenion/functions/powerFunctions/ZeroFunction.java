@@ -9,6 +9,6 @@ public class ZeroFunction extends ConstantFunction {
     private static final long serialVersionUID = 4408722946595865659L;
 
     public ZeroFunction() {
-        super(0);
+        super(0.);
     }
 }

@@ -7,7 +7,7 @@ import static org.testng.Assert.assertEquals;
 
 public class ConstantFunctionTest {
     private final double ACCURACY = 0.00001;
-    private MathFunction x = new ConstantFunction(10);
+    private MathFunction x = new ConstantFunction(10.);
 
     @Test
     public void testApply() {

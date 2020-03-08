@@ -1,14 +1,14 @@
 package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions;
 
 import Jama.Matrix;
-import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentFunctions.VectorArgumentMathFunction;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 
 import java.util.ArrayList;
 
-public interface VectorMathFunction {
+public interface VMF {
     Matrix getJacobiMatrix(Matrix x);
 
-    void add(VectorArgumentMathFunction vectorArgumentMathFunction);
+    void add(VAMF VAMF);
 
     ArrayList<Double> apply(ArrayList<Double> x);
 

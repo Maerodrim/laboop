@@ -5,7 +5,7 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
-@ConnectableItem(name = "Косинус", priority = 122, type = Item.FUNCTION)
+@ConnectableItem(name = "Косинус", priority = 122, type = Item.FUNCTION, isAdjacentConstant = true)
 public class CosFunction extends AbstractMathFunction implements MathFunction {
     private static final long serialVersionUID = -3834483377181979232L;
 

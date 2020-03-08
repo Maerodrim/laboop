@@ -9,6 +9,6 @@ public class ExpFunctionTest {
 
     @Test
     public void testApply() {
-        assertThrows(UnsupportedOperationException.class, () -> new ExponentialFunction(-1).apply(1.5));
+        assertThrows(UnsupportedOperationException.class, () -> new ExponentialFunction(-1.).apply(1.5));
     }
 }

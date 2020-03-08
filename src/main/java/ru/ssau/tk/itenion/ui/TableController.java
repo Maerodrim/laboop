@@ -75,28 +75,18 @@ public class TableController implements Initializable, Openable {
         clear(bottomPane);
         initializeMathFunctionMap();
         initializeWindowControllers();
+        connectMathFunctionMap();
     }
 
     private void initializeMathFunctionMap() {
         mathFunctionMap = new LinkedHashMap<>();
         StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
-                //.peek(System.out::println)
                 .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.FUNCTION)
                 .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                 .forEach(clazz -> {
                     try {
-                        if (clazz.getDeclaredAnnotation(ConnectableItem.class).hasParameter()) {
-                            if (clazz.getDeclaredAnnotation(ConnectableItem.class).parameterInstanceOfDouble()) {
-                                mathFunctionMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(),
-                                        (MathFunction) clazz.getDeclaredConstructor(Double.TYPE).newInstance(0));
-                            } else {
-                                mathFunctionMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(),
-                                        (MathFunction) clazz.getDeclaredConstructor(String.class).newInstance(""));
-                            }
-                        } else {
-                            mathFunctionMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(),
-                                    (MathFunction) clazz.getDeclaredConstructor().newInstance());
-                        }
+                        mathFunctionMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(),
+                                (MathFunction) clazz.getDeclaredConstructor().newInstance());
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                         AlertWindows.showError(e);
                     }
@@ -114,6 +104,9 @@ public class TableController implements Initializable, Openable {
                         AlertWindows.showError(e);
                     }
                 });
+    }
+
+    private void connectMathFunctionMap() {
         controllerMap.values().stream()
                 .filter(f -> f instanceof MathFunctionAccessible)
                 .forEach(f -> ((MathFunctionAccessible) f).connectMathFunctionMap(mathFunctionMap));
@@ -129,44 +122,24 @@ public class TableController implements Initializable, Openable {
         return controller;
     }
 
-    @SuppressWarnings("unchecked")
     void createTab(TabulatedFunction function) {
-        Tab tab = new Tab();
-        tab.setText("Function" + numberId);
-        tab.setId("function" + numberId++);
-        tab.setClosable(true);
-        tabPane.getTabs().add(tab);
-        ObservableList<Point> list = getList(function);
-        TableView<Point> table = new TableView<>();
-        table.setItems(list);
-        table.getColumns().addAll(x, y);
-        tab.setContent(table);
-        tabPane.getSelectionModel().select(tab);
-        tabulatedFunctionMap.put(tab, function);
-        notifyAboutAccessibility(function);
-        currentTab = tab;
-        tab.setOnSelectionChanged(event -> {
-            if (tab.isSelected()) {
-                currentTab = tab;
-                notifyAboutAccessibility(getFunction());
-            }
-        });
-        tab.setOnCloseRequest(event -> {
-            tabulatedFunctionMap.remove(tab);
-            if (tabulatedFunctionMap.isEmpty()) {
-                mainPane.getChildren().remove(bottomPane);
-                currentTab = null;
-            }
-        });
+        createTab(getList(function), function);
     }
 
-    void createTab(TableView<Point> table) {
-        TabulatedFunction function = getFunction(table.getItems());
-        TabulatedFunctionController controller = (TabulatedFunctionController) getController("tabulatedFunction");
+    void createTab(ObservableList<Point> list) {
+        TabulatedFunction function = getFunction(list);
+        TabulatedFunctionController controller = (TabulatedFunctionController) lookupController("tabulatedFunction");
         function.offerUnmodifiable(controller.isUnmodifiable());
         function.offerStrict(controller.isStrict());
         io.wrap(function);
-        Tab tab = new Tab("Function" + numberId, table);
+        createTab(list, function);
+    }
+
+    private void createTab(ObservableList<Point> list, TabulatedFunction function) {
+        TableView<Point> table1 = new TableView<>();
+        table1.setItems(list);
+        table1.getColumns().addAll(x, y);
+        Tab tab = new Tab("Function" + numberId, table1);
         tab.setId("function" + numberId++);
         tab.setClosable(true);
         tabPane.getTabs().add(tab);
@@ -192,7 +165,7 @@ public class TableController implements Initializable, Openable {
     private void notifyAboutAccessibility(TabulatedFunction function) {
         boolean isStrict = function.isStrict();
         boolean isUnmodifiable = function.isUnmodifiable();
-        List<Node> list = new ArrayList<>();//List.of(calculateValueButton, label);
+        List<Node> list = new ArrayList<>();
         list.add(calculateValueButton);
         list.add(label);
         if (tabulatedFunctionMap.size() == 1) {
@@ -322,17 +295,17 @@ public class TableController implements Initializable, Openable {
         sort(getObservableList());
     }
 
-    private Openable getController() {
-        return getController(Thread.currentThread().getStackTrace()[2].getMethodName());
+    private Openable lookupController() {
+        return lookupController(Thread.currentThread().getStackTrace()[2].getMethodName());
     }
 
     private void show(boolean isResizable) {
-        Stage stage = getController(Thread.currentThread().getStackTrace()[2].getMethodName()).getStage();
+        Stage stage = lookupController(Thread.currentThread().getStackTrace()[2].getMethodName()).getStage();
         stage.setResizable(isResizable);
-        stage.show();
+        stage.showAndWait();
     }
 
-    private Openable getController(String path) {
+    private Openable lookupController(String path) {
         Openable controller = controllerMap.get(path + ".fxml");
         if (controller instanceof TabulatedFunctionAccessible) {
             ((TabulatedFunctionAccessible) controller).connectTabulatedFunctionMap();
@@ -345,6 +318,11 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     public void mathFunction() {
+        show(true);
+    }
+
+    @FXML
+    public void vectorFunction() {
         show(true);
     }
 
@@ -385,7 +363,7 @@ public class TableController implements Initializable, Openable {
     private void about() {
         if (isTabExist()) {
             if (getFunction().isMathFunctionExist()) {
-                Openable controller = getController();
+                Openable controller = lookupController();
                 ((AboutController) controller).setInfo();
                 controller.getStage().show();
             } else {
@@ -397,8 +375,8 @@ public class TableController implements Initializable, Openable {
     @FXML
     public void plot() {
         if (isTabExist()) {
-            PlotController controller = (PlotController) getController();
-            controller.addSeries();
+            PlotController controller = (PlotController) lookupController();
+            controller.setSeries();
             controller.getStage().show();
         }
     }
@@ -418,9 +396,7 @@ public class TableController implements Initializable, Openable {
     private void solve() {
         if (isTabExist()) {
             if (!getFunction().isStrict()) {
-                SolveController controller = (SolveController) getController();
-                //controller.getStage().initOwner(null);
-                //controller.getStage().initModality(Modality.WINDOW_MODAL);
+                SolveController controller = (SolveController) lookupController();
                 controller.getStage().setResizable(false);
                 controller.getStage().show();
             } else {
@@ -431,7 +407,7 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void settings() {
-        ((SettingsController) getController()).start();
+        ((SettingsController) lookupController()).start();
     }
 
     @FXML
@@ -487,6 +463,10 @@ public class TableController implements Initializable, Openable {
 
     public void addCompositeFunction(String name, MathFunction function) {
         compositeFunctionMap.put(name, function);
+    }
+
+    public void addCompositeFunction(MathFunction function) {
+        compositeFunctionMap.put(function.getName(), function);
     }
 
     public Tab getCurrentTab() {

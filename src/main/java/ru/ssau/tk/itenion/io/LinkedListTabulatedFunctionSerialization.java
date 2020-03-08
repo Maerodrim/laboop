@@ -13,7 +13,7 @@ public class LinkedListTabulatedFunctionSerialization {
     private static final int MAX_NUMBER = 853; // the maximum number of values in a function that is allowed for serialization
 
     public static void main(String[] args) {
-        LinkedListTabulatedFunction function = new LinkedListTabulatedFunction(new PowFunction(3), 0, 20, MAX_NUMBER);
+        LinkedListTabulatedFunction function = new LinkedListTabulatedFunction(new PowFunction(3.), 0, 20, MAX_NUMBER);
         TabulatedDifferentialOperator differentialOperator = new TabulatedDifferentialOperator(new LinkedListTabulatedFunctionFactory());
         TabulatedFunction firstDerivative = differentialOperator.derive(function);
         TabulatedFunction secondDerivative = differentialOperator.derive(firstDerivative);

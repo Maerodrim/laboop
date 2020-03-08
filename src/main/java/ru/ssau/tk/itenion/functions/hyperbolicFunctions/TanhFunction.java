@@ -5,7 +5,7 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
-@ConnectableItem(name = "Гиперболический тангенс", priority = 133, type = Item.FUNCTION)
+@ConnectableItem(name = "Гиперболический тангенс", priority = 133, type = Item.FUNCTION, isAdjacentConstant = true)
 public class TanhFunction extends AbstractMathFunction implements MathFunction {
 
     private static final long serialVersionUID = -6316407655195470376L;

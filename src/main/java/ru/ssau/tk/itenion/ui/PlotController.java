@@ -23,8 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
-import org.gillius.jfxutils.chart.ChartPanManager;
-import org.gillius.jfxutils.chart.JFXChartUtil;
+import org.gillius.jfxutils.chart.*;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
@@ -44,14 +43,14 @@ public class PlotController implements Initializable, Openable {
     @FXML
     private StackPane stackPane;
     @FXML
-    private LineChart<Double, Double> lineChart;
+    private LineChart<Number, Number> lineChart;
     private AnchorPane detailsWindow;
     private Openable parentController;
     private PlotController.DetailsPopup detailsPopup;
     private double strokeWidth = 0.5;
     private int numberOfSeries = 0;
 
-    public static void removeLegend(LineChart<Double, Double> lineChart) {
+    public static void removeLegend(LineChart<Number, Number> lineChart) {
         ((Legend) lineChart.lookup(".chart-legend")).getItems().clear();
     }
 
@@ -82,7 +81,7 @@ public class PlotController implements Initializable, Openable {
     }
 
     public void addSeriesInGeneral(ObservableList<Point> data, TabulatedFunction function) {
-        XYChart.Series<Double, Double> series = new XYChart.Series<>();
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.setName(function.getName());
         lineChart.getData().add(series);
         detailsPopup.addPopupRow(function);
@@ -90,7 +89,6 @@ public class PlotController implements Initializable, Openable {
         functionColorMap.put(function, getColorFromCSS(series));
 
         removeLegend(lineChart);
-        //lineChart.lookup(".chart-series-line").setStyle("-fx-stroke-width: " + strokeWidth + ";");
         ChartPanManager panner = new ChartPanManager(lineChart);
         panner.setMouseFilter(mouseEvent -> {
             if (mouseEvent.getButton() != MouseButton.SECONDARY) {
@@ -98,6 +96,7 @@ public class PlotController implements Initializable, Openable {
             }
         });
         panner.start();
+        JFXChartUtil.addDoublePrimaryClickAutoRangeHandler(lineChart);
         JFXChartUtil.setupZooming(lineChart, mouseEvent -> {
             if (mouseEvent.getButton() != MouseButton.PRIMARY)
                 mouseEvent.consume();
@@ -105,7 +104,7 @@ public class PlotController implements Initializable, Openable {
     }
 
     // хождение за два привата
-    private Color getColorFromCSS(XYChart.Series<Double, Double> series) {
+    private Color getColorFromCSS(XYChart.Series<Number, Number> series) {
         Method getPrivate = series.getClass().getClass().getDeclaredMethods()[NUMBER_OF_METHOD];
         getPrivate.setAccessible(true);
         Method getStyleMap = null;
@@ -148,14 +147,14 @@ public class PlotController implements Initializable, Openable {
         setSeriesInGeneral(((TableController) parentController).getObservableList(), ((TableController) parentController).getFunction());
     }
 
-    private String toRGBCode(Color color) {
+    private static String toRGBCode(Color color) {
         return format("#%02X%02X%02X",
                 (int) (color.getRed() * 255),
                 (int) (color.getGreen() * 255),
                 (int) (color.getBlue() * 255));
     }
 
-    private void bindMouseEvents(LineChart<Double, Double> baseChart, Double strokeWidth) {
+    private void bindMouseEvents(LineChart<Number, Number> baseChart, Double strokeWidth) {
         detailsPopup = new PlotController.DetailsPopup();
         stackPane.getChildren().add(detailsWindow);
         detailsWindow.getChildren().add(detailsPopup);
@@ -255,7 +254,7 @@ public class PlotController implements Initializable, Openable {
 
         public void showChartDescription(MouseEvent event) {
             getChildren().clear();
-            double x = lineChart.getXAxis().getValueForDisplay(event.getX());
+            double x = lineChart.getXAxis().getValueForDisplay(event.getX()).doubleValue();
 
             for (TabulatedFunction function : functions) {
                 HBox popupRow = buildPopupRow(event, x, function);
@@ -273,7 +272,7 @@ public class PlotController implements Initializable, Openable {
 
             double yValueLower = normalizeYValue(lineChart, event.getY() - 2);
             double yValueUpper = normalizeYValue(lineChart, event.getY() + 2);
-            double yValueUnderMouse = lineChart.getYAxis().getValueForDisplay(event.getY());
+            double yValueUnderMouse = lineChart.getYAxis().getValueForDisplay(event.getY()).doubleValue();
 
             // make series name bold when mouse is near given chart's line
             if (isMouseNearLine(y, yValueUnderMouse, Math.abs(yValueLower - yValueUpper))) {
@@ -283,8 +282,8 @@ public class PlotController implements Initializable, Openable {
             return new HBox(10, seriesName, new Label("x: [" + x + "]\ny: [" + y + "]"));
         }
 
-        private double normalizeYValue(LineChart<Double, Double> lineChart, double value) {
-            return lineChart.getYAxis().getValueForDisplay(value);
+        private double normalizeYValue(LineChart<Number, Number> lineChart, double value) {
+            return lineChart.getYAxis().getValueForDisplay(value).doubleValue();
         }
 
         private boolean isMouseNearLine(Double realYValue, Double yValueUnderMouse, Double tolerance) {

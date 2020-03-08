@@ -143,7 +143,7 @@ public class TabulatedFunctionOperationServiceTest {
 
     @Test
     public void testOverrideAsPoints() {
-        TabulatedFunction actual = new ArrayTabulatedFunction(new PowFunction(2), 1, 5, 5000001);
+        TabulatedFunction actual = new ArrayTabulatedFunction(new PowFunction(2.), 1, 5, 5000001);
         double[][][] points = TabulatedFunctionOperationService.asPoints(actual, 10);
         int n = 5;
     }

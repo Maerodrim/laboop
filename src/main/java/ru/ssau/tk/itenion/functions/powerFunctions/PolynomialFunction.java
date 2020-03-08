@@ -10,7 +10,7 @@ import ru.ssau.tk.itenion.ui.Item;
 
 import java.util.Map;
 
-@ConnectableItem(name = "Полином", priority = 14, type = Item.FUNCTION, hasParameter = true, parameterInstanceOfDouble = false)
+@ConnectableItem(name = "Полином", priority = 14, type = Item.FUNCTION, hasParameter = true, parameterInstance = String.class)
 public class PolynomialFunction extends AbstractMathFunction implements MathFunction {
     private static final long serialVersionUID = -5871823052195353949L;
     private Polynomial polynomial;
@@ -30,7 +30,7 @@ public class PolynomialFunction extends AbstractMathFunction implements MathFunc
     }
 
     public PolynomialFunction(IntegerPowFunction powFunction) {
-        this.polynomial = new Polynomial(Map.of(powFunction.getPow().intValue(), 1.));
+        this.polynomial = new Polynomial(Map.of(powFunction.getPow(), 1.));
         name = polynomial.toString();
     }
 
@@ -56,11 +56,11 @@ public class PolynomialFunction extends AbstractMathFunction implements MathFunc
 
     public MathFunction doOperation(MathFunction afterFunction, Operation operation) {
         if (afterFunction instanceof PolynomialFunction) {
-            return operation.apply(this.polynomial, ((PolynomialFunction) afterFunction).getPolynomial());
+            return operation.apply(this.polynomial, ((PolynomialFunction) afterFunction).polynomial);
         } else if (afterFunction instanceof IntegerPowFunction) {
-            return operation.apply(this.polynomial, new PolynomialFunction((IntegerPowFunction) afterFunction).getPolynomial());
+            return operation.apply(this.polynomial, new PolynomialFunction((IntegerPowFunction) afterFunction).polynomial);
         } else if (afterFunction instanceof ConstantFunction) {
-            return operation.apply(this.polynomial, new PolynomialFunction((ConstantFunction) afterFunction).getPolynomial());
+            return operation.apply(this.polynomial, new PolynomialFunction((ConstantFunction) afterFunction).polynomial);
         } else {
             return operation.apply(this, afterFunction);
         }
@@ -80,7 +80,7 @@ public class PolynomialFunction extends AbstractMathFunction implements MathFunc
         return new PolynomialFunction(polynomial.derive());
     }
 
-    private class Operation {
+    private static class Operation {
         private String operation;
 
         Operation(String operation) {

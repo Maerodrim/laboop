@@ -6,15 +6,15 @@
 <?import javafx.scene.text.Font?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity"
-            prefHeight="509.0" prefWidth="336.0" xmlns="http://javafx.com/javafx/8"
+            prefHeight="509.0" prefWidth="336.0" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="ru.ssau.tk.itenion.ui.MathFunctionController">
     <center>
         <VBox prefHeight="380.0" prefWidth="203.0" BorderPane.alignment="CENTER">
             <BorderPane.margin>
                 <Insets bottom="40.0" left="30.0" right="30.0" top="30.0"/>
             </BorderPane.margin>
-            <ComboBox fx:id="comboBox" onAction="#doOnClickOnComboBox" prefHeight="49.0" prefWidth="276.0"
-                      visibleRowCount="4">
+            <ComboBox fx:id="comboBox" onAction="#doOnAction" prefHeight="49.0" prefWidth="276.0"
+                      promptText="Select function">
                 <VBox.margin>
                     <Insets bottom="15.0"/>
                 </VBox.margin>
@@ -52,8 +52,8 @@
                     <Insets top="15.0"/>
                 </VBox.margin>
             </CheckBox>
-            <Button fx:id="create" mnemonicParsing="false" onAction="#createFunction" prefHeight="47.0"
-                    prefWidth="206.0" text="Создать">
+            <Button mnemonicParsing="false" onAction="#createFunction" prefHeight="47.0" prefWidth="206.0"
+                    text="Создать">
                 <VBox.margin>
                     <Insets left="35.0" right="35.0" top="30.0"/>
                 </VBox.margin>
