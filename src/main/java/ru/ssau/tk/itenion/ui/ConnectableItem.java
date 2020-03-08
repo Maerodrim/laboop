@@ -39,4 +39,9 @@ public @interface ConnectableItem {
      * @return controller parameters
      */
     String pathFXML() default "";
+
+    /**
+     * @return VMF
+     */
+    boolean forVMF() default false;
 }

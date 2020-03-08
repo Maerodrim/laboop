@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import org.atteo.classindex.ClassIndex;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.itenion.functions.MathFunction;
@@ -41,6 +42,7 @@ public class TableController implements Initializable, Openable {
     private IO io;
     private boolean isStrict = false;
     private boolean isUnmodifiable = false;
+    private boolean isVMF = false;
     @FXML
     private TabPane tabPane;
     @FXML
@@ -163,6 +165,10 @@ public class TableController implements Initializable, Openable {
         });
     }
 
+    private void createTab(Map<Pair<Integer, Integer>, MathFunction> currentFunctions) {
+        //TODO  Функционал ...
+    }
+
     private void notifyAboutAccessibility(TabulatedFunction function) {
         boolean isStrict = function.isStrict();
         boolean isUnmodifiable = function.isUnmodifiable();
@@ -256,6 +262,10 @@ public class TableController implements Initializable, Openable {
 
     public TabulatedFunction getFunction() {
         return tabulatedFunctionMap.get(currentTab);
+    }
+
+    public boolean isVMF() {
+        return isVMF;
     }
 
     @SuppressWarnings("unchecked")

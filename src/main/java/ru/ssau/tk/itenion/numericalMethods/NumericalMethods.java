@@ -1,7 +1,9 @@
 package ru.ssau.tk.itenion.numericalMethods;
 
 import Jama.Matrix;
+import com.sun.xml.internal.xsom.impl.scd.Iterators;
 import ru.ssau.tk.itenion.functions.MathFunction;
+import ru.ssau.tk.itenion.functions.Variable;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.operations.DifferentialOperator;
 import ru.ssau.tk.itenion.operations.MathFunctionDifferentialOperator;
@@ -9,25 +11,34 @@ import ru.ssau.tk.itenion.operations.MiddleSteppingDifferentialOperator;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @ConnectableItem(name = "", type = Item.NUMERICAL_METHOD)
 public class NumericalMethods {
     private static final int NUMBER_OF_SEGMENT_SPLITS = 1001;
-    double left, right, initialApproximation, eps;
+    double left, right, eps;
+    private final int dim = Variable.values().length;
+    Matrix initialApproximation = new Matrix(dim, dim);
 
-    public NumericalMethods(Double left, Double right, Double initialApproximation, Double eps) {
-        this.left = left;
-        this.right = right;
-        this.initialApproximation = initialApproximation;
-        this.eps = eps;
+    public NumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
+        this(left, right,new double[] {initialApproximation}, eps);
     }
 
-    public static Matrix solveNonlinearSystem(VMF VMF, Matrix initialApproximation, boolean isModified) {
+    public NumericalMethods(Double left, Double right, double[] initialApproximation, Double eps) {
+        this.left = left;
+        this.right = right;
+        for (int i = 0; i < dim; i++)
+            this.initialApproximation.set(0, i, initialApproximation[i]);
+        this.eps = eps;
+    }
+    @ConnectableItem(name = "Solve Nonlinear System", type = Item.NUMERICAL_METHOD, priority = 1,forVMF = true)
+    public Matrix solveNonlinearSystem(VMF VMF, boolean isModified) {
         final double EPS = 1E-6;
         Matrix x1;
-        Matrix x0 = initialApproximation.copy();
+        Matrix x0 = initialApproximation;
         Matrix jacobian = VMF.getJacobiMatrix(x0.transpose());
         Matrix y = VMF.apply(x0.transpose());
         Matrix p = jacobian.solve(y.timesEquals(-1));
@@ -82,7 +93,7 @@ public class NumericalMethods {
         double a, b;
         int numberOfIterations = 0;
         Map<Double, Map.Entry<Double, Integer>> result = new HashMap<>();
-        a = initialApproximation; //задаём начальное приближение
+        a = initialApproximation.get(0,0); //задаём начальное приближение
         b = a - func.apply(a) / (differentialOperator.derive(func)).apply(a); // первое приближение
         while (Math.abs(b - a) > eps) {
             a = b;
