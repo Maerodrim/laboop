@@ -6,9 +6,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<AnchorPane fx:id="pane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ru.ssau.tk.itenion.ui.fxml.VectorFunction"
+            fx:controller="ru.ssau.tk.itenion.ui.VectorFunctionController"
             prefHeight="400.0" prefWidth="600.0">
 
 </AnchorPane>

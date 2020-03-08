@@ -92,7 +92,7 @@ public class VMFSV implements VMF {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return joiner.toString();
     }
 

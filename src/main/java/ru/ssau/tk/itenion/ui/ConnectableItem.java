@@ -12,20 +12,31 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 
 public @interface ConnectableItem {
+    /**
+     * @return general parameters
+     */
     String name();
 
     int priority() default 0;
 
     Item type();
 
+    /**
+     * @return function parameters
+     */
     boolean hasParameter() default false;
 
-    //boolean parameterInstanceOfDouble() default true;
     Class<?> parameterInstance() default Double.class;
 
-    String inputParameterName() default "Parameter:";
+    boolean isAdjacentConstant() default false;
 
+    /**
+     * @return operators parameters
+     */
     boolean numericalOperator() default true;
 
+    /**
+     * @return controller parameters
+     */
     String pathFXML() default "";
 }

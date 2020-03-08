@@ -3,7 +3,6 @@ package ru.ssau.tk.itenion.functions;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.operations.DifferentialOperator;
 import ru.ssau.tk.itenion.operations.MathFunctionDifferentialOperator;
-import ru.ssau.tk.itenion.ui.AlertWindows;
 
 
 public class CompositeFunction extends AbstractMathFunction implements MathFunction {

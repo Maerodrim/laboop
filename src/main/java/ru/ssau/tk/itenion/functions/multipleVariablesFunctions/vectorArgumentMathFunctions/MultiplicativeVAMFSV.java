@@ -6,7 +6,7 @@ import ru.ssau.tk.itenion.functions.Variable;
 
 import java.util.ArrayList;
 
-public class MultiplicativeVAMFSV extends AbstractVAMF{
+public class MultiplicativeVAMFSV extends AbstractVAMF {
     public MultiplicativeVAMFSV() {
         super(" * ");
     }

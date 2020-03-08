@@ -51,6 +51,14 @@ public class TableController implements Initializable, Openable {
     @FXML
     private Label label;
 
+    public static ObservableList<Point> getList(TabulatedFunction function) {
+        List<Point> listPoint = new ArrayList<>();
+        for (Point point : function) {
+            listPoint.add(point);
+        }
+        return FXCollections.observableArrayList(listPoint);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         controllerMap = new HashMap<>();
@@ -98,7 +106,7 @@ public class TableController implements Initializable, Openable {
                 });
     }
 
-    private void connectMathFunctionMap(){
+    private void connectMathFunctionMap() {
         controllerMap.values().stream()
                 .filter(f -> f instanceof MathFunctionAccessible)
                 .forEach(f -> ((MathFunctionAccessible) f).connectMathFunctionMap(mathFunctionMap));
@@ -254,14 +262,6 @@ public class TableController implements Initializable, Openable {
         return ((TableView<Point>) currentTab.getContent()).getItems();
     }
 
-    public static ObservableList<Point> getList(TabulatedFunction function) {
-        List<Point> listPoint = new ArrayList<>();
-        for (Point point : function) {
-            listPoint.add(point);
-        }
-        return FXCollections.observableArrayList(listPoint);
-    }
-
     @FXML
     private void exit() {
         stage.close();
@@ -318,6 +318,11 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     public void mathFunction() {
+        show(true);
+    }
+
+    @FXML
+    public void vectorFunction() {
         show(true);
     }
 

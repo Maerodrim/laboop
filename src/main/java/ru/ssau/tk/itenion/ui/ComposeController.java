@@ -80,11 +80,6 @@ public class ComposeController implements Openable, MathFunctionAccessible, Comp
     }
 
     @Override
-    public void setParentController(Openable controller) {
-        this.parentController = controller;
-    }
-
-    @Override
     public void setMathFunctionNode() {
         comboBox.getItems().addAll(functionMap.keySet());
         comboBox.setValue(comboBox.getItems().get(0));
@@ -114,6 +109,11 @@ public class ComposeController implements Openable, MathFunctionAccessible, Comp
     @Override
     public Openable getParentController() {
         return parentController;
+    }
+
+    @Override
+    public void setParentController(Openable controller) {
+        this.parentController = controller;
     }
 
     @Override

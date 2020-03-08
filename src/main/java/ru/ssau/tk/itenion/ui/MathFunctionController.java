@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 @ConnectableItem(name = "Create new math function", type = Item.CONTROLLER, pathFXML = "mathFunction.fxml")
 public class MathFunctionController implements Openable, MathFunctionAccessible, CompositeFunctionAccessible {
     @FXML
-    private ComboBox<String> comboBox;
-    @FXML
     TextField leftBorder;
     @FXML
     TextField rightBorder;
@@ -30,6 +28,8 @@ public class MathFunctionController implements Openable, MathFunctionAccessible,
     CheckBox isUnmodifiable;
     @FXML
     CheckBox isStrict;
+    @FXML
+    private ComboBox<String> comboBox;
     private Stage stage;
     private boolean isEditing = true;
 

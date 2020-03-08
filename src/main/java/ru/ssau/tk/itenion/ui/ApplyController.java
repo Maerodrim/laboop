@@ -1,6 +1,5 @@
 package ru.ssau.tk.itenion.ui;
 
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -21,13 +20,6 @@ import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Apply", type = Item.CONTROLLER, pathFXML = "apply.fxml")
 public class ApplyController implements Initializable, Openable, TabulatedFunctionAccessible, MathFunctionAccessible, CompositeFunctionAccessible {
-    /**
-     * chosenMenu = 0 - via MathFunction
-     * chosenMenu = 1 - via function, is opened in the tab
-     * chosenMenu = 2 - via saved compositeMathFunction
-     * chosenMenu = 3 - via load function
-     */
-    int chosenMenu = 0;
     private Stage stage;
     private Openable parentController;
     private TabulatedFunctionFactory factory;
@@ -36,9 +28,8 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
     private Map<String, MathFunction> mathFunctionMap;
     private Map<String, MathFunction> compositeFunctionMap;
     private Map<Method, Class<?>> classes;
-    private MathFunction currentFunction;
-    private String selectedMathMenuItem;
-    private Optional<?> value;
+    private MathFunction applyFunction;
+
     @FXML
     private Menu mathFunctionMenu, compositeFunctionMenu, currentFunctionMenu;
 
@@ -65,7 +56,9 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
     @Override
     public void setStage(Stage stage) {
         this.stage = stage;
-        this.stage.setOnCloseRequest(windowEvent -> tabulatedFunctionMap.clear());
+        this.stage.setOnCloseRequest(windowEvent -> {
+            tabulatedFunctionMap.clear();
+        });
     }
 
     @Override
@@ -75,19 +68,15 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
 
     @FXML
     public void apply() {
-        if (chosenMenu == 0) {
-            IO.setActualParameter(mathFunctionMap, selectedMathMenuItem, value);
-            currentFunction = mathFunctionMap.get(selectedMathMenuItem);
-        }
         try {
-            if (currentFunction instanceof TabulatedFunction) {
-                currentFunction = ((TabulatedFunction) currentFunction).getMathFunction();
+            if (applyFunction instanceof TabulatedFunction) {
+                applyFunction = ((TabulatedFunction) applyFunction).getMathFunction();
             }
             TabulatedFunction function = (TabulatedFunction) operationMap.get(operationComboBox.getValue())
                     .invoke(classes.get(operationMap.get(operationComboBox.getValue())).getDeclaredConstructor(TabulatedFunctionFactory.class)
                                     .newInstance(((TableController) parentController).getFactory()),
                             ((TableController) parentController).getFunction(),
-                            currentFunction);
+                            applyFunction);
             function.offerStrict(((TableController) parentController).isStrict());
             function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
             ((TableController) parentController).createTab(function);
@@ -124,16 +113,15 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
         return tabulatedFunctionMap;
     }
 
-    private void setMenuItems(Menu menu, Map<String, MathFunction> map, int chosenMenu) {
+    private void setMenuItems(Menu menu, Map<String, MathFunction> map) {
         menu.getItems().setAll(map.keySet().stream().map(MenuItem::new).collect(Collectors.toList()));
         menu.getItems().forEach(f -> f.setOnAction(e -> {
-            MathFunction function = map.get(f.getText());
-            currentFunction = function;
-            selectedMathMenuItem = chosenMenu == 0 ? f.getText() : "";
-            this.chosenMenu = chosenMenu;
-            ConnectableItem item = (function.getClass().getDeclaredAnnotation(ConnectableItem.class));
-            if (!Objects.isNull(item)) {
-                value = IO.getValue(item);
+            applyFunction = map.get(f.getText());
+            if (menu.getText().equals("Мат. функции")) {
+                ConnectableItem item = applyFunction.getClass().getDeclaredAnnotation(ConnectableItem.class);
+                if (item.hasParameter()) {
+                    applyFunction = IO.setActualParameter(applyFunction, IO.getValue(item));
+                }
             }
         }));
     }
@@ -141,7 +129,7 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
     @Override
     public void updateTabulatedFunctionNode() {
         if (!tabulatedFunctionMap.isEmpty()) {
-            setMenuItems(currentFunctionMenu, tabulatedFunctionMap, 1);
+            setMenuItems(currentFunctionMenu, tabulatedFunctionMap);
         } else {
             currentFunctionMenu.getItems().clear();
         }
@@ -149,7 +137,7 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
 
     @Override
     public void setMathFunctionNode() {
-        setMenuItems(mathFunctionMenu, mathFunctionMap, 0);
+        setMenuItems(mathFunctionMenu, mathFunctionMap);
     }
 
     @Override
@@ -161,17 +149,16 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
     public void load() {
         File file = IO.load(stage);
         if (!Objects.equals(file, null)) {
-            currentFunction = new IO(factory).loadFunctionAs(file);
-            if (((TabulatedFunction) currentFunction).isMathFunctionExist()) {
-                currentFunction = ((TabulatedFunction) currentFunction).getMathFunction();
-                chosenMenu = 3;
+            applyFunction = new IO(factory).loadFunctionAs(file);
+            if (((TabulatedFunction) applyFunction).isMathFunctionExist()) {
+                applyFunction = ((TabulatedFunction) applyFunction).getMathFunction();
             }
         }
     }
 
     @Override
     public void updateCompositeFunctionNode() {
-        setMenuItems(compositeFunctionMenu, compositeFunctionMap, 2);
+        setMenuItems(compositeFunctionMenu, compositeFunctionMap);
     }
 
     @Override

@@ -12,4 +12,9 @@ public final class IdentityFunction extends IntegerPowFunction {
         super(1);
         name = "x";
     }
+
+    @Override
+    public String getName(){
+        return name;
+    }
 }

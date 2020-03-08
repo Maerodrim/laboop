@@ -10,7 +10,7 @@ import ru.ssau.tk.itenion.ui.Item;
 
 import java.util.Map;
 
-@ConnectableItem(name = "Полином", priority = 14, type = Item.FUNCTION, hasParameter = true, inputParameterName = "Polynomial:", parameterInstance = String.class)
+@ConnectableItem(name = "Полином", priority = 14, type = Item.FUNCTION, hasParameter = true, parameterInstance = String.class)
 public class PolynomialFunction extends AbstractMathFunction implements MathFunction {
     private static final long serialVersionUID = -5871823052195353949L;
     private Polynomial polynomial;

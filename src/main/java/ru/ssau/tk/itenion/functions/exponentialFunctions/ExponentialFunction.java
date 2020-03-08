@@ -5,12 +5,12 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
-@ConnectableItem(name = "Показательная функция", priority = 101, type = Item.FUNCTION, hasParameter = true)
+@ConnectableItem(name = "Показательная функция", priority = 101, type = Item.FUNCTION, hasParameter = true, isAdjacentConstant = true)
 public class ExponentialFunction extends AbstractMathFunction {
     private static final long serialVersionUID = 8190276995050776178L;
     private final double exp;
 
-    public ExponentialFunction(){
+    public ExponentialFunction() {
         this(0.);
     }
 
