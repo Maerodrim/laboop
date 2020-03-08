@@ -44,14 +44,21 @@ public class SolveController implements Initializable, Openable {
 
     @FXML
     private void ok() {
-        NumericalMethods numMethod = new NumericalMethods(Double.parseDouble(left.getText()), Double.parseDouble(right.getText()),
-                Double.parseDouble(initialApproximation.getText()), Double.parseDouble(eps.getText()));
+        NumericalMethods numMethod = new NumericalMethods(Double.parseDouble(left.getText()),
+                Double.parseDouble(right.getText()),
+                Arrays.stream(initialApproximation
+                        .getText()
+                        .split("; "))
+                        .mapToDouble(Double::parseDouble).toArray(),
+                Double.parseDouble(eps.getText()));
         try {
             StringJoiner joiner = new StringJoiner("; ");
             ArrayList<Double> listOfEpsItems = new ArrayList<>();
             Map<Double, Map.Entry<Double, Integer>> roots = (Map<Double, Map.Entry<Double, Integer>>) numericalMethodMap
-                    .get(numericalMethodsBox.getValue()).invoke(numMethod,
-                            ((TableController) parentController).getFunction().getMathFunction());
+                    .get(numericalMethodsBox.getValue())
+                    .invoke(numMethod, ((TableController) parentController)
+                                    .getFunction()
+                                    .getMathFunction());
             roots.values().forEach(entry -> {
                 listOfEpsItems.add(entry.getKey());
                 joiner.add(entry.getValue().toString());

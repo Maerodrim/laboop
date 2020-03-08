@@ -82,9 +82,17 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
     }
 
     private void addMenuItems(Pair<Integer, Integer> nodeGrid, Menu menu, Map<String, MathFunction> map) {
-        menu.getItems().addAll(map.keySet().stream().map(MenuItem::new)
-                .filter(menuItem -> !menu.getItems().contains(menuItem)).collect(Collectors.toList()));
-        menu.getItems().forEach(f -> f.setOnAction(e -> {
+        menu.getItems()
+                .addAll(map.keySet()
+                        .stream()
+                        .map(MenuItem::new)
+                .filter(menuItem -> !menu.getItems()
+                        .contains(menuItem))
+                        .collect(Collectors
+                                .toList()));
+        menu.getItems()
+                .forEach(f -> f
+                        .setOnAction(e -> {
             currentFunctions.computeIfPresent(nodeGrid, (integerIntegerPair, presentFunction) -> map.get(f.getText()));
             currentFunctions.putIfAbsent(nodeGrid, map.get(f.getText()));
             if (menu.getText().equals("Мат. функции")) {

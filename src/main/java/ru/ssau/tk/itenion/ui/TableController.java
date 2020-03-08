@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import org.atteo.classindex.ClassIndex;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.itenion.functions.MathFunction;
@@ -41,6 +42,7 @@ public class TableController implements Initializable, Openable {
     private IO io;
     private boolean isStrict = false;
     private boolean isUnmodifiable = false;
+    private boolean isVMF = false;
     @FXML
     private TabPane tabPane;
     @FXML
@@ -162,31 +164,9 @@ public class TableController implements Initializable, Openable {
             }
         });
     }
-    private void createTab(ObservableList<Point> list,VMF vectorMathFunction) {
-        TableView<Point> table1 = new TableView<>();
-        table1.setItems(list);
-        table1.getColumns().addAll(x, y);
-        Tab tab = new Tab("Function" + numberId, table1);
-        tab.setId("function" + numberId++);
-        tab.setClosable(true);
-        tabPane.getTabs().add(tab);
-        tabPane.getSelectionModel().select(tab);
-        tabulatedFunctionMap.put(tab, (TabulatedFunction) vectorMathFunction);
-        notifyAboutAccessibility((TabulatedFunction) vectorMathFunction);
-        currentTab = tab;
-        tab.setOnSelectionChanged(event -> {
-            if (tab.isSelected()) {
-                currentTab = tab;
-                notifyAboutAccessibility(getFunction());
-            }
-        });
-        tab.setOnCloseRequest(event -> {
-            tabulatedFunctionMap.remove(tab);
-            if (tabulatedFunctionMap.isEmpty()) {
-                mainPane.getChildren().remove(bottomPane);
-                currentTab = null;
-            }
-        });
+
+    private void createTab(Map<Pair<Integer, Integer>, MathFunction> currentFunctions) {
+        //TODO  Функционал ...
     }
 
     private void notifyAboutAccessibility(TabulatedFunction function) {
@@ -282,6 +262,10 @@ public class TableController implements Initializable, Openable {
 
     public TabulatedFunction getFunction() {
         return tabulatedFunctionMap.get(currentTab);
+    }
+
+    public boolean isVMF() {
+        return isVMF;
     }
 
     @SuppressWarnings("unchecked")
