@@ -17,6 +17,7 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.ArrayTabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.io.File;
@@ -146,6 +147,32 @@ public class TableController implements Initializable, Openable {
         tabPane.getSelectionModel().select(tab);
         tabulatedFunctionMap.put(tab, function);
         notifyAboutAccessibility(function);
+        currentTab = tab;
+        tab.setOnSelectionChanged(event -> {
+            if (tab.isSelected()) {
+                currentTab = tab;
+                notifyAboutAccessibility(getFunction());
+            }
+        });
+        tab.setOnCloseRequest(event -> {
+            tabulatedFunctionMap.remove(tab);
+            if (tabulatedFunctionMap.isEmpty()) {
+                mainPane.getChildren().remove(bottomPane);
+                currentTab = null;
+            }
+        });
+    }
+    private void createTab(ObservableList<Point> list,VMF vectorMathFunction) {
+        TableView<Point> table1 = new TableView<>();
+        table1.setItems(list);
+        table1.getColumns().addAll(x, y);
+        Tab tab = new Tab("Function" + numberId, table1);
+        tab.setId("function" + numberId++);
+        tab.setClosable(true);
+        tabPane.getTabs().add(tab);
+        tabPane.getSelectionModel().select(tab);
+        tabulatedFunctionMap.put(tab, (TabulatedFunction) vectorMathFunction);
+        notifyAboutAccessibility((TabulatedFunction) vectorMathFunction);
         currentTab = tab;
         tab.setOnSelectionChanged(event -> {
             if (tab.isSelected()) {
