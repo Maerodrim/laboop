@@ -364,8 +364,8 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void deletePoint() {
-        if (isTabExist()) {
-            if (!getFunction().isUnmodifiable()) {
+        if (!isVMF && isTabExist()) {
+            if (!(isVMF || getFunction().isUnmodifiable())) {
                 show(true);
             } else {
                 AlertWindows.showWarning("Function is unmodifiable");
@@ -375,7 +375,7 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void addPoint() {
-        if (isTabExist()) {
+        if (!isVMF && isTabExist()) {
             if (!getFunction().isUnmodifiable()) {
                 show(true);
             } else {
@@ -386,7 +386,7 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void calculate() {
-        if (isTabExist()) {
+        if (!isVMF && isTabExist()) {
             if (!getFunction().isStrict()) {
                 show(true);
             } else {
@@ -398,7 +398,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void about() {
         if (isTabExist()) {
-            if (getFunction().isMathFunctionExist()) {
+            if (isVMF || getFunction().isMathFunctionExist()) {
                 Openable controller = lookupController();
                 ((AboutController) controller).setInfo();
                 controller.getStage().show();
@@ -419,7 +419,7 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void compose() {
-        if (isTabExist()) {
+        if (!isVMF && isTabExist()) {
             if (!getFunction().isStrict()) {
                 show(true);
             } else {
@@ -431,7 +431,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void solve() {
         if (isTabExist()) {
-            if (!getFunction().isStrict()) {
+            if (isVMF || !getFunction().isStrict()) {
                 SolveController controller = (SolveController) lookupController();
                 controller.getStage().setResizable(false);
                 controller.getStage().show();
@@ -453,14 +453,14 @@ public class TableController implements Initializable, Openable {
 
     @FXML
     private void apply() {
-        if (isTabExist()) {
+        if (!isVMF && isTabExist()) {
             show(false);
         }
     }
 
     @FXML
     private void operator() {
-        if (isTabExist()) {
+        if (!isVMF && isTabExist()) {
             if (!getFunction().isStrict()) {
                 show(true);
             } else {
@@ -497,9 +497,9 @@ public class TableController implements Initializable, Openable {
         return tabulatedFunctionMap;
     }
 
-    public void addCompositeFunction(String name, MathFunction function) {
-        compositeFunctionMap.put(name, function);
-    }
+    //public void addCompositeFunction(String name, MathFunction function) {
+      //  compositeFunctionMap.put(name, function);
+    //}
 
     public void addCompositeFunction(MathFunction function) {
         compositeFunctionMap.put(function.getName(), function);

@@ -121,14 +121,14 @@ class IO {
         return modalityWindow;
     }
 
-    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item, Predicate<Class<?>> classPredicate, Predicate<Method> methodPredicate) {
+    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item, Predicate<ConnectableItem> methodPredicate) {
         StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
                 .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == item)
-                .filter(classPredicate)
+                //.filter(classPredicate)
                 .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                 .forEach(clazz -> Stream.of(clazz.getMethods())
                         .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
-                        .filter(methodPredicate)
+                        .filter(method -> methodPredicate.test(method.getDeclaredAnnotation(ConnectableItem.class)))
                         .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                         .forEach(method -> {
                             map.put(method.getDeclaredAnnotation(ConnectableItem.class).name(), method);
@@ -137,12 +137,8 @@ class IO {
         return new Map[]{classes, map};
     }
 
-    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item, Predicate<Method> methodPredicate) {
-        return initializeMap(classes, map, item, anyClass -> true, methodPredicate);
-    }
-
     public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item) {
-        return initializeMap(classes, map, item, anyMethod -> true);
+        return initializeMap(classes, map, item, connectableItem -> true);
     }
 
     public static Optional<String> getValue(String title, String headerText, String contentText, Predicate<String> isValid) {

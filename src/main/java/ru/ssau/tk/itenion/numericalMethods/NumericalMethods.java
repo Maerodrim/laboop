@@ -16,15 +16,19 @@ import java.util.Map;
 @ConnectableItem(name = "", type = Item.NUMERICAL_METHOD)
 public class NumericalMethods {
     private static final int NUMBER_OF_SEGMENT_SPLITS = 1001;
-    private final int dim = Variable.values().length;
+    private int dim = Variable.values().length;
     double left, right, eps;
-    Matrix initialApproximation = new Matrix(dim, dim);
+    Matrix initialApproximation;
 
     public NumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
         this(left, right, new double[]{initialApproximation}, eps);
     }
 
     public NumericalMethods(Double left, Double right, double[] initialApproximation, Double eps) {
+        if (initialApproximation.length == 1) {
+            dim = 1;
+        }
+        this.initialApproximation = new Matrix(dim, dim);
         this.left = left;
         this.right = right;
         for (int i = 0; i < dim; i++)
@@ -32,7 +36,7 @@ public class NumericalMethods {
         this.eps = eps;
     }
 
-    @ConnectableItem(name = "Solve Nonlinear System", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)
+    @ConnectableItem(name = "Solve nonlinear system", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)
     public Matrix solveNonlinearSystem(VMF VMF, boolean isModified) {
         final double EPS = 1E-6;
         Matrix x1;
@@ -87,15 +91,19 @@ public class NumericalMethods {
         map.put((a + b) / 2, Map.entry(func.apply((a + b) / 2), numberOfIterations));
     }
 
-    public Map<Double, Map.Entry<Double, Integer>> newtonMethod(MathFunction func, DifferentialOperator<MathFunction> differentialOperator) {
+    public Map<Double, Map.Entry<Double, Integer>> newtonMethod(MathFunction func, DifferentialOperator<MathFunction> differentialOperator, boolean isModified) {
         double a, b;
         int numberOfIterations = 0;
         Map<Double, Map.Entry<Double, Integer>> result = new HashMap<>();
         a = initialApproximation.get(0, 0); //задаём начальное приближение
-        b = a - func.apply(a) / (differentialOperator.derive(func)).apply(a); // первое приближение
+        double diff = (differentialOperator.derive(func)).apply(a);
+        b = a - func.apply(a) / diff; // первое приближение
         while (Math.abs(b - a) > eps) {
             a = b;
-            b = a - func.apply(a) / (differentialOperator.derive(func)).apply(a);
+            if (!isModified) {
+                diff = (differentialOperator.derive(func)).apply(a);
+            }
+            b = a - func.apply(a) / diff;
             numberOfIterations++;
         }
         result.put(b, Map.entry(func.apply(b), numberOfIterations));
@@ -104,12 +112,18 @@ public class NumericalMethods {
 
     @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 3)
     public Map<Double, Map.Entry<Double, Integer>> solveWithNewtonMethod(MathFunction func) {
-        return newtonMethod(func, new MathFunctionDifferentialOperator());
+        return newtonMethod(func, new MathFunctionDifferentialOperator(), false);
     }
 
     @ConnectableItem(name = "Secant method", type = Item.NUMERICAL_METHOD, priority = 4)
     public Map<Double, Map.Entry<Double, Integer>> solveWithSecantMethod(MathFunction func) {
-        return newtonMethod(func, new MiddleSteppingDifferentialOperator(eps));
+        return newtonMethod(func, new MiddleSteppingDifferentialOperator(eps), false);
     }
+
+    @ConnectableItem(name = "Modified newton method", type = Item.NUMERICAL_METHOD, priority = 5)
+    public Map<Double, Map.Entry<Double, Integer>> solveWithModifiedNewtonMethod(MathFunction func) {
+        return newtonMethod(func, new MathFunctionDifferentialOperator(), true);
+    }
+
 
 }

@@ -41,7 +41,7 @@
                AnchorPane.bottomAnchor="131.0"/>
         <Label layoutX="14.0" layoutY="252.0" prefHeight="42.0" prefWidth="90.0" text="Iterations number"
                wrapText="true"/>
-        <TextField fx:id="initialApproximation" layoutX="130.0" layoutY="198.0" prefHeight="31.0" prefWidth="201.0"
+        <TextField fx:id="initialApproximationTextField" layoutX="130.0" layoutY="198.0" prefHeight="31.0" prefWidth="201.0"
                    AnchorPane.bottomAnchor="85.0" AnchorPane.rightAnchor="440.0"/>
         <Label layoutX="15.0" layoutY="182.0" prefHeight="42.0" prefWidth="101.0" text="Initial approximation"
                wrapText="true"/>
