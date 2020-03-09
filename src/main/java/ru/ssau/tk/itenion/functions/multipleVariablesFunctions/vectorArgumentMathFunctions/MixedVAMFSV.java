@@ -5,29 +5,32 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Variable;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class AdditiveVAMFSV extends AbstractVAMF {
+/**
+ * TODO
+ * It's expected to work as a general case of the {@link AdditiveVAMFSV} and {@link MultiplicativeVAMFSV}
+ */
 
-    public AdditiveVAMFSV() {
-        super(" + ");
-    }
+public class MixedVAMFSV extends AbstractVAMF {
+    public static List<String> operations = List.of("+", "*");
 
-    public AdditiveVAMFSV(Variable variable, MathFunction mathFunction) {
-        super(variable, mathFunction, " + ");
+    public MixedVAMFSV(String delimiter) {
+        super(delimiter);
     }
 
     @Override
     public void put(Variable variable, MathFunction function) {
-        super.put(variable, function, MathFunction::sum);
+
     }
 
     @Override
     public double apply(ArrayList<Double> x) {
-        return super.apply(x, Double::sum);
+        return 0;
     }
 
     @Override
     public double apply(Matrix x) {
-        return super.apply(x, Double::sum);
+        return 0;
     }
 }

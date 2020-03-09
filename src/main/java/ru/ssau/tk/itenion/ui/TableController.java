@@ -8,10 +8,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import org.atteo.classindex.ClassIndex;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.itenion.functions.MathFunction;
@@ -35,6 +35,7 @@ public class TableController implements Initializable, Openable {
     private int numberId = 1;
     private TabulatedFunctionFactory factory;
     private Map<Tab, TabulatedFunction> tabulatedFunctionMap;
+    private Map<Tab, VMF> VMFMap;
     private Map<String, MathFunction> mathFunctionMap;
     private Map<String, Openable> controllerMap;
     private Map<String, MathFunction> compositeFunctionMap;
@@ -66,6 +67,7 @@ public class TableController implements Initializable, Openable {
     public void initialize(URL location, ResourceBundle resources) {
         controllerMap = new HashMap<>();
         tabulatedFunctionMap = new LinkedHashMap<>();
+        VMFMap = new LinkedHashMap<>();
         compositeFunctionMap = new LinkedHashMap<>();
         x.setCellValueFactory(new PropertyValueFactory<>("X"));
         y.setCellValueFactory(new PropertyValueFactory<>("Y"));
@@ -153,6 +155,9 @@ public class TableController implements Initializable, Openable {
         tab.setOnSelectionChanged(event -> {
             if (tab.isSelected()) {
                 currentTab = tab;
+                mainPane.setBottom(null);
+                mainPane.setBottom(bottomPane);
+                isVMF = !tabulatedFunctionMap.containsKey(tab);
                 notifyAboutAccessibility(getFunction());
             }
         });
@@ -165,8 +170,28 @@ public class TableController implements Initializable, Openable {
         });
     }
 
-    private void createTab(Map<Pair<Integer, Integer>, MathFunction> currentFunctions) {
-        //TODO  Функционал ...
+    public void createTab(AnchorPane pane) {
+        Tab tab = new Tab("Function" + numberId, pane);
+        tab.setId("function" + numberId++);
+        tab.setClosable(true);
+        tabPane.getTabs().add(tab);
+        tabPane.getSelectionModel().select(tab);
+        currentTab = tab;
+        isVMF = true;
+        //VMFMap.put(tab, function);
+        tab.setOnSelectionChanged(event -> {
+            if (tab.isSelected()) {
+                isVMF = !tabulatedFunctionMap.containsKey(tab);
+                mainPane.setBottom(null);
+                currentTab = tab;
+            }
+        });
+        tab.setOnCloseRequest(event -> {
+            //tabulatedFunctionMap.remove(tab);
+            if (VMFMap.isEmpty()) {
+                currentTab = null;
+            }
+        });
     }
 
     private void notifyAboutAccessibility(TabulatedFunction function) {

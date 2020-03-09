@@ -9,7 +9,7 @@ public interface TabulatedFunctionAccessible {
     default void connectTabulatedFunctionMap() {
         AtomicBoolean isNotSuitableSet = new AtomicBoolean(true);
         ((TableController) getParentController()).getTabulatedFunctionMap().forEach((tab, function) -> {
-            if (function != ((TableController) getParentController()).getFunction() &&
+            if (((TableController) getParentController()).isVMF() || function != ((TableController) getParentController()).getFunction() &&
                     !function.isStrict() &&
                     ((TableController) getParentController()).getFunction().isCanBeComposed(function)) {
                 String name = function.isMathFunctionExist()
@@ -27,7 +27,7 @@ public interface TabulatedFunctionAccessible {
 
     Openable getParentController();
 
-    Map<String, ? super MathFunction> getTabulatedFunctionMap();
+    Map<String, MathFunction> getTabulatedFunctionMap();
 
     void updateTabulatedFunctionNode();
 }

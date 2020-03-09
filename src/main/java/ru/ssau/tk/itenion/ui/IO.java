@@ -121,18 +121,28 @@ class IO {
         return modalityWindow;
     }
 
-    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item) {
+    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item, Predicate<Class<?>> classPredicate, Predicate<Method> methodPredicate) {
         StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
                 .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == item)
+                .filter(classPredicate)
                 .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                 .forEach(clazz -> Stream.of(clazz.getMethods())
                         .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
+                        .filter(methodPredicate)
                         .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                         .forEach(method -> {
                             map.put(method.getDeclaredAnnotation(ConnectableItem.class).name(), method);
                             classes.put(method, clazz);
                         }));
         return new Map[]{classes, map};
+    }
+
+    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item, Predicate<Method> methodPredicate) {
+        return initializeMap(classes, map, item, anyClass -> true, methodPredicate);
+    }
+
+    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item) {
+        return initializeMap(classes, map, item, anyMethod -> true);
     }
 
     public static Optional<String> getValue(String title, String headerText, String contentText, Predicate<String> isValid) {

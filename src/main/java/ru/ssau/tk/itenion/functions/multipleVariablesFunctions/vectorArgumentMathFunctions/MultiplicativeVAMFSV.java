@@ -11,7 +11,7 @@ public class MultiplicativeVAMFSV extends AbstractVAMF {
         super(" * ");
     }
 
-    MultiplicativeVAMFSV(Variable variable, MathFunction mathFunction) {
+    public MultiplicativeVAMFSV(Variable variable, MathFunction mathFunction) {
         super(variable, mathFunction, " * ");
     }
 

@@ -23,7 +23,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
-import org.gillius.jfxutils.chart.*;
+import org.gillius.jfxutils.chart.ChartPanManager;
+import org.gillius.jfxutils.chart.JFXChartUtil;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
@@ -51,6 +52,13 @@ public class PlotController implements Initializable, Openable {
 
     public static void removeLegend(LineChart<Number, Number> lineChart) {
         ((Legend) lineChart.lookup(".chart-legend")).getItems().clear();
+    }
+
+    private static String toRGBCode(Color color) {
+        return format("#%02X%02X%02X",
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
     }
 
     @Override
@@ -151,13 +159,6 @@ public class PlotController implements Initializable, Openable {
 
     public void setSeries() {
         setSeriesInGeneral(((TableController) parentController).getObservableList(), ((TableController) parentController).getFunction());
-    }
-
-    private static String toRGBCode(Color color) {
-        return format("#%02X%02X%02X",
-                (int) (color.getRed() * 255),
-                (int) (color.getGreen() * 255),
-                (int) (color.getBlue() * 255));
     }
 
     private void bindMouseEvents(LineChart<Number, Number> baseChart, Double strokeWidth) {

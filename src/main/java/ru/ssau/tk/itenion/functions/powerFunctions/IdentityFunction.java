@@ -14,7 +14,7 @@ public final class IdentityFunction extends IntegerPowFunction {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return name;
     }
 }

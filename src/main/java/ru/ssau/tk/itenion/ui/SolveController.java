@@ -57,8 +57,8 @@ public class SolveController implements Initializable, Openable {
             Map<Double, Map.Entry<Double, Integer>> roots = (Map<Double, Map.Entry<Double, Integer>>) numericalMethodMap
                     .get(numericalMethodsBox.getValue())
                     .invoke(numMethod, ((TableController) parentController)
-                                    .getFunction()
-                                    .getMathFunction());
+                            .getFunction()
+                            .getMathFunction());
             roots.values().forEach(entry -> {
                 listOfEpsItems.add(entry.getKey());
                 joiner.add(entry.getValue().toString());

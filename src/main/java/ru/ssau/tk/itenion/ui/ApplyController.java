@@ -15,7 +15,10 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Apply", type = Item.CONTROLLER, pathFXML = "apply.fxml")
@@ -109,7 +112,7 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
         parentController = controller;
     }
 
-    public Map<String, ? super MathFunction> getTabulatedFunctionMap() {
+    public Map<String, MathFunction> getTabulatedFunctionMap() {
         return tabulatedFunctionMap;
     }
 
