@@ -31,7 +31,7 @@ public class ComposeController implements Openable, MathFunctionAccessible, Comp
 
     @FXML
     public void composeFunction() {
-        TabulatedFunction parentFunction = ((TableController) parentController).getFunction();
+        TabulatedFunction parentFunction = ((TabulatedFunction) ((TableController) parentController).getFunction());
         value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
         try {
             MathFunction mathFunction = functionMap.get(comboBox.getValue()).andThen(parentFunction.getMathFunction());

@@ -33,15 +33,19 @@ public class AboutController implements Openable, Initializable {
     }
 
     public void setInfo() {
-        TabulatedFunction function = ((TableController) parentController).getFunction();
-        try {
-            baseMathFunction.setText(function.getMathFunction().getName());
-        } catch (ClassCastException e) {
-            baseMathFunction.setText(getNameForce(function.getMathFunction()));
+        if (((TableController) parentController).isVMF()) {
+            baseMathFunction.setText(((TableController) parentController).getFunction().getName());
+        } else {
+            TabulatedFunction function = ((TabulatedFunction) ((TableController) parentController).getFunction());
+            try {
+                baseMathFunction.setText(function.getName());
+            } catch (ClassCastException e) {
+                baseMathFunction.setText(getNameForce(function.getMathFunction()));
+            }
+            leftBorder.setText(function.leftBound() + "");
+            rightBorder.setText(function.rightBound() + "");
+            numberOfPoints.setText(function.getCount() + "");
         }
-        leftBorder.setText(function.leftBound() + "");
-        rightBorder.setText(function.rightBound() + "");
-        numberOfPoints.setText(function.getCount() + "");
     }
 
     private String getNameForce(MathFunction mathFunction) {

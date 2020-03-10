@@ -6,6 +6,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,12 +25,12 @@ public class AddPointController implements Initializable, Openable {
     private void add() {
         try {
             Point point = new Point(Double.parseDouble(x.getText()), Double.parseDouble(y.getText()));
-            int index = ((TableController) parentController).getFunction().indexOfX(point.x);
+            int index = ((TabulatedFunction) ((TableController) parentController).getFunction()).indexOfX(point.x);
             if (index == -1) {
                 ((TableController) parentController).getObservableList().add(point);
                 ((TableController) parentController).sort();
-                ((TableController) parentController).getFunction().insert(point.x, point.y);
-                ((TableController) parentController).getFunction().setMathFunction(null);
+                ((TabulatedFunction) ((TableController) parentController).getFunction()).insert(point.x, point.y);
+                ((TabulatedFunction) ((TableController) parentController).getFunction()).setMathFunction(null);
                 stage.close();
             } else {
                 AlertWindows.showWarning("Point already exists");

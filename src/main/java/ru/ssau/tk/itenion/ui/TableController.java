@@ -25,9 +25,10 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.StreamSupport;
 
-public class TableController implements Initializable, Openable {
+public class TableController implements Initializable, Openable, TabHolder {
 
     private final TableColumn<Point, Double> x = new TableColumn<>("X");
     private final TableColumn<Point, Double> y = new TableColumn<>("Y");
@@ -54,6 +55,24 @@ public class TableController implements Initializable, Openable {
     private Button addPointButton, deletePointButton, calculateValueButton;
     @FXML
     private Label label;
+    private Function<Class<?>, Openable> initializeWindowController = new Function<>() {
+        @Override
+        public Openable apply(Class<?> clazz) {
+            Openable controller = null;
+            try {
+                controller = (Openable) clazz.getConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            String path = IO.FXML_PATH + controller.getClass().getDeclaredAnnotation(ConnectableItem.class).pathFXML();
+            controller = IO.initializeModalityWindow(path, controller);
+            controller.getStage().initOwner(stage);
+            controller.getStage().setTitle(controller.getClass().getDeclaredAnnotation(ConnectableItem.class).name());
+            controller.setFactory(factory);
+            controller.setParentController(TableController.this);
+            return controller;
+        }
+    };
 
     public static ObservableList<Point> getList(TabulatedFunction function) {
         List<Point> listPoint = new ArrayList<>();
@@ -101,14 +120,7 @@ public class TableController implements Initializable, Openable {
     private void initializeWindowControllers() {
         StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
                 .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.CONTROLLER)
-                .forEach(clazz -> {
-                    try {
-                        controllerMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).pathFXML(),
-                                initializeWindowController((Openable) clazz.getConstructor().newInstance()));
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        AlertWindows.showError(e);
-                    }
-                });
+                .forEach(clazz -> controllerMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).pathFXML(), initializeWindowController.apply(clazz)));
     }
 
     private void connectMathFunctionMap() {
@@ -117,21 +129,13 @@ public class TableController implements Initializable, Openable {
                 .forEach(f -> ((MathFunctionAccessible) f).connectMathFunctionMap(mathFunctionMap));
     }
 
-    private <T extends Openable> T initializeWindowController(T controller) {
-        String path = IO.FXML_PATH + controller.getClass().getDeclaredAnnotation(ConnectableItem.class).pathFXML();
-        controller = IO.initializeModalityWindow(path, controller);
-        controller.getStage().initOwner(stage);
-        controller.getStage().setTitle(controller.getClass().getDeclaredAnnotation(ConnectableItem.class).name());
-        controller.setFactory(factory);
-        controller.setParentController(this);
-        return controller;
-    }
-
-    void createTab(TabulatedFunction function) {
+    @Override
+    public void createTab(TabulatedFunction function) {
         createTab(getList(function), function);
     }
 
-    void createTab(ObservableList<Point> list) {
+    @Override
+    public void createTab(ObservableList<Point> list) {
         TabulatedFunction function = getFunction(list);
         TabulatedFunctionController controller = (TabulatedFunctionController) lookupController("tabulatedFunction");
         function.offerUnmodifiable(controller.isUnmodifiable());
@@ -158,7 +162,7 @@ public class TableController implements Initializable, Openable {
                 mainPane.setBottom(null);
                 mainPane.setBottom(bottomPane);
                 isVMF = !tabulatedFunctionMap.containsKey(tab);
-                notifyAboutAccessibility(getFunction());
+                notifyAboutAccessibility((TabulatedFunction) getFunction());
             }
         });
         tab.setOnCloseRequest(event -> {
@@ -170,7 +174,9 @@ public class TableController implements Initializable, Openable {
         });
     }
 
-    public void createTab(AnchorPane pane) {
+    @Override
+    public void createTab(AnchorPane pane, VMF vmf) {
+        mainPane.setBottom(null);
         Tab tab = new Tab("Function" + numberId, pane);
         tab.setId("function" + numberId++);
         tab.setClosable(true);
@@ -178,7 +184,7 @@ public class TableController implements Initializable, Openable {
         tabPane.getSelectionModel().select(tab);
         currentTab = tab;
         isVMF = true;
-        //VMFMap.put(tab, function);
+        VMFMap.put(tab, vmf);
         tab.setOnSelectionChanged(event -> {
             if (tab.isSelected()) {
                 isVMF = !tabulatedFunctionMap.containsKey(tab);
@@ -187,7 +193,7 @@ public class TableController implements Initializable, Openable {
             }
         });
         tab.setOnCloseRequest(event -> {
-            //tabulatedFunctionMap.remove(tab);
+            VMFMap.remove(tab);
             if (VMFMap.isEmpty()) {
                 currentTab = null;
             }
@@ -260,7 +266,12 @@ public class TableController implements Initializable, Openable {
     private void loadFunction() {
         File file = IO.load(stage);
         if (!Objects.equals(file, null)) {
-            createTab(io.loadFunctionAs(file));
+            ru.ssau.tk.itenion.functions.Function function = io.loadFunctionAs(file);
+            if (io.isVMF()) {
+                // todo for VMF
+            } else {
+                createTab((TabulatedFunction) function);
+            }
         }
     }
 
@@ -275,18 +286,22 @@ public class TableController implements Initializable, Openable {
     }
 
     private void save(boolean toTempPath) {
-        if (isTabExist()) {
+        if (!isVMF && isTabExist()) {
             File file = toTempPath
-                    ? new File(IO.DEFAULT_DIRECTORY + "\\" + getFunction().getMathFunction() + ".fnc")
+                    ? new File(IO.DEFAULT_DIRECTORY + "\\" + ((TabulatedFunction) getFunction()).getMathFunction() + ".fnc")
                     : IO.save(stage);
             if (!Objects.equals(file, null)) {
-                io.saveFunctionAs(file, getFunction());
+                io.saveFunctionAs(file, (TabulatedFunction) getFunction());
             }
         }
     }
 
-    public TabulatedFunction getFunction() {
-        return tabulatedFunctionMap.get(currentTab);
+    public ru.ssau.tk.itenion.functions.Function getFunction() {
+        if (isVMF) {
+            return VMFMap.get(currentTab);
+        } else {
+            return tabulatedFunctionMap.get(currentTab);
+        }
     }
 
     public boolean isVMF() {
@@ -365,7 +380,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void deletePoint() {
         if (!isVMF && isTabExist()) {
-            if (!(isVMF || getFunction().isUnmodifiable())) {
+            if (!(isVMF || ((TabulatedFunction) getFunction()).isUnmodifiable())) {
                 show(true);
             } else {
                 AlertWindows.showWarning("Function is unmodifiable");
@@ -376,7 +391,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void addPoint() {
         if (!isVMF && isTabExist()) {
-            if (!getFunction().isUnmodifiable()) {
+            if (!((TabulatedFunction) getFunction()).isUnmodifiable()) {
                 show(true);
             } else {
                 AlertWindows.showWarning("Function is unmodifiable");
@@ -387,7 +402,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void calculate() {
         if (!isVMF && isTabExist()) {
-            if (!getFunction().isStrict()) {
+            if (!((TabulatedFunction) getFunction()).isStrict()) {
                 show(true);
             } else {
                 AlertWindows.showWarning("Function is strict");
@@ -398,7 +413,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void about() {
         if (isTabExist()) {
-            if (isVMF || getFunction().isMathFunctionExist()) {
+            if (isVMF || ((TabulatedFunction) getFunction()).isMathFunctionExist()) {
                 Openable controller = lookupController();
                 ((AboutController) controller).setInfo();
                 controller.getStage().show();
@@ -420,7 +435,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void compose() {
         if (!isVMF && isTabExist()) {
-            if (!getFunction().isStrict()) {
+            if (!((TabulatedFunction) getFunction()).isStrict()) {
                 show(true);
             } else {
                 AlertWindows.showWarning("Function is strict");
@@ -431,7 +446,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void solve() {
         if (isTabExist()) {
-            if (isVMF || !getFunction().isStrict()) {
+            if (isVMF || !((TabulatedFunction) getFunction()).isStrict()) {
                 SolveController controller = (SolveController) lookupController();
                 controller.getStage().setResizable(false);
                 controller.getStage().show();
@@ -461,7 +476,7 @@ public class TableController implements Initializable, Openable {
     @FXML
     private void operator() {
         if (!isVMF && isTabExist()) {
-            if (!getFunction().isStrict()) {
+            if (!((TabulatedFunction) getFunction()).isStrict()) {
                 show(true);
             } else {
                 AlertWindows.showWarning("Function is strict");
@@ -498,7 +513,7 @@ public class TableController implements Initializable, Openable {
     }
 
     //public void addCompositeFunction(String name, MathFunction function) {
-      //  compositeFunctionMap.put(name, function);
+    //  compositeFunctionMap.put(name, function);
     //}
 
     public void addCompositeFunction(MathFunction function) {

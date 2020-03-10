@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.powerFunctions.polynomial.PolynomialParser;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.StrictTabulatedFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
@@ -45,6 +46,14 @@ class IO {
         }
         return true;
     };
+
+//    public static Boolean getBooleanBinding() {
+//        return booleanBinding.get();
+//    }
+//
+//    public static BooleanBinding booleanBindingProperty() {
+//        return booleanBinding;
+//    }
     public static Predicate<String> isInteger = s -> {
         try {
             Integer.parseInt(s);
@@ -53,8 +62,15 @@ class IO {
         }
         return true;
     };
+    private static Collection<FileChooser.ExtensionFilter> VMF_EXTENSION_FILTERS = List.of(
+            new FileChooser.ExtensionFilter("Vector math function files (*.vmf)", "*.vmf"));
+    private static Collection<FileChooser.ExtensionFilter> TF_EXTENSION_FILTERS = List.of(
+            new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
+            new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
+            new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
     private static Collection<FileChooser.ExtensionFilter> EXTENSION_FILTERS = List.of(
             new FileChooser.ExtensionFilter("Function files (*.fnc)", "*.fnc"),
+            new FileChooser.ExtensionFilter("Vector math function files (*.vmf)", "*.vmf"),
             new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
             new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"));
     private static Pattern FILE_EXTENSION_PATTERN = Pattern.compile(".*\\.(...)");
@@ -84,16 +100,37 @@ class IO {
     };
     // на компьютерах под управлением OS Windows 7/8/8.1/10
     private final TabulatedFunctionFactory factory;
+    private boolean isVMF;
 
     IO(TabulatedFunctionFactory factory) {
         this.factory = factory;
     }
 
-    static File load(Stage stage) {
+    public static File load(Stage stage) {
+        return load(stage, true, true);
+    }
+
+    public static File loadTF(Stage stage) {
+        return load(stage, false, true);
+    }
+
+    public static File loadVMF(Stage stage) {
+        return load(stage, true, false);
+    }
+
+    private static File load(Stage stage, boolean allowVMF, boolean allowTF) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load function");
         fileChooser.setInitialDirectory(new File(IO.DEFAULT_DIRECTORY));
-        fileChooser.getExtensionFilters().addAll(EXTENSION_FILTERS);
+        if (allowTF && allowVMF) {
+            fileChooser.getExtensionFilters().addAll(EXTENSION_FILTERS);
+        } else if (allowTF) {
+            fileChooser.getExtensionFilters().addAll(TF_EXTENSION_FILTERS);
+        } else if (allowVMF) {
+            fileChooser.getExtensionFilters().addAll(VMF_EXTENSION_FILTERS);
+        } else {
+            throw new UnsupportedOperationException();
+        }
         return fileChooser.showOpenDialog(stage);
     }
 
@@ -124,7 +161,6 @@ class IO {
     public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item, Predicate<ConnectableItem> methodPredicate) {
         StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
                 .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == item)
-                //.filter(classPredicate)
                 .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                 .forEach(clazz -> Stream.of(clazz.getMethods())
                         .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
@@ -260,14 +296,19 @@ class IO {
         }
     }
 
-    TabulatedFunction loadFunctionAs(File file) {
-        TabulatedFunction function = null;
+    public boolean isVMF() {
+        return isVMF;
+    }
+
+    private ru.ssau.tk.itenion.functions.Function loadFunctionAs(File file, boolean allowVMF, boolean allowTF) {
+        ru.ssau.tk.itenion.functions.Function function = null;
         Matcher m = FILE_EXTENSION_PATTERN.matcher(file.getPath());
         if ((!m.hitEnd() && (m.find()))) {
             switch (m.group(1)) {
                 case ("json"): {
                     try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                         function = wrap(FunctionsIO.deserializeJson(reader, factory.getTabulatedFunctionClass()));
+                        isVMF = false;
                     } catch (IOException e) {
                         AlertWindows.showError(e);
                     }
@@ -276,6 +317,7 @@ class IO {
                 case ("xml"): {
                     try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                         function = wrap(FunctionsIO.deserializeXml(reader, factory.getTabulatedFunctionClass()));
+                        isVMF = false;
                     } catch (IOException e) {
                         AlertWindows.showError(e);
                     }
@@ -284,14 +326,32 @@ class IO {
                 case ("fnc"): {
                     try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
                         function = wrap(FunctionsIO.readTabulatedFunction(inputStream, factory));
+                        isVMF = false;
                     } catch (IOException | ClassNotFoundException e) {
                         AlertWindows.showError(e);
                     }
                     break;
                 }
+                case ("vmf"): {
+                    isVMF = true;
+                    //todo
+                    break;
+                }
             }
         }
         return function;
+    }
+
+    public ru.ssau.tk.itenion.functions.Function loadFunctionAs(File file) {
+        return loadFunctionAs(file, true, true);
+    }
+
+    public VMF loadVMFAs(File file) {
+        return (VMF) loadFunctionAs(file, true, false);
+    }
+
+    public TabulatedFunction loadTabulatedFunctionAs(File file) {
+        return (TabulatedFunction) loadFunctionAs(file, false, true);
     }
 
 }

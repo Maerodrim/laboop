@@ -2,9 +2,9 @@ package ru.ssau.tk.itenion.ui;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.validation.RegexValidator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -19,7 +19,9 @@ import javafx.util.Pair;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Variable;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
-import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.MixedVAMFSV;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.SupportedSign;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMFSV;
+import ru.ssau.tk.itenion.functions.powerFunctions.ConstantFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.io.File;
@@ -33,7 +35,8 @@ import java.util.stream.IntStream;
 public class VectorFunctionController implements Initializable, Openable, MathFunctionAccessible, CompositeFunctionAccessible, TabulatedFunctionAccessible {
     private Stage stage;
     private Openable parentController;
-    private ObservableMap<Pair<Variable, Integer>, MathFunction> currentFunctions;
+    private Map<Pair<Variable, Integer>, MathFunction> currentFunctions;
+    //private Map<Pair<Variable, Integer>, SupportedSign> currentSigns;
     private Map<Pair<Variable, Integer>, JFXTextField> functionTextFields;
     private Map<Pair<Variable, Integer>, JFXTextField> extraTextFields;
     private Map<Pair<Variable, Integer>, Menu> currentFunctionMenuItems;
@@ -43,6 +46,7 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
     private Map<String, MathFunction> tabulatedFunctionMap;
     private Map<String, MathFunction> mathFunctionMap;
     private Map<String, MathFunction> compositeFunctionMap;
+    private RegexValidator validator;
     private int width;
     //определяет количество узлов
     private ObservableList<Pair<Variable, Integer>> nodesGrid;
@@ -54,6 +58,11 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         nodesGrid = FXCollections.observableArrayList();
+
+        validator = new RegexValidator();
+        validator.setRegexPattern("^([0-9]+.[0-9]+)|([0-9])$");
+        validator.setMessage("Incorrect");
+
         Arrays.stream(Variable.values())
                 .forEach(variable -> IntStream.range(1, Variable.values().length + 1)
                         .forEach(value -> nodesGrid.add(new Pair<>(variable, value))));
@@ -82,29 +91,61 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
             extraTextFields.put(nodeGrid, new JFXTextField());
         });
 
-        currentFunctions = FXCollections.observableHashMap();
+        currentFunctions = new LinkedHashMap<>();
+        //currentSigns = new LinkedHashMap<>();
         tabulatedFunctionMap = new LinkedHashMap<>();
         nodesGrid.forEach(this::initGroup);
     }
 
     public void load(Pair<Variable, Integer> nodeGrid) {
-        File file = IO.load(stage);
+        File file = IO.loadTF(stage);
         if (!Objects.equals(file, null)) {
-            MathFunction function = new IO(factory).loadFunctionAs(file);
-            MathFunction finalFunction = function;
-            currentFunctions.computeIfPresent(nodeGrid, (integerIntegerPair, presentFunction) -> finalFunction);
-            currentFunctions.putIfAbsent(nodeGrid, function);
+            MathFunction function = new IO(factory).loadTabulatedFunctionAs(file);
             if (((TabulatedFunction) function).isMathFunctionExist()) {
                 function = ((TabulatedFunction) function).getMathFunction();
             }
+            MathFunction finalFunction = function;
+            currentFunctions.computeIfPresent(nodeGrid, (integerIntegerPair, presentFunction) -> finalFunction);
+            currentFunctions.putIfAbsent(nodeGrid, function);
             functionTextFields.get(nodeGrid).setText(function.getName(nodeGrid.getKey()));
         }
+    }
+
+    private void extractConstantsToXVariableFunctions() {
+        extraTextFields.forEach((variableIntegerPair, textField) -> {
+            if (variableIntegerPair.getKey().ordinal() == Variable.values().length - 1) {
+                currentFunctions.computeIfPresent(new Pair<>(Variable.x, variableIntegerPair.getValue()),
+                        (variableIntegerPair1, function) -> function.subtract(new ConstantFunction(Double.parseDouble(textField.getText()))));
+            }
+        });
+    }
+
+    private Map<Pair<Variable, Integer>, SupportedSign> getSignMap() {
+        Map<Pair<Variable, Integer>, SupportedSign> currentSigns = new LinkedHashMap<>();
+        extraTextFields.forEach((variableIntegerPair, textField) -> {
+            if (variableIntegerPair.getKey().ordinal() != Variable.values().length - 1) {
+                currentSigns.put(variableIntegerPair, SupportedSign.valueOf(textField.getText()));
+            }
+        });
+        return currentSigns;
+    }
+
+    private List<SupportedSign> getSignList() {
+        List<SupportedSign> currentSigns = new ArrayList<>();
+        extraTextFields.forEach((variableIntegerPair, textField) -> {
+            if (variableIntegerPair.getKey().ordinal() == 0) {
+                currentSigns.add(SupportedSign.get(textField.getText()));
+            }
+        });
+        return currentSigns;
     }
 
     @FXML
     public void ok() {
         unbindFutureGroups();
-        ((TableController) parentController).createTab(createdPane);
+        extractConstantsToXVariableFunctions();
+        List<SupportedSign> supportedSignList = getSignList();
+        ((TableController) parentController).createTab(createdPane, new VMFSV(currentFunctions, supportedSignList));
         stage.close();
     }
 
@@ -136,6 +177,7 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
         AnchorPane.setLeftAnchor(functionsMenuBar, 15. + nodeGrid.getKey().ordinal() * 180);
 
         JFXTextField textField = functionTextFields.get(nodeGrid);
+        textField.setEditable(false);
         textField.setPrefSize(140, 30);
         AnchorPane.setTopAnchor(textField, 60. + (nodeGrid.getValue() - 1) * 100);
         AnchorPane.setLeftAnchor(textField, 15. + nodeGrid.getKey().ordinal() * 180);
@@ -147,7 +189,7 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
             operationComboBox.setPrefSize(55, 35);
             AnchorPane.setTopAnchor(operationComboBox, 15. + (nodeGrid.getValue() - 1) * 100);
             AnchorPane.setLeftAnchor(operationComboBox, 125. + nodeGrid.getKey().ordinal() * 180);
-            operationComboBox.getItems().addAll(MixedVAMFSV.operations);
+            operationComboBox.getItems().addAll(Arrays.stream(SupportedSign.values()).map(SupportedSign::toString).collect(Collectors.toList()));
 
             extraTextField.setPrefSize(40, 30);
             extraTextField.setAlignment(Pos.BOTTOM_CENTER);
@@ -162,11 +204,19 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
             extraTextField.setPrefSize(70, 30);
             AnchorPane.setTopAnchor(extraTextField, 60. + (nodeGrid.getValue() - 1) * 100);
             AnchorPane.setLeftAnchor(extraTextField, 215. + nodeGrid.getKey().ordinal() * 180);
+            extraTextField.setText("0");
+            extraTextField.getValidators().add(validator);
+            extraTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue)
+                    extraTextField.validate();
+            });
+
             Label equalSign = new Label("=");
             equalSign.setFont(Font.font(80));
             equalSign.setStyle("-fx-font-weight: bold;");
             AnchorPane.setTopAnchor(equalSign, (nodeGrid.getValue() - 1.) * 100);
             AnchorPane.setLeftAnchor(equalSign, 155. + nodeGrid.getKey().ordinal() * 180);
+
             creatingPane.getChildren().addAll(functionsMenuBar, textField, equalSign, extraTextField);
             width = 315 + nodeGrid.getKey().ordinal() * 180;
         }
@@ -180,6 +230,7 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
     private void initFutureGroups() {
         processFutureGroups((variableIntegerPair, textField) -> {
             JFXTextField futureTextField = new JFXTextField();
+            futureTextField.setEditable(false);
             futureTextField.textProperty().bind(textField.textProperty());
             futureTextField.setPrefSize(textField.getPrefWidth(), textField.getPrefHeight());
             AnchorPane.setTopAnchor(futureTextField, AnchorPane.getTopAnchor(textField));
@@ -207,14 +258,14 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
         menu.getItems()
                 .forEach(f -> f
                         .setOnAction(e -> {
-                            currentFunctions.computeIfPresent(nodeGrid, (integerIntegerPair, presentFunction) -> map.get(f.getText()));
-                            currentFunctions.putIfAbsent(nodeGrid, map.get(f.getText()));
                             if (menu.getText().equals("Мат. функции")) {
                                 ConnectableItem item = map.get(f.getText()).getClass().getDeclaredAnnotation(ConnectableItem.class);
                                 if (item.hasParameter()) {
                                     IO.setActualParameter(map, f.getText(), IO.getValue(item));
                                 }
                             }
+                            currentFunctions.computeIfPresent(nodeGrid, (integerIntegerPair, presentFunction) -> map.get(f.getText()));
+                            currentFunctions.putIfAbsent(nodeGrid, map.get(f.getText()));
                             functionTextFields.get(nodeGrid).setText(map.get(f.getText()).getName(nodeGrid.getKey()));
                         }));
     }

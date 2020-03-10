@@ -9,7 +9,7 @@ import ru.ssau.tk.itenion.functions.wrapFunctions.MultiplyOnConstantMF;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public interface MathFunction extends Serializable, Nameable, VAMF, Differentiable {
+public interface MathFunction extends Serializable, Function, VAMF, Differentiable {
 
     double apply(double x);
 

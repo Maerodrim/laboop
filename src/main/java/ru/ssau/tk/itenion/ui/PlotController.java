@@ -120,6 +120,7 @@ public class PlotController implements Initializable, Openable {
                 break;
             }
         }
+        assert getPrivate != null;
         getPrivate.setAccessible(true);
         Method getStyleMap = null;
         Color color = null;
@@ -154,11 +155,11 @@ public class PlotController implements Initializable, Openable {
     }
 
     public void addSeries() {
-        addSeriesInGeneral(((TableController) parentController).getObservableList(), ((TableController) parentController).getFunction());
+        //addSeriesInGeneral(((TableController) parentController).getObservableList(), ((TableController) parentController).getFunction());
     }
 
     public void setSeries() {
-        setSeriesInGeneral(((TableController) parentController).getObservableList(), ((TableController) parentController).getFunction());
+        //setSeriesInGeneral(((TableController) parentController).getObservableList(), ((TableController) parentController).getFunction());
     }
 
     private void bindMouseEvents(LineChart<Number, Number> baseChart, Double strokeWidth) {

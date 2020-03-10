@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -26,7 +27,7 @@ public class CalculateController implements Initializable, Openable {
     @FXML
     private void calc() {
         try {
-            y.setText("" + ((TableController) parentController).getFunction().apply(Double.parseDouble(x.getText())));
+            y.setText("" + ((TabulatedFunction) ((TableController) parentController).getFunction()).apply(Double.parseDouble(x.getText())));
         } catch (NumberFormatException e) {
             AlertWindows.showWarning("Введите корректное значение");
         }

@@ -16,9 +16,9 @@ import java.util.Map;
 @ConnectableItem(name = "", type = Item.NUMERICAL_METHOD)
 public class NumericalMethods {
     private static final int NUMBER_OF_SEGMENT_SPLITS = 1001;
-    private int dim = Variable.values().length;
     double left, right, eps;
     Matrix initialApproximation;
+    private int dim = Variable.values().length;
 
     public NumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
         this(left, right, new double[]{initialApproximation}, eps);
@@ -28,24 +28,32 @@ public class NumericalMethods {
         if (initialApproximation.length == 1) {
             dim = 1;
         }
-        this.initialApproximation = new Matrix(dim, dim);
+        this.initialApproximation = new Matrix(dim, 1);
         this.left = left;
         this.right = right;
         for (int i = 0; i < dim; i++)
-            this.initialApproximation.set(0, i, initialApproximation[i]);
+            this.initialApproximation.set(i, 0, initialApproximation[i]);
         this.eps = eps;
     }
 
-    @ConnectableItem(name = "Solve nonlinear system", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)
+    @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)
+    public Matrix solveNonlinearSystemWithNewtonMethod(VMF VMF) {
+        return solveNonlinearSystem(VMF, false);
+    }
+
+    @ConnectableItem(name = "Modified newton method", type = Item.NUMERICAL_METHOD, priority = 2, forVMF = true)
+    public Matrix solveNonlinearSystemWithModifiedNewtonMethod(VMF VMF) {
+        return solveNonlinearSystem(VMF, true);
+    }
+
     public Matrix solveNonlinearSystem(VMF VMF, boolean isModified) {
-        final double EPS = 1E-6;
         Matrix x1;
         Matrix x0 = initialApproximation;
         Matrix jacobian = VMF.getJacobiMatrix(x0.transpose());
         Matrix y = VMF.apply(x0.transpose());
         Matrix p = jacobian.solve(y.timesEquals(-1));
         x1 = x0.plus(p);
-        while (x0.minus(x1).norm2() > EPS) {
+        while (x0.minus(x1).norm2() > eps) {
             x0 = x1;
             y = VMF.apply(x0.transpose());
             if (!isModified) {
@@ -54,6 +62,7 @@ public class NumericalMethods {
             p = jacobian.solve(y.timesEquals(-1));
             x1 = x0.plus(p);
         }
+        //todo Matrix -> Map
         return x1;
     }
 

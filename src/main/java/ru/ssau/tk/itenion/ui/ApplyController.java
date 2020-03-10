@@ -152,7 +152,7 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
     public void load() {
         File file = IO.load(stage);
         if (!Objects.equals(file, null)) {
-            applyFunction = new IO(factory).loadFunctionAs(file);
+            applyFunction = new IO(factory).loadTabulatedFunctionAs(file);
             if (((TabulatedFunction) applyFunction).isMathFunctionExist()) {
                 applyFunction = ((TabulatedFunction) applyFunction).getMathFunction();
             }

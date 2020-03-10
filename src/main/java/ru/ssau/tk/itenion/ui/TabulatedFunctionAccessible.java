@@ -1,6 +1,7 @@
 package ru.ssau.tk.itenion.ui;
 
 import ru.ssau.tk.itenion.functions.MathFunction;
+import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -11,7 +12,7 @@ public interface TabulatedFunctionAccessible {
         ((TableController) getParentController()).getTabulatedFunctionMap().forEach((tab, function) -> {
             if (((TableController) getParentController()).isVMF() || function != ((TableController) getParentController()).getFunction() &&
                     !function.isStrict() &&
-                    ((TableController) getParentController()).getFunction().isCanBeComposed(function)) {
+                    ((TabulatedFunction) ((TableController) getParentController()).getFunction()).isCanBeComposed(function)) {
                 String name = function.isMathFunctionExist()
                         ? function.getName()
                         : tab.getText();

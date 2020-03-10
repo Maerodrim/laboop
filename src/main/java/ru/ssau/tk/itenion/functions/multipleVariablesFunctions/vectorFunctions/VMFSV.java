@@ -1,15 +1,19 @@
 package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions;
 
 import Jama.Matrix;
+import javafx.util.Pair;
 import ru.ssau.tk.itenion.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.itenion.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.itenion.exceptions.InconsistentMatrixSize;
+import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Variable;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.AbstractVAMF;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.SupportedSign;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
 
 public class VMFSV implements VMF {
@@ -30,6 +34,23 @@ public class VMFSV implements VMF {
         requiredDim = abstractVAMF.getDimension();
         dim++;
         joiner.add(abstractVAMF.toString());
+    }
+
+    public VMFSV(Map<Pair<Variable, Integer>, MathFunction> baseOfVMF, List<SupportedSign> signs) {
+        this();
+        requiredDim = Variable.values().length;
+        if (baseOfVMF.values().size() != signs.size() * signs.size()) {
+            throw new UnsupportedOperationException();
+        }
+        signs.forEach(supportedSign -> functionList.add(supportedSign.getVAMF()));
+        baseOfVMF.forEach((variableIntegerPair, function) -> {
+            functionList.get(variableIntegerPair.getValue() - 1).put(variableIntegerPair.getKey(), function);
+            if (variableIntegerPair.getKey() == Variable.values()[Variable.values().length - 1]) {
+                joiner.add(functionList.get(variableIntegerPair.getValue() - 1).toString());
+                dim++;
+            }
+        });
+        System.out.println(this);
     }
 
     public boolean isCanBeSolved() {
@@ -96,4 +117,8 @@ public class VMFSV implements VMF {
         return joiner.toString();
     }
 
+    @Override
+    public String getName() {
+        return joiner.toString();
+    }
 }

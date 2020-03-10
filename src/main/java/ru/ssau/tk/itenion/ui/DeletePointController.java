@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 @ConnectableItem(name = "Delete point", type = Item.CONTROLLER, pathFXML = "deletePoint.fxml")
 public class DeletePointController implements Openable {
@@ -15,13 +16,13 @@ public class DeletePointController implements Openable {
     @FXML
     private void delete() {
         try {
-            int index = ((TableController) parentController).getFunction().indexOfX(Double.parseDouble(x.getText()));
+            int index = ((TabulatedFunction) ((TableController) parentController).getFunction()).indexOfX(Double.parseDouble(x.getText()));
             if (index == -1) {
                 AlertWindows.showWarning("Point doesn't exist");
             } else {
                 ((TableController) parentController).getObservableList().remove(index);
                 ((TableController) parentController).sort();
-                ((TableController) parentController).getFunction().remove(index);
+                ((TabulatedFunction) ((TableController) parentController).getFunction()).remove(index);
                 stage.close();
             }
         } catch (NumberFormatException e) {

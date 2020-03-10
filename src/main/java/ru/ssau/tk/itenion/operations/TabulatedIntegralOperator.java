@@ -25,7 +25,7 @@ public class TabulatedIntegralOperator extends TabulatedOperator implements Inte
     }
 
     @Override
-    @ConnectableItem(name = "Integrate", priority = 11, type = Item.OPERATOR)
+    @ConnectableItem(name = "Numerical integrate", priority = 11, type = Item.OPERATOR)
     public TabulatedFunction integrate(TabulatedFunction function) {
         return new TabulatedFunctionOperationService(new ArrayTabulatedFunctionFactory())
                 .subtract(super.integrate(function, 0, function.getCount(), new double[function.getCount()],

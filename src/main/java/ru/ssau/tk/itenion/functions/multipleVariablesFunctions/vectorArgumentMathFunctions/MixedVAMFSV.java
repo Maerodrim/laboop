@@ -5,7 +5,6 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Variable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * TODO
@@ -13,7 +12,6 @@ import java.util.List;
  */
 
 public class MixedVAMFSV extends AbstractVAMF {
-    public static List<String> operations = List.of("+", "*");
 
     public MixedVAMFSV(String delimiter) {
         super(delimiter);

@@ -1,9 +1,6 @@
 package ru.ssau.tk.itenion.functions.tabulatedFunctions;
 
-import ru.ssau.tk.itenion.functions.Insertable;
-import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.functions.Point;
-import ru.ssau.tk.itenion.functions.Removable;
+import ru.ssau.tk.itenion.functions.*;
 import ru.ssau.tk.itenion.operations.TabulatedDifferentialOperator;
 import ru.ssau.tk.itenion.ui.ExplicitAccessControllable;
 
@@ -49,6 +46,15 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point>, Explic
             return getMathFunction().getName();
         } else {
             return "TF(x)";
+        }
+    }
+
+    @Override
+    default String getName(Variable variable) {
+        if (!Objects.isNull(getMathFunction())) {
+            return getMathFunction().getName();
+        } else {
+            return "TF(" + variable + ")";
         }
     }
 

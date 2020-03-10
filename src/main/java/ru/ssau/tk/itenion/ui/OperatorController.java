@@ -43,7 +43,7 @@ public class OperatorController implements Initializable, Openable {
         ConnectableItem item = operatorMap.get(((ComboBox<String>) event.getSource()).getValue())
                 .getDeclaredAnnotation(ConnectableItem.class);
         if (!Objects.isNull(item) && !item.numericalOperator()
-                && !((TableController) parentController).getFunction().isMathFunctionExist()) {
+                && !((TabulatedFunction) ((TableController) parentController).getFunction()).isMathFunctionExist()) {
             AlertWindows.showWarning("Function doesn't have base math function");
             comboBox.getSelectionModel().select(0);
         }
@@ -76,7 +76,7 @@ public class OperatorController implements Initializable, Openable {
 
     @FXML
     public void ok() {
-        TabulatedFunction sourceFunction = ((TableController) parentController).getFunction();
+        TabulatedFunction sourceFunction = ((TabulatedFunction) ((TableController) parentController).getFunction());
         TabulatedFunction function = null;
         ConnectableItem item = operatorMap.get(comboBox.getSelectionModel().getSelectedItem())
                 .getDeclaredAnnotation(ConnectableItem.class);

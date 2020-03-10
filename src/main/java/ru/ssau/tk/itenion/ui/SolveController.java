@@ -7,8 +7,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import ru.ssau.tk.itenion.exceptions.InitialApproximationFormatException;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.numericalMethods.NumericalMethods;
 
 import java.lang.reflect.InvocationTargetException;
@@ -48,7 +48,7 @@ public class SolveController implements Initializable, Openable {
     private void ok() {
         double[] initialApproximation = Arrays.stream(
                 initialApproximationTextField.getText()
-                .split("; "))
+                        .split("; "))
                 .mapToDouble(Double::parseDouble).toArray();
         if (Arrays.equals(initialApproximation, new double[]{})) {
             initialApproximation = new double[]{Double.parseDouble(initialApproximationTextField.getText())};
@@ -60,11 +60,17 @@ public class SolveController implements Initializable, Openable {
         try {
             StringJoiner joiner = new StringJoiner("; ");
             ArrayList<Double> listOfEpsItems = new ArrayList<>();
-            Map<Double, Map.Entry<Double, Integer>> roots = (Map<Double, Map.Entry<Double, Integer>>) numericalMethodMap
-                    .get(numericalMethodsBox.getValue())
-                    .invoke(numMethod, ((TableController) parentController)
-                            .getFunction()
-                            .getMathFunction());
+            Map<Double, Map.Entry<Double, Integer>> roots;
+            if (((TableController) parentController).isVMF()) {
+                roots = (Map<Double, Map.Entry<Double, Integer>>) numericalMethodMapForVMF
+                        .get(numericalMethodsBox.getValue())
+                        .invoke(numMethod, ((TableController) parentController)
+                                .getFunction());
+            } else {
+                roots = (Map<Double, Map.Entry<Double, Integer>>) numericalMethodMap
+                        .get(numericalMethodsBox.getValue())
+                        .invoke(numMethod, ((TabulatedFunction) ((TableController) parentController).getFunction()).getMathFunction());
+            }
             roots.values().forEach(entry -> {
                 listOfEpsItems.add(entry.getKey());
                 joiner.add(entry.getValue().toString());
@@ -87,7 +93,7 @@ public class SolveController implements Initializable, Openable {
     }
 
     public void setStage(Stage stage) {
-        stage.setOnShowing(windowEvent -> {
+        stage.setOnShown(windowEvent -> {
             if (((TableController) parentController).isVMF()) {
                 numericalMethodsBox.getItems().setAll(numericalMethodMapForVMF.keySet());
             } else {
