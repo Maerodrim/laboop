@@ -37,14 +37,43 @@ public class NumericalMethods {
         this.eps = eps;
     }
 
-    @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)
+    @ConnectableItem(name = "Newton method Valentin", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)
     public Matrix solveNonlinearSystemWithNewtonMethod(VMF VMF) {
         return solveNonlinearSystem(VMF, false);
     }
 
-    @ConnectableItem(name = "Modified newton method", type = Item.NUMERICAL_METHOD, priority = 2, forVMF = true)
+    @ConnectableItem(name = "Modified newton method Valentin", type = Item.NUMERICAL_METHOD, priority = 2, forVMF = true)
     public Matrix solveNonlinearSystemWithModifiedNewtonMethod(VMF VMF) {
         return solveNonlinearSystem(VMF, true);
+    }
+
+    @ConnectableItem(name = "Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 3, forVMF = true)
+    public Matrix solveNonlinearSystemWithNewtonMethod2(VMF VMF) {
+        Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
+        Matrix J = VMF.getJacobiMatrix(b.transpose());
+        a = b.plus(p);
+        iterationsNumber++;
+        while (b.minus(a).norm2() > eps) {
+            b = a;
+            p = J.solve(VMF.apply(a.transpose()).timesEquals(-1));
+            a = b.plus(p);
+            iterationsNumber++;
+        }
+        return a;
+    }
+
+    @ConnectableItem(name = "Modified newton method Stas", type = Item.NUMERICAL_METHOD, priority = 4, forVMF = true)
+    public Matrix solveNonlinearSystemWithModifiedNewtonMethod2(VMF VMF) {
+        Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
+        a = b.plus(p);
+        iterationsNumber++;
+        while (b.minus(a).norm2() > eps) {
+            b = a;
+            p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(a.transpose()).timesEquals(-1));
+            a = b.plus(p);
+            iterationsNumber++;
+        }
+        return a;
     }
 
     public int getIterationsNumber() {
@@ -86,7 +115,7 @@ public class NumericalMethods {
         return result;
     }
 
-    @ConnectableItem(name = "Half-division method Valentin", type = Item.NUMERICAL_METHOD, priority = 2)
+    @ConnectableItem(name = "Half-division method Stas", type = Item.NUMERICAL_METHOD, priority = 2)
     public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethod(MathFunction func) {
         Map<Double, Map.Entry<Double, Integer>> map = new HashMap<>();
         solveWithHalfDivisionMethod(func, map, left, right);
@@ -105,6 +134,7 @@ public class NumericalMethods {
         }
         map.put((a + b) / 2, Map.entry(func.apply((a + b) / 2), numberOfIterations));
     }
+
 
     public Map<Double, Map.Entry<Double, Integer>> newtonMethod(MathFunction func, DifferentialOperator<MathFunction> differentialOperator, boolean isModified) {
         double a, b;
