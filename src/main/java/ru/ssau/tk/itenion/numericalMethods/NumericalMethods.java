@@ -52,8 +52,7 @@ public class NumericalMethods {
         Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
         Matrix J = VMF.getJacobiMatrix(b.transpose());
         a = b.plus(p);
-        iterationsNumber++;
-        for (; b.minus(a).norm2() > eps; ) {
+        for (; eps < b.minus(a).norm2(); ) {
             b = a;
             p = J.solve(VMF.apply(a.transpose()).timesEquals(-1));
             a = b.plus(p);
@@ -66,8 +65,7 @@ public class NumericalMethods {
     public Matrix solveNonlinearSystemWithModifiedNewtonMethod2(VMF VMF) {
         Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
         a = b.plus(p);
-        iterationsNumber++;
-        for (; b.minus(a).norm2() > eps; ) {
+        for (; eps < b.minus(a).norm2(); ) {
             b = a;
             p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(a.transpose()).timesEquals(-1));
             a = b.plus(p);
