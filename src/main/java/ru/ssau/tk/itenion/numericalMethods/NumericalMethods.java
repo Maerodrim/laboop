@@ -72,7 +72,7 @@ public class NumericalMethods {
         return x1;
     }
 
-    @ConnectableItem(name = "Half-division method (all roots)", type = Item.NUMERICAL_METHOD, priority = 1)
+    @ConnectableItem(name = "Half-division method Stas", type = Item.NUMERICAL_METHOD, priority = 1)
     public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethodAllRoots(MathFunction func) {
         double x = left, step;
         Map<Double, Map.Entry<Double, Integer>> result = new HashMap<>();
@@ -86,7 +86,7 @@ public class NumericalMethods {
         return result;
     }
 
-    @ConnectableItem(name = "Half-division method", type = Item.NUMERICAL_METHOD, priority = 2)
+    @ConnectableItem(name = "Half-division method Valentin", type = Item.NUMERICAL_METHOD, priority = 2)
     public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethod(MathFunction func) {
         Map<Double, Map.Entry<Double, Integer>> map = new HashMap<>();
         solveWithHalfDivisionMethod(func, map, left, right);
@@ -125,12 +125,12 @@ public class NumericalMethods {
         return result;
     }
 
-    @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 3)
+    @ConnectableItem(name = "Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 3)
     public Map<Double, Map.Entry<Double, Integer>> solveWithNewtonMethod(MathFunction func) {
         return newtonMethod(func, new MathFunctionDifferentialOperator(), false);
     }
 
-    @ConnectableItem(name = "Secant method", type = Item.NUMERICAL_METHOD, priority = 4)
+    @ConnectableItem(name = "Secant method Valentin", type = Item.NUMERICAL_METHOD, priority = 4)
     public Map<Double, Map.Entry<Double, Integer>> solveWithSecantMethod(MathFunction func) {
         return newtonMethod(func, new MiddleSteppingDifferentialOperator(eps), false);
     }
