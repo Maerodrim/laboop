@@ -11,12 +11,13 @@ import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
-import ru.ssau.tk.itenion.numericalMethods.NumericalMethods;
+import ru.ssau.tk.itenion.numericalMethods.VNumericalMethods;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Predicate;
 
 @ConnectableItem(name = "Solve", type = Item.CONTROLLER, pathFXML = "solve.fxml")
 public class SolveController implements Initializable, Openable {
@@ -32,18 +33,12 @@ public class SolveController implements Initializable, Openable {
     private Stage stage;
     private Openable parentController;
     private Map<String, Method> numericalMethodMap;
-    private Map<String, Method> numericalMethodMapForVMF;
     private Map<Method, Class<?>> classes;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         numericalMethodMap = new LinkedHashMap<>();
-        numericalMethodMapForVMF = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
-        Map[] maps = IO.initializeMap(classes, numericalMethodMap, Item.NUMERICAL_METHOD, item -> !item.forVMF());
-        classes = (Map<Method, Class<?>>) maps[0];
-        numericalMethodMap = (Map<String, Method>) maps[1];
-        numericalMethodMapForVMF = (Map<String, Method>) IO.initializeMap(classes, numericalMethodMapForVMF, Item.NUMERICAL_METHOD, ConnectableItem::forVMF)[1];
     }
 
     @FXML
@@ -55,7 +50,7 @@ public class SolveController implements Initializable, Openable {
         if (Arrays.equals(initialApproximation, new double[]{})) {
             initialApproximation = new double[]{Double.parseDouble(initialApproximationTextField.getText())};
         }
-        NumericalMethods numMethod = new NumericalMethods(Double.parseDouble(left.getText()),
+        VNumericalMethods numMethod = new VNumericalMethods(Double.parseDouble(left.getText()),
                 Double.parseDouble(right.getText()),
                 initialApproximation,
                 Double.parseDouble(eps.getText()));
@@ -64,11 +59,11 @@ public class SolveController implements Initializable, Openable {
             ArrayList<Double> listOfEpsItems = new ArrayList<>();
             ArrayList<Double> listOfRootsItems = new ArrayList<>();
             if (((TableController) parentController).isVMF()) {
-                Matrix roots = (Matrix) numericalMethodMapForVMF
+                Matrix roots = (Matrix) numericalMethodMap
                         .get(numericalMethodsBox.getValue())
                         .invoke(numMethod, ((TableController) parentController)
                                 .getFunction());
-                Matrix residuals = ((VMF)((TableController) parentController)
+                Matrix residuals = ((VMF) ((TableController) parentController)
                         .getFunction()).apply(roots.transpose());
                 for (int i = 0; i < roots.getRowDimension(); i++) {
                     listOfRootsItems.add(roots.get(i, 0));
@@ -106,11 +101,12 @@ public class SolveController implements Initializable, Openable {
 
     public void setStage(Stage stage) {
         stage.setOnShown(windowEvent -> {
-            if (((TableController) parentController).isVMF()) {
-                numericalMethodsBox.getItems().setAll(numericalMethodMapForVMF.keySet());
-            } else {
-                numericalMethodsBox.getItems().setAll(numericalMethodMap.keySet());
-            }
+            Map[] maps = IO.initializeMap(classes, numericalMethodMap, Item.NUMERICAL_METHOD,
+                    IO.IS_BELONG_TO_VALENTIN ? item -> item.name().equals("Valentin") : item -> item.name().equals("Stanislav"),
+                    ((TableController) parentController).isVMF() ? ConnectableItem::forVMF : item -> !item.forVMF());
+            classes = (Map<Method, Class<?>>) maps[0];
+            numericalMethodMap = (Map<String, Method>) maps[1];
+            numericalMethodsBox.getItems().setAll(numericalMethodMap.keySet());
             numericalMethodsBox.setValue(numericalMethodsBox.getItems().get(0));
         });
         this.stage = stage;

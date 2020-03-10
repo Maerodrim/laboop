@@ -38,6 +38,7 @@ class IO {
     static final String FXML_PATH = "fxml/";
     static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions"; // будеть работать только
     private static final TextInputDialog dialog = new TextInputDialog();
+    public static final boolean IS_BELONG_TO_VALENTIN = true;
     public static Predicate<String> isDouble = s -> {
         try {
             Double.parseDouble(s);
@@ -47,13 +48,6 @@ class IO {
         return true;
     };
 
-//    public static Boolean getBooleanBinding() {
-//        return booleanBinding.get();
-//    }
-//
-//    public static BooleanBinding booleanBindingProperty() {
-//        return booleanBinding;
-//    }
     public static Predicate<String> isInteger = s -> {
         try {
             Integer.parseInt(s);
@@ -158,9 +152,10 @@ class IO {
         return modalityWindow;
     }
 
-    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item, Predicate<ConnectableItem> methodPredicate) {
+    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item, Predicate<ConnectableItem> classPredicate, Predicate<ConnectableItem> methodPredicate) {
         StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
                 .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == item)
+                .filter(method -> classPredicate.test(method.getDeclaredAnnotation(ConnectableItem.class)))
                 .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
                 .forEach(clazz -> Stream.of(clazz.getMethods())
                         .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
@@ -173,8 +168,12 @@ class IO {
         return new Map[]{classes, map};
     }
 
+    public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item, Predicate<ConnectableItem> methodPredicate) {
+        return initializeMap(classes, map, item,  connectableItem -> true, methodPredicate);
+    }
+
     public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item) {
-        return initializeMap(classes, map, item, connectableItem -> true);
+        return initializeMap(classes, map, item,  connectableItem -> true, connectableItem -> true);
     }
 
     public static Optional<String> getValue(String title, String headerText, String contentText, Predicate<String> isValid) {

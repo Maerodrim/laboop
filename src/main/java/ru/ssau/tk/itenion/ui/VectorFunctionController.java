@@ -115,7 +115,7 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
         extraTextFields.forEach((variableIntegerPair, textField) -> {
             if (variableIntegerPair.getKey().ordinal() == Variable.values().length - 1) {
                 currentFunctions.computeIfPresent(new Pair<>(Variable.x, variableIntegerPair.getValue()),
-                        (variableIntegerPair1, function) -> function.subtract(new ConstantFunction(Double.parseDouble(textField.getText()))));
+                        (variableIntegerPair1, function) -> function.subtract(Double.parseDouble(textField.getText())));
             }
         });
     }

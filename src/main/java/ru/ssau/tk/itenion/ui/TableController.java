@@ -45,6 +45,7 @@ public class TableController implements Initializable, Openable, TabHolder {
     private boolean isStrict = false;
     private boolean isUnmodifiable = false;
     private boolean isVMF = false;
+
     @FXML
     private TabPane tabPane;
     @FXML
@@ -511,10 +512,6 @@ public class TableController implements Initializable, Openable, TabHolder {
     Map<Tab, TabulatedFunction> getTabulatedFunctionMap() {
         return tabulatedFunctionMap;
     }
-
-    //public void addCompositeFunction(String name, MathFunction function) {
-    //  compositeFunctionMap.put(name, function);
-    //}
 
     public void addCompositeFunction(MathFunction function) {
         compositeFunctionMap.put(function.getName(), function);

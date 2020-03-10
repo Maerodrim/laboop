@@ -13,19 +13,18 @@ import ru.ssau.tk.itenion.ui.Item;
 import java.util.HashMap;
 import java.util.Map;
 
-@ConnectableItem(name = "", type = Item.NUMERICAL_METHOD)
-public class NumericalMethods {
-    private static final int NUMBER_OF_SEGMENT_SPLITS = 1001;
+@ConnectableItem(name = "Valentin", type = Item.NUMERICAL_METHOD)
+public class VNumericalMethods {
     private int iterationsNumber = 0;
     double left, right, eps;
     Matrix initialApproximation;
     private int dim = Variable.values().length;
 
-    public NumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
+    public VNumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
         this(left, right, new double[]{initialApproximation}, eps);
     }
 
-    public NumericalMethods(Double left, Double right, double[] initialApproximation, Double eps) {
+    public VNumericalMethods(Double left, Double right, double[] initialApproximation, Double eps) {
         if (initialApproximation.length == 1) {
             dim = 1;
         }
@@ -37,41 +36,14 @@ public class NumericalMethods {
         this.eps = eps;
     }
 
-    @ConnectableItem(name = "Newton method Valentin", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)
+    @ConnectableItem(name = "Valentin's Newton method", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)
     public Matrix solveNonlinearSystemWithNewtonMethod(VMF VMF) {
         return solveNonlinearSystem(VMF, false);
     }
 
-    @ConnectableItem(name = "Modified newton method Valentin", type = Item.NUMERICAL_METHOD, priority = 2, forVMF = true)
+    @ConnectableItem(name = "Valentin's modified newton method", type = Item.NUMERICAL_METHOD, priority = 2, forVMF = true)
     public Matrix solveNonlinearSystemWithModifiedNewtonMethod(VMF VMF) {
         return solveNonlinearSystem(VMF, true);
-    }
-
-    @ConnectableItem(name = "Modified Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 3, forVMF = true)
-    public Matrix solveNonlinearSystemWithNewtonMethod2(VMF VMF) {
-        Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
-        Matrix J = VMF.getJacobiMatrix(b.transpose());
-        a = b.plus(p);
-        for (; eps <= b.minus(a).norm2(); ) {
-            b = a;
-            p = J.solve(VMF.apply(a.transpose()).timesEquals(-1));
-            a = b.plus(p);
-            iterationsNumber++;
-        }
-        return a;
-    }
-
-    @ConnectableItem(name = "Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 4, forVMF = true)
-    public Matrix solveNonlinearSystemWithModifiedNewtonMethod2(VMF VMF) {
-        Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
-        a = b.plus(p);
-        for (; eps <= b.minus(a).norm2(); ) {
-            b = a;
-            p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(a.transpose()).timesEquals(-1));
-            a = b.plus(p);
-            iterationsNumber++;
-        }
-        return a;
     }
 
     public int getIterationsNumber() {
@@ -99,40 +71,21 @@ public class NumericalMethods {
         return x1;
     }
 
-    @ConnectableItem(name = "Half-division method all roats", type = Item.NUMERICAL_METHOD, priority = 1)
-    public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethodAllRoots(MathFunction func) {
-        double x = left, step;
-        Map<Double, Map.Entry<Double, Integer>> result = new HashMap<>();
-        step = (right - left) / NUMBER_OF_SEGMENT_SPLITS;
-        while ((x + step) < right) {
-            if (func.apply(x) * func.apply(x + step) <= 0) {
-                solveWithHalfDivisionMethod(func, result, x, x + step);
-            }
-            x = x + step;
-        }
-        return result;
-    }
-
-    @ConnectableItem(name = "Half-division method Stas", type = Item.NUMERICAL_METHOD, priority = 2)
-    public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethod(MathFunction func) {
+    @ConnectableItem(name = "Valentin's half-division method", type = Item.NUMERICAL_METHOD, priority = 6)
+    public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethod2(MathFunction func) {
         Map<Double, Map.Entry<Double, Integer>> map = new HashMap<>();
-        solveWithHalfDivisionMethod(func, map, left, right);
-        return map;
-    }
-
-    public void solveWithHalfDivisionMethod(MathFunction func, Map<Double, Map.Entry<Double, Integer>> map, double a, double b) {
         int numberOfIterations = 0;
-        while (Math.abs(a - b) > 2 * eps) {
-            if (func.apply(a) * func.apply(0.5 * (a + b)) <= 0) {
-                b = 0.5 * (a + b);
+        while (Math.abs(func.apply(left) - func.apply(right)) > 2 * eps) {
+            if (func.apply(left) * func.apply(0.5 * (left + right)) >= 0) {
+                left = (left + right)/2;
             } else {
-                a = 0.5 * (a + b);
+                right = (left + right)/2;
             }
             numberOfIterations++;
         }
-        map.put((a + b) / 2, Map.entry(func.apply((a + b) / 2), numberOfIterations));
+        map.put((left + right) / 2, Map.entry(func.apply((left + right) / 2), numberOfIterations));
+        return map;
     }
-
 
     public Map<Double, Map.Entry<Double, Integer>> newtonMethod(MathFunction func, DifferentialOperator<MathFunction> differentialOperator, boolean isModified) {
         double a, b;
@@ -153,17 +106,12 @@ public class NumericalMethods {
         return result;
     }
 
-    @ConnectableItem(name = "Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 3)
-    public Map<Double, Map.Entry<Double, Integer>> solveWithNewtonMethod(MathFunction func) {
-        return newtonMethod(func, new MathFunctionDifferentialOperator(), false);
-    }
-
-    @ConnectableItem(name = "Secant method Valentin", type = Item.NUMERICAL_METHOD, priority = 4)
+    @ConnectableItem(name = "Valentin's secant method", type = Item.NUMERICAL_METHOD, priority = 4)
     public Map<Double, Map.Entry<Double, Integer>> solveWithSecantMethod(MathFunction func) {
         return newtonMethod(func, new MiddleSteppingDifferentialOperator(eps), false);
     }
 
-    @ConnectableItem(name = "Modified newton method", type = Item.NUMERICAL_METHOD, priority = 5)
+    @ConnectableItem(name = "Valentin's modified Newton method", type = Item.NUMERICAL_METHOD, priority = 5)
     public Map<Double, Map.Entry<Double, Integer>> solveWithModifiedNewtonMethod(MathFunction func) {
         return newtonMethod(func, new MathFunctionDifferentialOperator(), true);
     }
