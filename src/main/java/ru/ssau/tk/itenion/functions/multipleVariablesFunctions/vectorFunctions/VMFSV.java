@@ -121,4 +121,9 @@ public class VMFSV implements VMF {
     public String getName() {
         return joiner.toString();
     }
+
+    @Override
+    public double[] getSize() {
+        return new double[]{functionList.size(), requiredDim};
+    }
 }

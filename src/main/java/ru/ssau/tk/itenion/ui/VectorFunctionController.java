@@ -60,7 +60,7 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
         nodesGrid = FXCollections.observableArrayList();
 
         validator = new RegexValidator();
-        validator.setRegexPattern("^([0-9]+.[0-9]+)|([0-9])$");
+        validator.setRegexPattern("^([0-9]+.[0-9]+)|([0-9]+)$");
         validator.setMessage("Incorrect");
 
         Arrays.stream(Variable.values())

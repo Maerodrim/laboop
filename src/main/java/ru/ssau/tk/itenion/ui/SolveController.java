@@ -1,5 +1,6 @@
 package ru.ssau.tk.itenion.ui;
 
+import Jama.Matrix;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,6 +9,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.numericalMethods.NumericalMethods;
 
@@ -48,7 +50,7 @@ public class SolveController implements Initializable, Openable {
     private void ok() {
         double[] initialApproximation = Arrays.stream(
                 initialApproximationTextField.getText()
-                        .split("; "))
+                        .split(";"))
                 .mapToDouble(Double::parseDouble).toArray();
         if (Arrays.equals(initialApproximation, new double[]{})) {
             initialApproximation = new double[]{Double.parseDouble(initialApproximationTextField.getText())};
@@ -60,22 +62,32 @@ public class SolveController implements Initializable, Openable {
         try {
             StringJoiner joiner = new StringJoiner("; ");
             ArrayList<Double> listOfEpsItems = new ArrayList<>();
-            Map<Double, Map.Entry<Double, Integer>> roots;
+            ArrayList<Double> listOfRootsItems = new ArrayList<>();
             if (((TableController) parentController).isVMF()) {
-                roots = (Map<Double, Map.Entry<Double, Integer>>) numericalMethodMapForVMF
+                Matrix roots = (Matrix) numericalMethodMapForVMF
                         .get(numericalMethodsBox.getValue())
                         .invoke(numMethod, ((TableController) parentController)
                                 .getFunction());
+                Matrix residuals = ((VMF)((TableController) parentController)
+                        .getFunction()).apply(roots.transpose());
+                for (int i = 0; i < roots.getRowDimension(); i++) {
+                    listOfRootsItems.add(roots.get(i, 0));
+                    listOfEpsItems.add(residuals.get(i, 0));
+                    joiner.add(numMethod.getIterationsNumber() + "");
+                }
+                int n = 5;
             } else {
+                Map<Double, Map.Entry<Double, Integer>> roots;
                 roots = (Map<Double, Map.Entry<Double, Integer>>) numericalMethodMap
                         .get(numericalMethodsBox.getValue())
                         .invoke(numMethod, ((TabulatedFunction) ((TableController) parentController).getFunction()).getMathFunction());
+                roots.values().forEach(entry -> {
+                    listOfEpsItems.add(entry.getKey());
+                    joiner.add(entry.getValue().toString());
+                });
+                listOfRootsItems = new ArrayList<>(roots.keySet());
             }
-            roots.values().forEach(entry -> {
-                listOfEpsItems.add(entry.getKey());
-                joiner.add(entry.getValue().toString());
-            });
-            listOfRoots.setItems(FXCollections.observableList(new ArrayList<>(roots.keySet())));
+            listOfRoots.setItems(FXCollections.observableList(listOfRootsItems));
             listOfEps.setItems(FXCollections.observableList(listOfEpsItems));
             numberOfIterations.setText(joiner.toString());
         } catch (IllegalAccessException | InvocationTargetException e) {

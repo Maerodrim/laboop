@@ -16,6 +16,7 @@ import java.util.Map;
 @ConnectableItem(name = "", type = Item.NUMERICAL_METHOD)
 public class NumericalMethods {
     private static final int NUMBER_OF_SEGMENT_SPLITS = 1001;
+    private int iterationsNumber = 0;
     double left, right, eps;
     Matrix initialApproximation;
     private int dim = Variable.values().length;
@@ -46,6 +47,10 @@ public class NumericalMethods {
         return solveNonlinearSystem(VMF, true);
     }
 
+    public int getIterationsNumber() {
+        return iterationsNumber;
+    }
+
     public Matrix solveNonlinearSystem(VMF VMF, boolean isModified) {
         Matrix x1;
         Matrix x0 = initialApproximation;
@@ -53,6 +58,7 @@ public class NumericalMethods {
         Matrix y = VMF.apply(x0.transpose());
         Matrix p = jacobian.solve(y.timesEquals(-1));
         x1 = x0.plus(p);
+        iterationsNumber++;
         while (x0.minus(x1).norm2() > eps) {
             x0 = x1;
             y = VMF.apply(x0.transpose());
@@ -61,8 +67,8 @@ public class NumericalMethods {
             }
             p = jacobian.solve(y.timesEquals(-1));
             x1 = x0.plus(p);
+            iterationsNumber++;
         }
-        //todo Matrix -> Map
         return x1;
     }
 

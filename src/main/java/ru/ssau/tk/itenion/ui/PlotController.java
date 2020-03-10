@@ -25,8 +25,10 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
+import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.lang.reflect.InvocationTargetException;
@@ -155,11 +157,23 @@ public class PlotController implements Initializable, Openable {
     }
 
     public void addSeries() {
-        //addSeriesInGeneral(((TableController) parentController).getObservableList(), ((TableController) parentController).getFunction());
+        if (((TableController) parentController).isVMF()) {
+
+        } else {
+            addSeriesInGeneral(((TableController) parentController).getObservableList(), (TabulatedFunction) ((TableController) parentController).getFunction());
+        }
     }
 
     public void setSeries() {
-        //setSeriesInGeneral(((TableController) parentController).getObservableList(), ((TableController) parentController).getFunction());
+        if (((TableController) parentController).isVMF()) {
+            if (((TableController) parentController).getFunction().getSize()[0] > 2) {
+                AlertWindows.showWarning("Unsupported operation");
+            } else {
+
+            }
+        } else {
+            setSeriesInGeneral(((TableController) parentController).getObservableList(), (TabulatedFunction)((TableController) parentController).getFunction());
+        }
     }
 
     private void bindMouseEvents(LineChart<Number, Number> baseChart, Double strokeWidth) {

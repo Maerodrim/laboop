@@ -174,4 +174,9 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
     default double apply(Matrix x) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    default double[] getSize(){
+        return new double[]{1,1};
+    }
 }
