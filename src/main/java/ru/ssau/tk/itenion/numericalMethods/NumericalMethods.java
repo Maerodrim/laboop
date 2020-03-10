@@ -47,13 +47,13 @@ public class NumericalMethods {
         return solveNonlinearSystem(VMF, true);
     }
 
-    @ConnectableItem(name = "Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 3, forVMF = true)
+    @ConnectableItem(name = "Modified Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 3, forVMF = true)
     public Matrix solveNonlinearSystemWithNewtonMethod2(VMF VMF) {
         Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
         Matrix J = VMF.getJacobiMatrix(b.transpose());
         a = b.plus(p);
         iterationsNumber++;
-        while (b.minus(a).norm2() > eps) {
+        for (; b.minus(a).norm2() > eps; ) {
             b = a;
             p = J.solve(VMF.apply(a.transpose()).timesEquals(-1));
             a = b.plus(p);
@@ -62,12 +62,12 @@ public class NumericalMethods {
         return a;
     }
 
-    @ConnectableItem(name = "Modified newton method Stas", type = Item.NUMERICAL_METHOD, priority = 4, forVMF = true)
+    @ConnectableItem(name = "Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 4, forVMF = true)
     public Matrix solveNonlinearSystemWithModifiedNewtonMethod2(VMF VMF) {
         Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
         a = b.plus(p);
         iterationsNumber++;
-        while (b.minus(a).norm2() > eps) {
+        for (; b.minus(a).norm2() > eps; ) {
             b = a;
             p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(a.transpose()).timesEquals(-1));
             a = b.plus(p);
