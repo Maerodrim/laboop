@@ -36,10 +36,10 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 class IO {
+    public static final BelongTo belongTo = BelongTo.STANISLAV;
     static final String FXML_PATH = "fxml/";
     static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions"; // будеть работать только
     private static final TextInputDialog dialog = new TextInputDialog();
-    public static final BelongTo belongTo = BelongTo.STANISLAV;
     public static Predicate<String> isDouble = s -> {
         try {
             Double.parseDouble(s);
@@ -170,11 +170,11 @@ class IO {
     }
 
     public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item, Predicate<ConnectableItem> methodPredicate) {
-        return initializeMap(classes, map, item,  connectableItem -> true, methodPredicate);
+        return initializeMap(classes, map, item, connectableItem -> true, methodPredicate);
     }
 
     public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item) {
-        return initializeMap(classes, map, item,  connectableItem -> true, connectableItem -> true);
+        return initializeMap(classes, map, item, connectableItem -> true, connectableItem -> true);
     }
 
     public static Optional<String> getValue(String title, String headerText, String contentText, Predicate<String> isValid) {

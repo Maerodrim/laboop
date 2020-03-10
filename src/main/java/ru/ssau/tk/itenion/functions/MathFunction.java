@@ -5,7 +5,6 @@ import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 import ru.ssau.tk.itenion.functions.powerFunctions.ConstantFunction;
 import ru.ssau.tk.itenion.functions.powerFunctions.ZeroFunction;
-import ru.ssau.tk.itenion.functions.wrapFunctions.ForDoubleOperations;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,64 +23,84 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
 
     default MathFunction sum(MathFunction afterFunction) {
         MathFunction function = this;
+        MathFunction result;
         if (afterFunction instanceof ConstantFunction) {
-            return new ForDoubleOperations(this, (ConstantFunction) afterFunction, true);
+            if (this instanceof LinearCombinationFunction) {
+                result = new LinearCombinationFunction((LinearCombinationFunction) this, (ConstantFunction) afterFunction, true);
+            } else {
+                result = new LinearCombinationFunction(this, (ConstantFunction) afterFunction, true);
+            }
+        } else if (this instanceof ConstantFunction) {
+            result = new LinearCombinationFunction(afterFunction, (ConstantFunction) this, true);
+        } else {
+            result = new MathFunction() {
+                private static final long serialVersionUID = -4986154588819604160L;
+
+                @Override
+                public double apply(double x) {
+                    return function.apply(x) + afterFunction.apply(x);
+                }
+
+                @Override
+                public MathFunction differentiate() {
+                    return function.differentiate().sum(afterFunction.differentiate());
+                }
+
+                @Override
+                public String getName() {
+                    return function.getName() + " + " + afterFunction.getName();
+                }
+            };
         }
-        if (this instanceof ConstantFunction) {
-            return new ForDoubleOperations(afterFunction, (ConstantFunction) this, true);
+        if (result instanceof LinearCombinationFunction && ((LinearCombinationFunction) result).getShift() == 0 && ((LinearCombinationFunction) result).getConstant() == 1) {
+            result = ((LinearCombinationFunction) result).getFunction();
         }
-        return new MathFunction() {
-            private static final long serialVersionUID = -4986154588819604160L;
-
-            @Override
-            public double apply(double x) {
-                return function.apply(x) + afterFunction.apply(x);
-            }
-
-            @Override
-            public MathFunction differentiate() {
-                return function.differentiate().sum(afterFunction.differentiate());
-            }
-
-            @Override
-            public String getName() {
-                return function.getName() + " + " + afterFunction.getName();
-            }
-        };
+        return result;
     }
 
     default MathFunction subtract(MathFunction afterFunction) {
         MathFunction function = this;
-        return new MathFunction() {
-            private static final long serialVersionUID = 1734329896572016553L;
+        MathFunction result;
+        if (afterFunction instanceof ConstantFunction) {
+            result = sum(new ConstantFunction(-((ConstantFunction) afterFunction).getConstant()));
+        } else if (this instanceof ConstantFunction) {
+            result = new LinearCombinationFunction(afterFunction, new ConstantFunction(-((ConstantFunction) this).getConstant()), true);
+        } else {
+            result = new MathFunction() {
+                private static final long serialVersionUID = 1734329896572016553L;
 
-            @Override
-            public double apply(double x) {
-                return function.apply(x) - afterFunction.apply(x);
-            }
+                @Override
+                public double apply(double x) {
+                    return function.apply(x) - afterFunction.apply(x);
+                }
 
-            @Override
-            public MathFunction differentiate() {
-                return function.differentiate().subtract(afterFunction.differentiate());
-            }
+                @Override
+                public MathFunction differentiate() {
+                    return function.differentiate().subtract(afterFunction.differentiate());
+                }
 
-            @Override
-            public String getName() {
-                return function.getName() + " - " + afterFunction.getName();
-            }
-        };
+                @Override
+                public String getName() {
+                    return function.getName() + " - " + afterFunction.getName();
+                }
+            };
+        }
+        if (result instanceof LinearCombinationFunction && ((LinearCombinationFunction) result).getShift() == 0 && ((LinearCombinationFunction) result).getConstant() == 1) {
+            result = ((LinearCombinationFunction) result).getFunction();
+        }
+        return result;
     }
 
     default MathFunction sum(double number) {
-        return new ForDoubleOperations(this, 1, number);
+        return new LinearCombinationFunction(this, 1, number);
     }
 
     default MathFunction subtract(double number) {
-        return new ForDoubleOperations(this, 1, number);
+        return new LinearCombinationFunction(this, 1, number);
     }
 
     default MathFunction multiply(double number) {
-        return new ForDoubleOperations(this, number, 0);
+        return new LinearCombinationFunction(this, number, 0);
     }
 
     default MathFunction negate() {
@@ -90,31 +109,39 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
 
     default MathFunction multiply(MathFunction afterFunction) {
         MathFunction function = this;
+        MathFunction result;
         if (afterFunction instanceof ConstantFunction) {
-            return new ForDoubleOperations(this, (ConstantFunction) afterFunction, false);
+            if (this instanceof LinearCombinationFunction) {
+                result = new LinearCombinationFunction((LinearCombinationFunction) this, (ConstantFunction) afterFunction, false);
+            } else {
+                result = new LinearCombinationFunction(this, (ConstantFunction) afterFunction, false);
+            }
+        } else if (this instanceof ConstantFunction) {
+            result = new LinearCombinationFunction(afterFunction, (ConstantFunction) this, false);
+        } else {
+            result = new MathFunction() {
+                private static final long serialVersionUID = 4507943343697267559L;
+
+                @Override
+                public double apply(double x) {
+                    return function.apply(x) * afterFunction.apply(x);
+                }
+
+                @Override
+                public MathFunction differentiate() {
+                    return function.differentiate().multiply(afterFunction).sum(afterFunction.differentiate().multiply(function));
+                }
+
+                @Override
+                public String getName() {
+                    return "(" + function.getName() + ") * (" + afterFunction.getName() + ")";
+                }
+            };
         }
-        if (this instanceof ConstantFunction) {
-            return new ForDoubleOperations(afterFunction, (ConstantFunction) this, false);
+        if (result instanceof LinearCombinationFunction && ((LinearCombinationFunction) result).getShift() == 0 && ((LinearCombinationFunction) result).getConstant() == 1) {
+            result = ((LinearCombinationFunction) result).getFunction();
         }
-        return new MathFunction() {
-            private static final long serialVersionUID = 4507943343697267559L;
-
-            @Override
-            public double apply(double x) {
-                return function.apply(x) * afterFunction.apply(x);
-            }
-
-            @Override
-            public MathFunction differentiate() {
-                return function.differentiate().multiply(afterFunction).sum(afterFunction.differentiate().multiply(function));
-            }
-
-            @Override
-            public String getName() {
-                return "(" + function.getName() + ") * (" + afterFunction.getName() + ")";
-            }
-        };
-
+        return result;
     }
 
     default MathFunction sqr() {
@@ -125,7 +152,21 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
         if (afterFunction instanceof ZeroFunction) {
             throw new IllegalArgumentException();
         }
-        return multiply(afterFunction.inverse());
+        MathFunction result;
+        if (afterFunction instanceof ConstantFunction) {
+            result = this.multiply(new ConstantFunction(1 / ((ConstantFunction) afterFunction).getConstant()));
+        } else if (this instanceof ConstantFunction) {
+            if (this instanceof ZeroFunction) {
+                throw new IllegalArgumentException();
+            }
+            result = new LinearCombinationFunction(afterFunction, new ConstantFunction(1 / ((ConstantFunction) this).getConstant()), false);
+        } else {
+            result = multiply(afterFunction.negate());
+        }
+        if (result instanceof LinearCombinationFunction && ((LinearCombinationFunction) result).getShift() == 0 && ((LinearCombinationFunction) result).getConstant() == 1) {
+            result = ((LinearCombinationFunction) result).getFunction();
+        }
+        return result;
     }
 
     default MathFunction inverse() {
@@ -167,6 +208,7 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
 
     @Override
     default void put(Variable variable, MathFunction mathFunction) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -191,12 +233,13 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
     }
 
     @Override
-    default double[] getSize(){
-        return new double[]{1,1};
+    default double[] getSize() {
+        return new double[]{1, 1};
     }
 
     @Override
-    default VAMF getMathFunction(Variable variable){
-        return null;
-    };
+    default VAMF getMathFunction(Variable variable) {
+        return this;
+    }
+
 }

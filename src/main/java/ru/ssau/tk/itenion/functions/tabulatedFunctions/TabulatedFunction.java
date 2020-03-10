@@ -1,7 +1,10 @@
 package ru.ssau.tk.itenion.functions.tabulatedFunctions;
 
 import ru.ssau.tk.itenion.enums.Variable;
-import ru.ssau.tk.itenion.functions.*;
+import ru.ssau.tk.itenion.functions.Insertable;
+import ru.ssau.tk.itenion.functions.MathFunction;
+import ru.ssau.tk.itenion.functions.Point;
+import ru.ssau.tk.itenion.functions.Removable;
 import ru.ssau.tk.itenion.operations.TabulatedDifferentialOperator;
 import ru.ssau.tk.itenion.ui.ExplicitAccessControllable;
 

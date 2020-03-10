@@ -25,8 +25,8 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
-import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.enums.Variable;
+import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
@@ -159,17 +159,17 @@ public class PlotController implements Initializable, Openable {
 
     public void addSeries() {
         if (((TableController) parentController).isVMF()) {
-            if (((VMF)((TableController) parentController).getFunction()).isCanBePlotted()) {
-                ((VMF)((TableController) parentController).getFunction()).getIndexForPlot().ifPresent(matrix -> {
+            if (((VMF) ((TableController) parentController).getFunction()).isCanBePlotted()) {
+                ((VMF) ((TableController) parentController).getFunction()).getIndexForPlot().ifPresent(matrix -> {
                     TabulatedFunction tabulatedFunction = factory.create(
-                            ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int)matrix.get(0 ,0)], 0),
-                            -10,10, 1001
+                            ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(0, 0)], 0),
+                            -10, 10, 1001
                     );
                     addSeriesInGeneral(((TableController) parentController).getObservableList(), tabulatedFunction);
                     for (int i = 1; i < matrix.getRowDimension(); i++) {
                         tabulatedFunction = factory.create(
-                                ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int)matrix.get(i ,0)], i),
-                                -10,10, 1001
+                                ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(i, 0)], i),
+                                -10, 10, 1001
                         );
                         addSeriesInGeneral(((TableController) parentController).getObservableList(), tabulatedFunction);
                     }
@@ -184,17 +184,17 @@ public class PlotController implements Initializable, Openable {
 
     public void setSeries() {
         if (((TableController) parentController).isVMF()) {
-            if (((VMF)((TableController) parentController).getFunction()).isCanBePlotted()) {
-                ((VMF)((TableController) parentController).getFunction()).getIndexForPlot().ifPresent(matrix -> {
+            if (((VMF) ((TableController) parentController).getFunction()).isCanBePlotted()) {
+                ((VMF) ((TableController) parentController).getFunction()).getIndexForPlot().ifPresent(matrix -> {
                     TabulatedFunction tabulatedFunction = factory.create(
-                            ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int)matrix.get(0 ,0)], 0),
-                            -10,10, 1001
+                            ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(0, 0)], 0),
+                            -10, 10, 1001
                     );
                     setSeriesInGeneral(((TableController) parentController).getObservableList(), tabulatedFunction);
                     for (int i = 1; i < matrix.getRowDimension(); i++) {
                         tabulatedFunction = factory.create(
-                                ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int)matrix.get(i ,0)], i),
-                                -10,10, 1001
+                                ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(i, 0)], i),
+                                -10, 10, 1001
                         );
                         addSeriesInGeneral(((TableController) parentController).getObservableList(), tabulatedFunction);
                     }

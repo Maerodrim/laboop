@@ -1,8 +1,8 @@
 package ru.ssau.tk.itenion.numericalMethods;
 
 import Jama.Matrix;
-import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.enums.Variable;
+import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.operations.DifferentialOperator;
 import ru.ssau.tk.itenion.operations.MathFunctionDifferentialOperator;
@@ -15,9 +15,9 @@ import java.util.Map;
 
 @ConnectableItem(name = "Valentin", type = Item.NUMERICAL_METHOD)
 public class VNumericalMethods {
-    private int iterationsNumber = 0;
     double left, right, eps;
     Matrix initialApproximation;
+    private int iterationsNumber = 0;
     private int dim = Variable.values().length;
 
     public VNumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
@@ -77,9 +77,9 @@ public class VNumericalMethods {
         int numberOfIterations = 0;
         while (Math.abs(func.apply(left) - func.apply(right)) > 2 * eps) {
             if (func.apply(left) * func.apply(0.5 * (left + right)) >= 0) {
-                left = (left + right)/2;
+                left = (left + right) / 2;
             } else {
-                right = (left + right)/2;
+                right = (left + right) / 2;
             }
             numberOfIterations++;
         }

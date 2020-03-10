@@ -2,13 +2,13 @@ package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions;
 
 import Jama.Matrix;
 import javafx.util.Pair;
+import ru.ssau.tk.itenion.enums.SupportedSign;
+import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.itenion.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.itenion.exceptions.InconsistentMatrixSize;
 import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.AbstractVAMF;
-import ru.ssau.tk.itenion.enums.SupportedSign;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 
 import java.util.*;

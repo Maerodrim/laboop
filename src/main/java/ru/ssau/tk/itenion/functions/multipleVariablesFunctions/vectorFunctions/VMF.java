@@ -1,9 +1,9 @@
 package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions;
 
 import Jama.Matrix;
+import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.Function;
 import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 
 import java.util.ArrayList;

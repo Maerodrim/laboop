@@ -1,12 +1,15 @@
 package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions;
 
 import Jama.Matrix;
-import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.enums.Variable;
+import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.powerFunctions.IdentityFunction;
-import ru.ssau.tk.itenion.functions.wrapFunctions.ForDoubleOperations;
+import ru.ssau.tk.itenion.functions.LinearCombinationFunction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
@@ -72,22 +75,22 @@ public abstract class AbstractVAMF implements VAMF {
         return dimension;
     }
 
-    public boolean isExistIdentityFunction(){
+    public boolean isExistIdentityFunction() {
         AtomicReference<Boolean> isExist = new AtomicReference<>(false);
         functionMap.forEach((variable, function) -> {
-            if (function instanceof IdentityFunction || function instanceof ForDoubleOperations && ((ForDoubleOperations)function).getFunction() instanceof IdentityFunction){
+            if (function instanceof IdentityFunction || function instanceof LinearCombinationFunction && ((LinearCombinationFunction) function).getFunction() instanceof IdentityFunction) {
                 isExist.set(true);
             }
         });
         return isExist.get();
     }
 
-    public double getIndexForPlot(){
+    public double getIndexForPlot() {
         int index = -1;
         if (dimension != 2) {
             return index;
         }
-        if (functionMap.get(Variable.values()[0]) instanceof IdentityFunction || functionMap.get(Variable.values()[0]) instanceof ForDoubleOperations && ((ForDoubleOperations)functionMap.get(Variable.values()[0])).getFunction() instanceof IdentityFunction){
+        if (functionMap.get(Variable.values()[0]) instanceof IdentityFunction || functionMap.get(Variable.values()[0]) instanceof LinearCombinationFunction && ((LinearCombinationFunction) functionMap.get(Variable.values()[0])).getFunction() instanceof IdentityFunction) {
             return 1;
         } else return 0;
     }

@@ -1,4 +1,4 @@
-package ru.ssau.tk.itenion.functions.powerFunctions.polynomial;
+package ru.ssau.tk.itenion.functions.wrapFunctions;
 
 import ru.ssau.tk.itenion.functions.AbstractMathFunction;
 import ru.ssau.tk.itenion.functions.MathFunction;

@@ -1,8 +1,8 @@
 package ru.ssau.tk.itenion.numericalMethods;
 
 import Jama.Matrix;
-import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.enums.Variable;
+import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.operations.DifferentialOperator;
 import ru.ssau.tk.itenion.operations.MathFunctionDifferentialOperator;
@@ -15,9 +15,9 @@ import java.util.Map;
 @ConnectableItem(name = "Stanislav", type = Item.NUMERICAL_METHOD)
 public class SNumericalMethods {
     private static final int NUMBER_OF_SEGMENT_SPLITS = 1001;
-    private int iterationsNumber = 0;
     double left, right, eps;
     Matrix initialApproximation;
+    private int iterationsNumber = 0;
     private int dim = Variable.values().length;
 
     public SNumericalMethods(Double left, Double right, double initialApproximation, Double eps) {

@@ -4,7 +4,7 @@ import ru.ssau.tk.itenion.functions.AbstractMathFunction;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.powerFunctions.polynomial.Polynomial;
 import ru.ssau.tk.itenion.functions.powerFunctions.polynomial.PolynomialParser;
-import ru.ssau.tk.itenion.functions.powerFunctions.polynomial.PseudoPolynomialFunction;
+import ru.ssau.tk.itenion.functions.wrapFunctions.PseudoPolynomialFunction;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 

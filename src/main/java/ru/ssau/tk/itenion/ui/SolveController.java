@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Predicate;
 
 @ConnectableItem(name = "Solve", type = Item.CONTROLLER, pathFXML = "solve.fxml")
 public class SolveController implements Initializable, Openable {

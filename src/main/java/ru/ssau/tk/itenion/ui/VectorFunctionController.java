@@ -16,10 +16,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.enums.Variable;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.enums.SupportedSign;
+import ru.ssau.tk.itenion.enums.Variable;
+import ru.ssau.tk.itenion.functions.MathFunction;
+import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMFSV;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
