@@ -99,7 +99,7 @@ public class NumericalMethods {
         return x1;
     }
 
-    @ConnectableItem(name = "Half-division method Stas", type = Item.NUMERICAL_METHOD, priority = 1)
+    @ConnectableItem(name = "Half-division method all roats", type = Item.NUMERICAL_METHOD, priority = 1)
     public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethodAllRoots(MathFunction func) {
         double x = left, step;
         Map<Double, Map.Entry<Double, Integer>> result = new HashMap<>();
