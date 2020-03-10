@@ -1,5 +1,6 @@
 package ru.ssau.tk.itenion.functions.tabulatedFunctions;
 
+import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.*;
 import ru.ssau.tk.itenion.operations.TabulatedDifferentialOperator;
 import ru.ssau.tk.itenion.ui.ExplicitAccessControllable;

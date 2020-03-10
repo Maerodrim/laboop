@@ -1,4 +1,4 @@
-package ru.ssau.tk.itenion.functions;
+package ru.ssau.tk.itenion.enums;
 
 public enum Variable {
     x,

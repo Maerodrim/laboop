@@ -1,4 +1,8 @@
-package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions;
+package ru.ssau.tk.itenion.enums;
+
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.AbstractVAMF;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.AdditiveVAMFSV;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.MultiplicativeVAMFSV;
 
 import java.util.HashMap;
 import java.util.Map;

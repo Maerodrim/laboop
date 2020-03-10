@@ -13,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
+import ru.ssau.tk.itenion.enums.BelongTo;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
@@ -38,7 +39,7 @@ class IO {
     static final String FXML_PATH = "fxml/";
     static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions"; // будеть работать только
     private static final TextInputDialog dialog = new TextInputDialog();
-    public static final boolean IS_BELONG_TO_VALENTIN = true;
+    public static final BelongTo belongTo = BelongTo.STANISLAV;
     public static Predicate<String> isDouble = s -> {
         try {
             Double.parseDouble(s);

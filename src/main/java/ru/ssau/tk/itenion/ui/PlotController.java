@@ -1,6 +1,5 @@
 package ru.ssau.tk.itenion.ui;
 
-import Jama.Matrix;
 import com.sun.javafx.charts.Legend;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,9 +25,8 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
-import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
-import ru.ssau.tk.itenion.functions.Variable;
+import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;

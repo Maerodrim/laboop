@@ -102,7 +102,7 @@ public class SolveController implements Initializable, Openable {
     public void setStage(Stage stage) {
         stage.setOnShown(windowEvent -> {
             Map[] maps = IO.initializeMap(classes, numericalMethodMap, Item.NUMERICAL_METHOD,
-                    IO.IS_BELONG_TO_VALENTIN ? item -> item.name().equals("Valentin") : item -> item.name().equals("Stanislav"),
+                    item -> item.name().equals(IO.belongTo.toString()),
                     ((TableController) parentController).isVMF() ? ConnectableItem::forVMF : item -> !item.forVMF());
             classes = (Map<Method, Class<?>>) maps[0];
             numericalMethodMap = (Map<String, Method>) maps[1];

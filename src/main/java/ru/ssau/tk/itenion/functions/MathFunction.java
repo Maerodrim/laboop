@@ -1,6 +1,7 @@
 package ru.ssau.tk.itenion.functions;
 
 import Jama.Matrix;
+import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 import ru.ssau.tk.itenion.functions.powerFunctions.ConstantFunction;
 import ru.ssau.tk.itenion.functions.powerFunctions.ZeroFunction;

@@ -2,7 +2,7 @@ package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMa
 
 import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.functions.Variable;
+import ru.ssau.tk.itenion.enums.Variable;
 
 import java.util.ArrayList;
 
