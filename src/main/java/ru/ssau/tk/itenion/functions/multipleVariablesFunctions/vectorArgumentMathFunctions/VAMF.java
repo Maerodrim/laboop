@@ -16,5 +16,7 @@ public interface VAMF extends MultipleVariableDifferentiable {
 
     double apply(Matrix x);
 
+    VAMF getMathFunction(Variable variable);
+
     int getDimension();
 }

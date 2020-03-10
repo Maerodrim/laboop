@@ -11,10 +11,7 @@ import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMat
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.SupportedSign;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
 public class VMFSV implements VMF {
     private List<AbstractVAMF> functionList;
@@ -55,6 +52,35 @@ public class VMFSV implements VMF {
 
     public boolean isCanBeSolved() {
         return dim == requiredDim;
+    }
+
+    @Override
+    public boolean isCanBePlotted() {
+        boolean result = requiredDim == 2;
+        if (!result) {
+            return false;
+        }
+        for (int i = 0; i < 2; i++) {
+            result &= functionList.get(i).isExistIdentityFunction();
+        }
+        return result;
+    }
+
+    @Override
+    public Optional<Matrix> getIndexForPlot() {
+        if (requiredDim != 2 || !isCanBeSolved()) {
+            return Optional.empty();
+        }
+        Matrix indexes = new Matrix(requiredDim, 1);
+        for (int i = 0; i < requiredDim; i++) {
+            indexes.set(i, 0, functionList.get(i).getIndexForPlot());
+        }
+        return Optional.of(indexes);
+    }
+
+    @Override
+    public MathFunction getMathFunction(Variable variable, int index) {
+        return functionList.get(index).getMathFunction(variable);
     }
 
     public Matrix getJacobiMatrix(Matrix x) {

@@ -4,7 +4,7 @@ import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 import ru.ssau.tk.itenion.functions.powerFunctions.ConstantFunction;
 import ru.ssau.tk.itenion.functions.powerFunctions.ZeroFunction;
-import ru.ssau.tk.itenion.functions.wrapFunctions.MultiplyOnConstantMF;
+import ru.ssau.tk.itenion.functions.wrapFunctions.ForDoubleOperations;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +23,12 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
 
     default MathFunction sum(MathFunction afterFunction) {
         MathFunction function = this;
+        if (afterFunction instanceof ConstantFunction) {
+            return new ForDoubleOperations(this, (ConstantFunction) afterFunction, true);
+        }
+        if (this instanceof ConstantFunction) {
+            return new ForDoubleOperations(afterFunction, (ConstantFunction) this, true);
+        }
         return new MathFunction() {
             private static final long serialVersionUID = -4986154588819604160L;
 
@@ -65,8 +71,16 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
         };
     }
 
+    default MathFunction sum(double number) {
+        return new ForDoubleOperations(this, 1, number);
+    }
+
+    default MathFunction subtract(double number) {
+        return new ForDoubleOperations(this, 1, number);
+    }
+
     default MathFunction multiply(double number) {
-        return new MultiplyOnConstantMF(this, number);
+        return new ForDoubleOperations(this, number, 0);
     }
 
     default MathFunction negate() {
@@ -76,10 +90,10 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
     default MathFunction multiply(MathFunction afterFunction) {
         MathFunction function = this;
         if (afterFunction instanceof ConstantFunction) {
-            return new MultiplyOnConstantMF(this, (ConstantFunction) afterFunction);
+            return new ForDoubleOperations(this, (ConstantFunction) afterFunction, false);
         }
         if (this instanceof ConstantFunction) {
-            return new MultiplyOnConstantMF(afterFunction, (ConstantFunction) this);
+            return new ForDoubleOperations(afterFunction, (ConstantFunction) this, false);
         }
         return new MathFunction() {
             private static final long serialVersionUID = 4507943343697267559L;
@@ -179,4 +193,9 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
     default double[] getSize(){
         return new double[]{1,1};
     }
+
+    @Override
+    default VAMF getMathFunction(Variable variable){
+        return null;
+    };
 }
