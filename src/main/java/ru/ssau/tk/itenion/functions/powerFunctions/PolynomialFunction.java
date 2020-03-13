@@ -40,6 +40,21 @@ public class PolynomialFunction extends AbstractMathFunction implements MathFunc
     }
 
     @Override
+    public MathFunction sum(double number) {
+        return new PolynomialFunction(polynomial.add(number));
+    }
+
+    @Override
+    public MathFunction subtract(double number) {
+        return new PolynomialFunction(polynomial.subtract(number));
+    }
+
+    @Override
+    public MathFunction multiply(double number) {
+        return new PolynomialFunction(polynomial.multiply(number));
+    }
+
+    @Override
     public MathFunction sum(MathFunction afterFunction) {
         return doOperation(afterFunction, new Operation("+"));
     }

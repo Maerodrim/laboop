@@ -47,6 +47,7 @@ public class VMFSV implements VMF {
                 dim++;
             }
         });
+        // fixme
         System.out.println(this);
     }
 
@@ -149,7 +150,7 @@ public class VMFSV implements VMF {
     }
 
     @Override
-    public double[] getSize() {
+    public double[] getDimensionArray() {
         return new double[]{functionList.size(), requiredDim};
     }
 }

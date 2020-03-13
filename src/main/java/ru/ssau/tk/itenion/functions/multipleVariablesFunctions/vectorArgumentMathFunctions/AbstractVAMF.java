@@ -2,9 +2,9 @@ package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMa
 
 import Jama.Matrix;
 import ru.ssau.tk.itenion.enums.Variable;
+import ru.ssau.tk.itenion.functions.LinearCombinationFunction;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.powerFunctions.IdentityFunction;
-import ru.ssau.tk.itenion.functions.LinearCombinationFunction;
 
 import java.util.ArrayList;
 import java.util.HashMap;

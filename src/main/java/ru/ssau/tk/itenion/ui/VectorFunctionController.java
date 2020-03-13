@@ -22,6 +22,7 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMFSV;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
+import ru.ssau.tk.itenion.ui.states.State;
 
 import java.io.File;
 import java.net.URL;
@@ -31,11 +32,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @ConnectableItem(name = "Vector function create", type = Item.CONTROLLER, pathFXML = "vectorFunction.fxml")
-public class VectorFunctionController implements Initializable, Openable, MathFunctionAccessible, CompositeFunctionAccessible, TabulatedFunctionAccessible {
+public class VectorFunctionController extends TabVisitor implements Initializable, Openable, MathFunctionAccessible, CompositeFunctionAccessible, TabulatedFunctionAccessible {
     private Stage stage;
-    private Openable parentController;
     private Map<Pair<Variable, Integer>, MathFunction> currentFunctions;
-    //private Map<Pair<Variable, Integer>, SupportedSign> currentSigns;
     private Map<Pair<Variable, Integer>, JFXTextField> functionTextFields;
     private Map<Pair<Variable, Integer>, JFXTextField> extraTextFields;
     private Map<Pair<Variable, Integer>, Menu> currentFunctionMenuItems;
@@ -91,7 +90,6 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
         });
 
         currentFunctions = new LinkedHashMap<>();
-        //currentSigns = new LinkedHashMap<>();
         tabulatedFunctionMap = new LinkedHashMap<>();
         nodesGrid.forEach(this::initGroup);
     }
@@ -139,13 +137,22 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
         return currentSigns;
     }
 
-    @FXML
-    public void ok() {
+    @Override
+    void visit(TabController.TFState tfState) { }
+
+    @Override
+    void visit(TabController.VMFState vmf) {
         unbindFutureGroups();
         extractConstantsToXVariableFunctions();
         List<SupportedSign> supportedSignList = getSignList();
-        ((TableController) parentController).createTab(createdPane, new VMFSV(currentFunctions, supportedSignList));
+        vmf.createTab(createdPane, new VMFSV(currentFunctions, supportedSignList));
         stage.close();
+    }
+
+    @FXML
+    public void ok() {
+        state.changeState(State.VMF);
+        state.accept(this);
     }
 
     @Override
@@ -156,6 +163,13 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
     @Override
     public void setStage(Stage stage) {
         stage.setOnShowing(windowEvent -> {
+            functionTextFields.forEach((variableIntegerPair, textField) -> textField.setText(""));
+            extraTextFields.forEach((variableIntegerPair, textField) -> {
+                if (variableIntegerPair.getKey().ordinal() == Variable.values().length - 1) {
+                    textField.setText("");
+                }
+            });
+            currentFunctions.clear();
             createdPane = new AnchorPane();
             initFutureGroups();
         });
@@ -189,6 +203,7 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
             AnchorPane.setTopAnchor(operationComboBox, 15. + (nodeGrid.getValue() - 1) * 100);
             AnchorPane.setLeftAnchor(operationComboBox, 125. + nodeGrid.getKey().ordinal() * 180);
             operationComboBox.getItems().addAll(Arrays.stream(SupportedSign.values()).map(SupportedSign::toString).collect(Collectors.toList()));
+            operationComboBox.getSelectionModel().selectFirst();
 
             extraTextField.setPrefSize(40, 30);
             extraTextField.setAlignment(Pos.BOTTOM_CENTER);
@@ -280,16 +295,6 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
     @Override
     public void setMathFunctionMap(Map<String, MathFunction> mathFunctionMap) {
         this.mathFunctionMap = mathFunctionMap;
-    }
-
-    @Override
-    public Openable getParentController() {
-        return parentController;
-    }
-
-    @Override
-    public void setParentController(Openable controller) {
-        parentController = controller;
     }
 
     @Override

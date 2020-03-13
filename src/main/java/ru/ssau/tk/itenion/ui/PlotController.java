@@ -25,10 +25,8 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
-import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
-import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.lang.reflect.InvocationTargetException;
@@ -83,11 +81,7 @@ public class PlotController implements Initializable, Openable {
 
     @Override
     public void setFactory(TabulatedFunctionFactory factory) {
-    }
-
-    @Override
-    public void setParentController(Openable controller) {
-        parentController = controller;
+        this.factory = factory;
     }
 
     public void addSeriesInGeneral(ObservableList<Point> data, TabulatedFunction function) {
@@ -157,55 +151,55 @@ public class PlotController implements Initializable, Openable {
         addSeriesInGeneral(data, function);
     }
 
-    public void addSeries() {
-        if (((TableController) parentController).isVMF()) {
-            if (((VMF) ((TableController) parentController).getFunction()).isCanBePlotted()) {
-                ((VMF) ((TableController) parentController).getFunction()).getIndexForPlot().ifPresent(matrix -> {
-                    TabulatedFunction tabulatedFunction = factory.create(
-                            ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(0, 0)], 0),
-                            -10, 10, 1001
-                    );
-                    addSeriesInGeneral(((TableController) parentController).getObservableList(), tabulatedFunction);
-                    for (int i = 1; i < matrix.getRowDimension(); i++) {
-                        tabulatedFunction = factory.create(
-                                ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(i, 0)], i),
-                                -10, 10, 1001
-                        );
-                        addSeriesInGeneral(((TableController) parentController).getObservableList(), tabulatedFunction);
-                    }
-                });
-            } else {
-                AlertWindows.showWarning("Unsupported operation");
-            }
-        } else {
-            addSeriesInGeneral(((TableController) parentController).getObservableList(), (TabulatedFunction) ((TableController) parentController).getFunction());
-        }
-    }
-
-    public void setSeries() {
-        if (((TableController) parentController).isVMF()) {
-            if (((VMF) ((TableController) parentController).getFunction()).isCanBePlotted()) {
-                ((VMF) ((TableController) parentController).getFunction()).getIndexForPlot().ifPresent(matrix -> {
-                    TabulatedFunction tabulatedFunction = factory.create(
-                            ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(0, 0)], 0),
-                            -10, 10, 1001
-                    );
-                    setSeriesInGeneral(((TableController) parentController).getObservableList(), tabulatedFunction);
-                    for (int i = 1; i < matrix.getRowDimension(); i++) {
-                        tabulatedFunction = factory.create(
-                                ((VMF) ((TableController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(i, 0)], i),
-                                -10, 10, 1001
-                        );
-                        addSeriesInGeneral(((TableController) parentController).getObservableList(), tabulatedFunction);
-                    }
-                });
-            } else {
-                AlertWindows.showWarning("Unsupported operation");
-            }
-        } else {
-            setSeriesInGeneral(((TableController) parentController).getObservableList(), (TabulatedFunction) ((TableController) parentController).getFunction());
-        }
-    }
+//    public void addSeries() {
+//        if (((TabController) parentController).isVMF()) {
+//            if (((VMF) ((TabController) parentController).getFunction()).isCanBePlotted()) {
+//                ((VMF) ((TabController) parentController).getFunction()).getIndexForPlot().ifPresent(matrix -> {
+//                    TabulatedFunction tabulatedFunction = factory.create(
+//                            ((VMF) ((TabController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(0, 0)], 0),
+//                            -10, 10, 1001
+//                    );
+//                    addSeriesInGeneral(((TabController) parentController).getObservableList(), tabulatedFunction);
+//                    for (int i = 1; i < matrix.getRowDimension(); i++) {
+//                        tabulatedFunction = factory.create(
+//                                ((VMF) ((TabController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(i, 0)], i),
+//                                -10, 10, 1001
+//                        );
+//                        addSeriesInGeneral(((TabController) parentController).getObservableList(), tabulatedFunction);
+//                    }
+//                });
+//            } else {
+//                AlertWindows.showWarning("Unsupported operation");
+//            }
+//        } else {
+//            addSeriesInGeneral(((TabController) parentController).getObservableList(), (TabulatedFunction) ((TabController) parentController).getFunction());
+//        }
+//    }
+//
+//    public void setSeries() {
+//        if (((TabController) parentController).isVMF()) {
+//            if (((VMF) ((TabController) parentController).getFunction()).isCanBePlotted()) {
+//                ((VMF) ((TabController) parentController).getFunction()).getIndexForPlot().ifPresent(matrix -> {
+//                    TabulatedFunction tabulatedFunction = factory.create(
+//                            ((VMF) ((TabController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(0, 0)], 0),
+//                            -10, 10, 1001
+//                    );
+//                    setSeriesInGeneral(((TabController) parentController).getObservableList(), tabulatedFunction);
+//                    for (int i = 1; i < matrix.getRowDimension(); i++) {
+//                        tabulatedFunction = factory.create(
+//                                ((VMF) ((TabController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(i, 0)], i),
+//                                -10, 10, 1001
+//                        );
+//                        addSeriesInGeneral(((TabController) parentController).getObservableList(), tabulatedFunction);
+//                    }
+//                });
+//            } else {
+//                AlertWindows.showWarning("Unsupported operation");
+//            }
+//        } else {
+//            setSeriesInGeneral(((TabController) parentController).getObservableList(), (TabulatedFunction) ((TabController) parentController).getFunction());
+//        }
+//    }
 
     private void bindMouseEvents(LineChart<Number, Number> baseChart, Double strokeWidth) {
         detailsPopup = new PlotController.DetailsPopup();

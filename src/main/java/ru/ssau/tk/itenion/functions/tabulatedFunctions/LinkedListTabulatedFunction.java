@@ -1,5 +1,6 @@
 package ru.ssau.tk.itenion.functions.tabulatedFunctions;
 
+import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.itenion.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.itenion.exceptions.InterpolationException;
@@ -9,6 +10,7 @@ import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
 
 import java.io.Serializable;
+import java.lang.ref.SoftReference;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -23,6 +25,17 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
 
     private LinkedListTabulatedFunction() {
         head = null;
+    }
+
+    public LinkedListTabulatedFunction(ObservableList<Point> points) {
+        if (points.size() < 2) {
+            throw new IllegalArgumentException("Array less than minimum length");
+        }
+        if (points.stream().anyMatch(point -> point.y != point.y)){
+            throw new NaNException();
+        }
+        points.sorted((o1, o2) -> (int)Math.signum(o1.x - o2.x));
+        points.forEach(point -> addNode(point.x, point.y));
     }
 
     private LinkedListTabulatedFunction(LinkedListTabulatedFunction function) {
@@ -49,7 +62,7 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         }
         this.count = xValues.length;
         for (int i = 0; i < count; i++) {
-            this.addNode(xValues[i], yValues[i]);
+            addNode(xValues[i], yValues[i]);
         }
     }
 

@@ -54,23 +54,23 @@ public class TabulatedFunctionController implements Initializable, Openable {
 
     @FXML
     private void addRow() {
-        try {
-            double x = Double.parseDouble(textX.getText());
-            double y = Double.parseDouble(textY.getText());
-            if (!(textX.getText().isEmpty() && textY.getText().isEmpty())) {
-                if (!existingPoints.getOrDefault(x + "", false)) {
-                    list.add(new Point(x, y));
-                }
-                existingPoints.putIfAbsent(x + "", true);
-                ((TableController) parentController).sort(list);
-            } else if (textX.getText().isEmpty()) {
-                AlertWindows.showWarning("X field is empty");
-            } else if (textY.getText().isEmpty()) {
-                AlertWindows.showWarning("Y field is empty");
-            }
-        } catch (NumberFormatException e) {
-            AlertWindows.showWarning("Input correct values");
-        }
+//        try {
+//            double x = Double.parseDouble(textX.getText());
+//            double y = Double.parseDouble(textY.getText());
+//            if (!(textX.getText().isEmpty() && textY.getText().isEmpty())) {
+//                if (!existingPoints.getOrDefault(x + "", false)) {
+//                    list.add(new Point(x, y));
+//                }
+//                existingPoints.putIfAbsent(x + "", true);
+//                ((TabController) parentController).sort(list);
+//            } else if (textX.getText().isEmpty()) {
+//                AlertWindows.showWarning("X field is empty");
+//            } else if (textY.getText().isEmpty()) {
+//                AlertWindows.showWarning("Y field is empty");
+//            }
+//        } catch (NumberFormatException e) {
+//            AlertWindows.showWarning("Input correct values");
+//        }
     }
 
     public boolean isUnmodifiable() {
@@ -83,15 +83,15 @@ public class TabulatedFunctionController implements Initializable, Openable {
 
     @FXML
     private void save() {
-        if (list.size() > 1) {
-            ((TableController) parentController).createTab(functionTable.getItems());
-            functionTable.setItems(FXCollections.observableArrayList(new ArrayList<>()));
-            stage.close();
-        } else if (list.isEmpty()) {
-            AlertWindows.showWarning("Empty function");
-        } else {
-            AlertWindows.showWarning("Input more points");
-        }
+//        if (list.size() > 1) {
+//            ((TabController) parentController).createTab(functionTable.getItems());
+//            functionTable.setItems(FXCollections.observableArrayList(new ArrayList<>()));
+//            stage.close();
+//        } else if (list.isEmpty()) {
+//            AlertWindows.showWarning("Empty function");
+//        } else {
+//            AlertWindows.showWarning("Input more points");
+//        }
     }
 
     @FXML
@@ -119,8 +119,4 @@ public class TabulatedFunctionController implements Initializable, Openable {
     public void setFactory(TabulatedFunctionFactory factory) {
     }
 
-    @Override
-    public void setParentController(Openable controller) {
-        parentController = controller;
-    }
 }

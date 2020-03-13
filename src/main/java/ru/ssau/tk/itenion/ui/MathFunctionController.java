@@ -10,6 +10,7 @@ import ru.ssau.tk.itenion.exceptions.NaNException;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
+import ru.ssau.tk.itenion.ui.states.State;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Create new math function", type = Item.CONTROLLER, pathFXML = "mathFunction.fxml")
-public class MathFunctionController implements Openable, MathFunctionAccessible, CompositeFunctionAccessible {
+public class MathFunctionController extends TabVisitor implements Openable, MathFunctionAccessible, CompositeFunctionAccessible {
     @FXML
     TextField leftBorder;
     @FXML
@@ -34,33 +35,14 @@ public class MathFunctionController implements Openable, MathFunctionAccessible,
     private boolean isEditing = true;
 
     private Optional<?> value = Optional.empty();
-    private Openable parentController;
     private TabulatedFunctionFactory factory;
     private Map<String, MathFunction> functionMap;
     private Map<String, MathFunction> compositeFunctionMap;
 
     @FXML
     private void createFunction() {
-        value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
-        try {
-            TabulatedFunction function = factory.create(functionMap.get(comboBox.getValue()),
-                    Double.parseDouble(leftBorder.getText()),
-                    Double.parseDouble(rightBorder.getText()),
-                    Integer.parseInt(numberOfPoints.getText()),
-                    isStrict.isSelected(),
-                    isUnmodifiable.isSelected());
-            function.setMathFunction(functionMap.get(comboBox.getValue()));
-            ((TableController) parentController).createTab(function);
-            value = Optional.empty();
-            isEditing = true;
-            stage.close();
-        } catch (NullPointerException | NumberFormatException nfe) {
-            AlertWindows.showWarning("Введите корректные значения");
-        } catch (IllegalArgumentException e) {
-            AlertWindows.showWarning("Укажите положительное > 2 количество точек");
-        } catch (NaNException e) {
-            AlertWindows.showWarning("Результат не существует");
-        }
+        state.changeState(State.TF);
+        state.accept(this);
     }
 
     @FXML
@@ -107,16 +89,6 @@ public class MathFunctionController implements Openable, MathFunctionAccessible,
     }
 
     @Override
-    public Openable getParentController() {
-        return parentController;
-    }
-
-    @Override
-    public void setParentController(Openable controller) {
-        parentController = controller;
-    }
-
-    @Override
     public void updateCompositeFunctionNode() {
         comboBox.fireEvent(new ActionEvent());
     }
@@ -126,4 +98,30 @@ public class MathFunctionController implements Openable, MathFunctionAccessible,
         this.compositeFunctionMap = compositeFunctionMap;
     }
 
+    @Override
+    void visit(TabController.TFState tfState) {
+        value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
+        try {
+            TabulatedFunction function = factory.create(functionMap.get(comboBox.getValue()),
+                    Double.parseDouble(leftBorder.getText()),
+                    Double.parseDouble(rightBorder.getText()),
+                    Integer.parseInt(numberOfPoints.getText()),
+                    isStrict.isSelected(),
+                    isUnmodifiable.isSelected());
+            function.setMathFunction(functionMap.get(comboBox.getValue()));
+            tfState.createTab(function);
+            value = Optional.empty();
+            isEditing = true;
+            stage.close();
+        } catch (NullPointerException | NumberFormatException nfe) {
+            AlertWindows.showWarning("Введите корректные значения");
+        } catch (IllegalArgumentException e) {
+            AlertWindows.showWarning("Укажите положительное > 2 количество точек");
+        } catch (NaNException e) {
+            AlertWindows.showWarning("Результат не существует");
+        }
+    }
+
+    @Override
+    void visit(TabController.VMFState vmf) {}
 }

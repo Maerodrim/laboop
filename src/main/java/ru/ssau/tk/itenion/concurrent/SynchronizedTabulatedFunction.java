@@ -1,5 +1,6 @@
 package ru.ssau.tk.itenion.concurrent;
 
+import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
@@ -8,6 +9,7 @@ import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class SynchronizedTabulatedFunction implements TabulatedFunction {
     private static final long serialVersionUID = -1376170918005747022L;

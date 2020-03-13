@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 @ConnectableItem(name = "About function", type = Item.CONTROLLER, pathFXML = "about.fxml")
-public class AboutController implements Openable, Initializable {
+public class AboutController extends TabVisitor implements Openable, Initializable {
     @FXML
     Label baseMathFunction;
     @FXML
@@ -23,7 +23,6 @@ public class AboutController implements Openable, Initializable {
     Label rightBorder;
     @FXML
     Label numberOfPoints;
-    Openable parentController;
 
     private Stage stage;
 
@@ -32,20 +31,9 @@ public class AboutController implements Openable, Initializable {
         baseMathFunction.setWrapText(true);
     }
 
+    @FXML
     public void setInfo() {
-        if (((TableController) parentController).isVMF()) {
-            baseMathFunction.setText(((TableController) parentController).getFunction().getName());
-        } else {
-            TabulatedFunction function = ((TabulatedFunction) ((TableController) parentController).getFunction());
-            try {
-                baseMathFunction.setText(function.getName());
-            } catch (ClassCastException e) {
-                baseMathFunction.setText(getNameForce(function.getMathFunction()));
-            }
-            leftBorder.setText(function.leftBound() + "");
-            rightBorder.setText(function.rightBound() + "");
-            numberOfPoints.setText(function.getCount() + "");
-        }
+        state.accept(this);
     }
 
     private String getNameForce(MathFunction mathFunction) {
@@ -78,8 +66,20 @@ public class AboutController implements Openable, Initializable {
     }
 
     @Override
-    public void setParentController(Openable controller) {
-        parentController = controller;
+    public void visit(TabController.TFState tfState) {
+        TabulatedFunction function = tfState.getFunction();
+        try {
+            baseMathFunction.setText(function.getName());
+        } catch (ClassCastException e) {
+            baseMathFunction.setText(getNameForce(function.getMathFunction()));
+        }
+        leftBorder.setText(function.leftBound() + "");
+        rightBorder.setText(function.rightBound() + "");
+        numberOfPoints.setText(function.getCount() + "");
     }
 
+    @Override
+    public void visit(TabController.VMFState vmfState) {
+        baseMathFunction.setText(vmfState.getFunction().getName());
+    }
 }

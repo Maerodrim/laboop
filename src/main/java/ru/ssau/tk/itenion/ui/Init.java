@@ -32,9 +32,9 @@ public class Init extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(IO.FXML_PATH + "table.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(IO.FXML_PATH + "tab.fxml"));
         Parent root = loader.load();
-        TableController controller = loader.getController();
+        TabController controller = loader.getController();
         controller.setStage(primaryStage);
 
         disableWarning();

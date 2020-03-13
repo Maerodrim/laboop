@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 import java.util.stream.StreamSupport;
 
 @ConnectableItem(name = "Settings", type = Item.CONTROLLER, pathFXML = "settings.fxml")
-public class SettingsController implements Initializable, Openable {
+public class SettingsController extends TabVisitor implements Initializable, Openable {
     @FXML
     WebView webView;
     @FXML
@@ -29,13 +29,12 @@ public class SettingsController implements Initializable, Openable {
     @FXML
     ComboBox<Boolean> unmodifiableComboBox;
     private Stage stage;
-    private Openable parentController;
     private TabulatedFunctionFactory factory;
     private Map<String, TabulatedFunctionFactory> comboBoxMap;
 
     @FXML
     private void save() {
-        parentController.setFactory(factory);
+        state.accept(this);
         webView.getEngine().load(null);
         stage.close();
     }
@@ -43,8 +42,19 @@ public class SettingsController implements Initializable, Openable {
     void start() {
         stage.show();
         comboBox.setValue(comboBox.getItems().get(factory.getClass().getDeclaredAnnotation(ConnectableItem.class).priority() - 1));
-        strictComboBox.setValue(((TableController) parentController).isStrict());
-        unmodifiableComboBox.setValue(((TableController) parentController).isUnmodifiable());
+        TabVisitor.state.accept(new TabVisitor() {
+            @Override
+            void visit(TabController.TFState tfState) {
+                strictComboBox.setValue(tfState.isStrict());
+                unmodifiableComboBox.setValue(tfState.isUnmodifiable());
+            }
+
+            @Override
+            void visit(TabController.VMFState vmf) {
+                strictComboBox.setValue(vmf.isStrict());
+                unmodifiableComboBox.setValue(vmf.isUnmodifiable());
+            }
+        });
         WebEngine webEngine = webView.getEngine();
         String url = "https://www.youtube.com/watch?v=pYWocUFndO8";
         webEngine.load(url);
@@ -79,13 +89,33 @@ public class SettingsController implements Initializable, Openable {
     }
 
     @FXML
-    private void doOnClickOnUnmodifiableComboBox() {
-        ((TableController) parentController).setUnmodifiable(unmodifiableComboBox.getValue());
+    private void doOnClickOnStrictComboBox() {
+        TabVisitor.state.accept(new TabVisitor() {
+            @Override
+            void visit(TabController.TFState tfState) {
+                tfState.setStrict(strictComboBox.getValue());
+            }
+
+            @Override
+            void visit(TabController.VMFState vmf) {
+                vmf.setStrict(strictComboBox.getValue());
+            }
+        });
     }
 
     @FXML
-    private void doOnClickOnStrictComboBox() {
-        ((TableController) parentController).setStrict(strictComboBox.getValue());
+    private void doOnClickOnUnmodifiableComboBox() {
+        TabVisitor.state.accept(new TabVisitor() {
+            @Override
+            void visit(TabController.TFState tfState) {
+                tfState.setUnmodifiable(unmodifiableComboBox.getValue());
+            }
+
+            @Override
+            void visit(TabController.VMFState vmf) {
+                vmf.setUnmodifiable(unmodifiableComboBox.getValue());
+            }
+        });
     }
 
     public Stage getStage() {
@@ -102,8 +132,12 @@ public class SettingsController implements Initializable, Openable {
     }
 
     @Override
-    public void setParentController(Openable controller) {
-        this.parentController = controller;
+    void visit(TabController.TFState tfState) {
+        tfState.setFactory(factory);
     }
 
+    @Override
+    void visit(TabController.VMFState vmf) {
+        vmf.setFactory(factory);
+    }
 }

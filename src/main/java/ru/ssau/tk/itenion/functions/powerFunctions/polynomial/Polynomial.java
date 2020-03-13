@@ -2,6 +2,7 @@ package ru.ssau.tk.itenion.functions.powerFunctions.polynomial;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -22,6 +23,26 @@ public class Polynomial implements Serializable {
     public Polynomial(Map<Integer, Double> members) {
         this.members.putAll(members);
         deleteMembersWithZeroCoefficient();
+    }
+
+    public Polynomial multiply(double number) {
+        Map<Integer, Double> result = new TreeMap<>(members);
+        members.keySet().forEach(key -> result.put(key, members.get(key) * number));
+        return new Polynomial(result);
+    }
+
+    public Polynomial add(double number) {
+        Map<Integer, Double> result = new HashMap<>(members);
+        result.computeIfPresent(0, (key, value) -> value + number);
+        result.putIfAbsent(0, number);
+        return new Polynomial(result);
+    }
+
+    public Polynomial subtract(double number) {
+        Map<Integer, Double> result = new HashMap<>(members);
+        result.computeIfPresent(0, (key, value) -> value - number);
+        result.putIfAbsent(0, -number);
+        return new Polynomial(result);
     }
 
     /**

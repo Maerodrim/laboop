@@ -6,12 +6,10 @@ import java.util.Map;
 
 public interface CompositeFunctionAccessible {
 
-    default void connectCompositeFunctionMap() {
-        updateCompositeFunctionMap(((TableController) getParentController()).getCompositeFunctionMap());
+    default void connectCompositeFunctionMap(Map<String, MathFunction> compositeFunctionMap) {
+        updateCompositeFunctionMap(compositeFunctionMap);
         updateCompositeFunctionNode();
     }
-
-    Openable getParentController();
 
     void updateCompositeFunctionNode();
 

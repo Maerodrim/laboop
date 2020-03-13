@@ -5,11 +5,12 @@ import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 import ru.ssau.tk.itenion.functions.powerFunctions.ConstantFunction;
 import ru.ssau.tk.itenion.functions.powerFunctions.ZeroFunction;
+import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public interface MathFunction extends Serializable, Function, VAMF, Differentiable {
+public interface MathFunction extends Serializable, Nameable, VAMF, Differentiable {
 
     double apply(double x);
 
@@ -61,6 +62,9 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
     default MathFunction subtract(MathFunction afterFunction) {
         MathFunction function = this;
         MathFunction result;
+//        if (this instanceof LinearCombinationFunction && ((LinearCombinationFunction) this).getFunction() instanceof PolynomialFunction) {
+//            result =
+//        } else
         if (afterFunction instanceof ConstantFunction) {
             result = sum(new ConstantFunction(-((ConstantFunction) afterFunction).getConstant()));
         } else if (this instanceof ConstantFunction) {
@@ -96,7 +100,7 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
     }
 
     default MathFunction subtract(double number) {
-        return new LinearCombinationFunction(this, 1, number);
+        return new LinearCombinationFunction(this, 1, -number);
     }
 
     default MathFunction multiply(double number) {
@@ -230,11 +234,6 @@ public interface MathFunction extends Serializable, Function, VAMF, Differentiab
 
     default double apply(Matrix x) {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    default double[] getSize() {
-        return new double[]{1, 1};
     }
 
     @Override

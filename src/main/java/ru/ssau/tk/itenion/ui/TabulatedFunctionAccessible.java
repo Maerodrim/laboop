@@ -1,5 +1,6 @@
 package ru.ssau.tk.itenion.ui;
 
+import javafx.scene.control.Tab;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
@@ -7,12 +8,26 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface TabulatedFunctionAccessible {
-    default void connectTabulatedFunctionMap() {
+    default void connectTabulatedFunctionMap(Map<Tab, TabulatedFunction> tabulatedFunctionMap) {
         AtomicBoolean isNotSuitableSet = new AtomicBoolean(true);
-        ((TableController) getParentController()).getTabulatedFunctionMap().forEach((tab, function) -> {
-            if (((TableController) getParentController()).isVMF() || function != ((TableController) getParentController()).getFunction() &&
-                    !function.isStrict() &&
-                    ((TabulatedFunction) ((TableController) getParentController()).getFunction()).isCanBeComposed(function)) {
+        TabVisitor.state.accept(new TabVisitor() {
+            @Override
+            void visit(TabController.TFState tfState) {
+                tabulatedFunctionMap.forEach((tab, function) -> {
+                    if (function != tfState.getFunction() &&
+                            !function.isStrict() &&
+                            tfState.getFunction().isCanBeComposed(function)) {
+                        putFunction(tab, function);
+                    }
+                });
+            }
+
+            @Override
+            void visit(TabController.VMFState vmfState) {
+                tabulatedFunctionMap.forEach(this::putFunction);
+            }
+
+            void putFunction(Tab tab, TabulatedFunction function){
                 String name = function.isMathFunctionExist()
                         ? function.getName()
                         : tab.getText();
@@ -25,8 +40,6 @@ public interface TabulatedFunctionAccessible {
         }
         updateTabulatedFunctionNode();
     }
-
-    Openable getParentController();
 
     Map<String, MathFunction> getTabulatedFunctionMap();
 

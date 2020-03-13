@@ -1,16 +1,15 @@
 package ru.ssau.tk.itenion.functions.tabulatedFunctions;
 
+import javafx.collections.ObservableList;
 import ru.ssau.tk.itenion.enums.Variable;
-import ru.ssau.tk.itenion.functions.Insertable;
-import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.functions.Point;
-import ru.ssau.tk.itenion.functions.Removable;
+import ru.ssau.tk.itenion.functions.*;
 import ru.ssau.tk.itenion.operations.TabulatedDifferentialOperator;
 import ru.ssau.tk.itenion.ui.ExplicitAccessControllable;
 
 import java.util.Objects;
+import java.util.Optional;
 
-public interface TabulatedFunction extends MathFunction, Iterable<Point>, ExplicitAccessControllable, Insertable, Removable {
+public interface TabulatedFunction extends MathFunction, TabHolderMathFunction<TabulatedFunction>, Iterable<Point>, ExplicitAccessControllable, Insertable, Removable {
 
     int getCount();
 
@@ -73,5 +72,10 @@ public interface TabulatedFunction extends MathFunction, Iterable<Point>, Explic
     @Override
     default MathFunction differentiate() {
         return new TabulatedDifferentialOperator().derive(this);
+    }
+
+    @Override
+    default double[] getDimensionArray(){
+        return new double[]{1,1};
     }
 }

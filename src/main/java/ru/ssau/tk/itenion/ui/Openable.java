@@ -9,6 +9,4 @@ interface Openable {
     void setStage(Stage stage);
 
     void setFactory(TabulatedFunctionFactory factory);
-
-    void setParentController(Openable controller);
 }

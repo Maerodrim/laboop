@@ -2,6 +2,7 @@ package ru.ssau.tk.itenion.ui;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,8 +14,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
+import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.itenion.enums.BelongTo;
 import ru.ssau.tk.itenion.functions.MathFunction;
+import ru.ssau.tk.itenion.functions.Point;
+import ru.ssau.tk.itenion.functions.TabHolderMathFunction;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.powerFunctions.polynomial.PolynomialParser;
@@ -36,9 +40,9 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 class IO {
-    public static final BelongTo belongTo = BelongTo.STANISLAV;
+    public static final BelongTo belongTo = BelongTo.VALENTIN;
     static final String FXML_PATH = "fxml/";
-    static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions"; // будеть работать только
+    static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions";
     private static final TextInputDialog dialog = new TextInputDialog();
     public static Predicate<String> isDouble = s -> {
         try {
@@ -134,6 +138,10 @@ class IO {
         fileChooser.setTitle("Save function");
         fileChooser.getExtensionFilters().addAll(EXTENSION_FILTERS);
         return fileChooser.showSaveDialog(stage);
+    }
+
+    public static void sort(@NotNull ObservableList<Point> list) {
+        list.sort(Comparator.comparingDouble(point -> point.x));
     }
 
     static <T extends Openable> T initializeModalityWindow(String pathFXML, T modalityWindow) {
@@ -237,7 +245,7 @@ class IO {
         return functionAtomicReference.get();
     }
 
-    private TabulatedFunction unwrap(TabulatedFunction function) {
+    private static TabulatedFunction unwrap(TabulatedFunction function) {
         boolean isStrict = function.isStrict();
         boolean isUnmodifiable = function.isUnmodifiable();
         if (isUnmodifiable && isStrict) {
@@ -250,7 +258,7 @@ class IO {
         return function;
     }
 
-    TabulatedFunction wrap(TabulatedFunction function) {
+    static TabulatedFunction wrap(TabulatedFunction function) {
         boolean isStrict = function.isStrict();
         boolean isUnmodifiable = function.isUnmodifiable();
         if (isUnmodifiable && isStrict) {
@@ -300,8 +308,8 @@ class IO {
         return isVMF;
     }
 
-    private ru.ssau.tk.itenion.functions.Function loadFunctionAs(File file, boolean allowVMF, boolean allowTF) {
-        ru.ssau.tk.itenion.functions.Function function = null;
+    private TabHolderMathFunction loadFunctionAs(File file, boolean allowVMF, boolean allowTF) {
+        TabHolderMathFunction function = null;
         Matcher m = FILE_EXTENSION_PATTERN.matcher(file.getPath());
         if ((!m.hitEnd() && (m.find()))) {
             switch (m.group(1)) {
@@ -342,7 +350,7 @@ class IO {
         return function;
     }
 
-    public ru.ssau.tk.itenion.functions.Function loadFunctionAs(File file) {
+    public TabHolderMathFunction loadFunctionAs(File file) {
         return loadFunctionAs(file, true, true);
     }
 

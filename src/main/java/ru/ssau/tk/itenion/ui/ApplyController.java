@@ -22,9 +22,8 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Apply", type = Item.CONTROLLER, pathFXML = "apply.fxml")
-public class ApplyController implements Initializable, Openable, TabulatedFunctionAccessible, MathFunctionAccessible, CompositeFunctionAccessible {
+public class ApplyController extends TabVisitor implements Initializable, Openable, TabulatedFunctionAccessible, MathFunctionAccessible, CompositeFunctionAccessible {
     private Stage stage;
-    private Openable parentController;
     private TabulatedFunctionFactory factory;
     private Map<String, Method> operationMap;
     private Map<String, MathFunction> tabulatedFunctionMap;
@@ -71,45 +70,12 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
 
     @FXML
     public void apply() {
-        try {
-            if (applyFunction instanceof TabulatedFunction) {
-                applyFunction = ((TabulatedFunction) applyFunction).getMathFunction();
-            }
-            TabulatedFunction function = (TabulatedFunction) operationMap.get(operationComboBox.getValue())
-                    .invoke(classes.get(operationMap.get(operationComboBox.getValue())).getDeclaredConstructor(TabulatedFunctionFactory.class)
-                                    .newInstance(((TableController) parentController).getFactory()),
-                            ((TableController) parentController).getFunction(),
-                            applyFunction);
-            function.offerStrict(((TableController) parentController).isStrict());
-            function.offerUnmodifiable(((TableController) parentController).isUnmodifiable());
-            ((TableController) parentController).createTab(function);
-            stage.close();
-        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {
-            AlertWindows.showError(e);
-        } catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof NaNException) {
-                AlertWindows.showWarning("Результат не существует");
-            } else if (e.getTargetException() instanceof NullPointerException) {
-                AlertWindows.showWarning("Выберите функцию");
-            } else {
-                AlertWindows.showError(e);
-            }
-        }
+        state.accept(this);
     }
 
     @FXML
     public void cancel() {
         stage.close();
-    }
-
-    @Override
-    public Openable getParentController() {
-        return parentController;
-    }
-
-    @Override
-    public void setParentController(Openable controller) {
-        parentController = controller;
     }
 
     public Map<String, MathFunction> getTabulatedFunctionMap() {
@@ -168,4 +134,34 @@ public class ApplyController implements Initializable, Openable, TabulatedFuncti
     public void updateCompositeFunctionMap(Map<String, MathFunction> compositeFunctionMap) {
         this.compositeFunctionMap = compositeFunctionMap;
     }
+
+    @Override
+    void visit(TabController.TFState tfState) {
+        try {
+            if (applyFunction instanceof TabulatedFunction) {
+                applyFunction = ((TabulatedFunction) applyFunction).getMathFunction();
+            }
+            TabulatedFunction function = (TabulatedFunction) operationMap.get(operationComboBox.getValue())
+                    .invoke(classes.get(operationMap.get(operationComboBox.getValue()))
+                            .getDeclaredConstructor(TabulatedFunctionFactory.class)
+                                    .newInstance(factory), tfState.getFunction(), applyFunction);
+            function.offerStrict(tfState.isStrict());
+            function.offerUnmodifiable(tfState.isUnmodifiable());
+            tfState.createTab(function);
+            stage.close();
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {
+            AlertWindows.showError(e);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof NaNException) {
+                AlertWindows.showWarning("Результат не существует");
+            } else if (e.getTargetException() instanceof NullPointerException) {
+                AlertWindows.showWarning("Выберите функцию");
+            } else {
+                AlertWindows.showError(e);
+            }
+        }
+    }
+
+    @Override
+    void visit(TabController.VMFState vmf) {}
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.itenion.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.itenion.exceptions.InterpolationException;
@@ -13,9 +14,10 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
+import java.util.*;
+import java.util.stream.IntStream;
 
 public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Serializable {
     private static final long serialVersionUID = 3990511369369675738L;
@@ -31,6 +33,24 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @JsonProperty("math function")
     @JsonSerialize(using = ToStringSerializer.class)
     private MathFunction mathFunction = null;
+
+    public ArrayTabulatedFunction(ObservableList<Point> points) {
+        if (points.size() < 2) {
+            throw new IllegalArgumentException("Array less than minimum length");
+        }
+        if (points.stream().anyMatch(point -> point.y != point.y)){
+            throw new NaNException();
+        }
+        points.sorted((o1, o2) -> (int)Math.signum(o1.x - o2.x));
+        xValues = new double[points.size()];
+        yValues = new double[points.size()];
+        count = points.size();
+        int i = 0;
+        for(Point point: points){
+            xValues[i] = point.x;
+            yValues[i++] = point.y;
+        }
+    }
 
     private ArrayTabulatedFunction() {
         xValues = new double[]{};

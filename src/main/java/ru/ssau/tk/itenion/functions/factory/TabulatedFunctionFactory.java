@@ -1,12 +1,16 @@
 package ru.ssau.tk.itenion.functions.factory;
 
+import javafx.collections.ObservableList;
 import ru.ssau.tk.itenion.functions.MathFunction;
+import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.StrictTabulatedFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.UnmodifiableTabulatedFunction;
 
 public interface TabulatedFunctionFactory {
     TabulatedFunction create(double[] xValues, double[] yValues);
+
+    TabulatedFunction create(ObservableList<Point> observableList);
 
     default TabulatedFunction createStrict(double[] xValues, double[] yValues) {
         return new StrictTabulatedFunction(create(xValues, yValues));

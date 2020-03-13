@@ -60,15 +60,16 @@ public class LinearCombinationFunction implements MathFunction {
         String name;
         if (function instanceof ConstantFunction) {
             name = (constant * ((ConstantFunction) function).getConstant() + shift) + "";
-        }
-        ConnectableItem item = function.getClass().getDeclaredAnnotation(ConnectableItem.class);
-        if (Objects.isNull(item) || !item.isAdjacentConstant()) {
-            name = constant + "*(" + function.getName() + ")";
         } else {
-            if (constant == 1) {
-                name = function.getName();
+            ConnectableItem item = function.getClass().getDeclaredAnnotation(ConnectableItem.class);
+            if (Objects.isNull(item) || !item.isAdjacentConstant()) {
+                name = constant + "*(" + function.getName() + ")";
             } else {
-                name = constant + function.getName();
+                if (constant == 1) {
+                    name = function.getName();
+                } else {
+                    name = constant + function.getName();
+                }
             }
         }
         if (shift != 0) {
@@ -76,6 +77,11 @@ public class LinearCombinationFunction implements MathFunction {
             name = name + sign + Math.abs(shift);
         }
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
     public MathFunction getFunction() {

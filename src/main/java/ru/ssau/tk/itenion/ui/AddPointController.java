@@ -1,5 +1,6 @@
 package ru.ssau.tk.itenion.ui;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
@@ -12,32 +13,17 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 @ConnectableItem(name = "Add point", type = Item.CONTROLLER, pathFXML = "addPoint.fxml")
-public class AddPointController implements Initializable, Openable {
+public class AddPointController extends TFTabVisitor implements Initializable, Openable {
     @FXML
     TextField x;
     @FXML
     TextField y;
 
     private Stage stage;
-    private Openable parentController;
 
     @FXML
     private void add() {
-        try {
-            Point point = new Point(Double.parseDouble(x.getText()), Double.parseDouble(y.getText()));
-            int index = ((TabulatedFunction) ((TableController) parentController).getFunction()).indexOfX(point.x);
-            if (index == -1) {
-                ((TableController) parentController).getObservableList().add(point);
-                ((TableController) parentController).sort();
-                ((TabulatedFunction) ((TableController) parentController).getFunction()).insert(point.x, point.y);
-                ((TabulatedFunction) ((TableController) parentController).getFunction()).setMathFunction(null);
-                stage.close();
-            } else {
-                AlertWindows.showWarning("Point already exists");
-            }
-        } catch (NumberFormatException e) {
-            AlertWindows.showWarning("Введите корректное значение");
-        }
+        state.accept(this);
     }
 
     @FXML
@@ -63,8 +49,22 @@ public class AddPointController implements Initializable, Openable {
     }
 
     @Override
-    public void setParentController(Openable controller) {
-        this.parentController = controller;
+    void visit(TabController.TFState tfState) {
+        try {
+            Point point = new Point(Double.parseDouble(x.getText()), Double.parseDouble(y.getText()));
+            int index = tfState.getFunction().indexOfX(point.x);
+            if (index == -1) {
+                ObservableList<Point> observableList = tfState.getObservableList();
+                observableList.add(point);
+                IO.sort(observableList);
+                tfState.getFunction().insert(point.x, point.y);
+                tfState.getFunction().setMathFunction(null);
+                stage.close();
+            } else {
+                AlertWindows.showWarning("Point already exists");
+            }
+        } catch (NumberFormatException e) {
+            AlertWindows.showWarning("Введите корректное значение");
+        }
     }
-
 }

@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Compose", type = Item.CONTROLLER, pathFXML = "compose.fxml")
-public class ComposeController implements Openable, MathFunctionAccessible, CompositeFunctionAccessible {
+public class ComposeController extends TFTabVisitor implements Openable, MathFunctionAccessible, CompositeFunctionAccessible {
     @FXML
     public CheckBox isStorable;
     @FXML
@@ -31,30 +31,7 @@ public class ComposeController implements Openable, MathFunctionAccessible, Comp
 
     @FXML
     public void composeFunction() {
-        TabulatedFunction parentFunction = ((TabulatedFunction) ((TableController) parentController).getFunction());
-        value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
-        try {
-            MathFunction mathFunction = functionMap.get(comboBox.getValue()).andThen(parentFunction.getMathFunction());
-            TabulatedFunction function = factory.create(
-                    mathFunction,
-                    parentFunction.leftBound(), parentFunction.rightBound(),
-                    parentFunction.getCount(),
-                    ((TableController) parentController).isStrict(),
-                    ((TableController) parentController).isUnmodifiable());
-            if (isStorable.isSelected()) {
-                ((TableController) parentController).addCompositeFunction(mathFunction);
-            }
-            ((TableController) parentController).createTab(function);
-            value = Optional.empty();
-            isEditing = true;
-            stage.close();
-        } catch (NullPointerException | NumberFormatException nfe) {
-            AlertWindows.showWarning("Введите корректные значения");
-        } catch (IllegalArgumentException e) {
-            AlertWindows.showWarning("Укажите положительное > 2 количество точек");
-        } catch (NaNException e) {
-            AlertWindows.showWarning("Результат не существует");
-        }
+        state.accept(this);
     }
 
     @FXML
@@ -91,7 +68,7 @@ public class ComposeController implements Openable, MathFunctionAccessible, Comp
     }
 
     @FXML
-    public void doOnAction() {
+    public void doOnShow() {
         if (isEditing) {
             synchronized (comboBox) {
                 functionMap.putAll(compositeFunctionMap);
@@ -107,16 +84,6 @@ public class ComposeController implements Openable, MathFunctionAccessible, Comp
     }
 
     @Override
-    public Openable getParentController() {
-        return parentController;
-    }
-
-    @Override
-    public void setParentController(Openable controller) {
-        this.parentController = controller;
-    }
-
-    @Override
     public void updateCompositeFunctionNode() {
         comboBox.fireEvent(new ActionEvent());
     }
@@ -124,5 +91,33 @@ public class ComposeController implements Openable, MathFunctionAccessible, Comp
     @Override
     public void updateCompositeFunctionMap(Map<String, MathFunction> compositeFunctionMap) {
         this.compositeFunctionMap = compositeFunctionMap;
+    }
+
+    @Override
+    void visit(TabController.TFState tfState) {
+        TabulatedFunction parentFunction = tfState.getFunction();
+        value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
+        try {
+            MathFunction mathFunction = functionMap.get(comboBox.getValue()).andThen(parentFunction.getMathFunction());
+            TabulatedFunction function = factory.create(
+                    mathFunction,
+                    parentFunction.leftBound(), parentFunction.rightBound(),
+                    parentFunction.getCount(),
+                    ((TabController) parentController).isStrict(),
+                    ((TabController) parentController).isUnmodifiable());
+            if (isStorable.isSelected()) {
+                ((TabController) parentController).addCompositeFunction(mathFunction);
+            }
+            tfState.createTab(function);
+            value = Optional.empty();
+            isEditing = true;
+            stage.close();
+        } catch (NullPointerException | NumberFormatException nfe) {
+            AlertWindows.showWarning("Введите корректные значения");
+        } catch (IllegalArgumentException e) {
+            AlertWindows.showWarning("Укажите положительное > 2 количество точек");
+        } catch (NaNException e) {
+            AlertWindows.showWarning("Результат не существует");
+        }
     }
 }

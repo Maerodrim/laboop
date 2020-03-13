@@ -5,19 +5,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
-import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 @ConnectableItem(name = "Calculate", type = Item.CONTROLLER, pathFXML = "calculate.fxml")
-public class CalculateController implements Initializable, Openable {
+public class CalculateController extends TabVisitor implements Initializable, Openable {
     @FXML
     TextField x;
     @FXML
     TextField y;
     private Stage stage;
-    private Openable parentController;
 
     @FXML
     private void cancel() {
@@ -26,11 +24,7 @@ public class CalculateController implements Initializable, Openable {
 
     @FXML
     private void calc() {
-        try {
-            y.setText("" + ((TabulatedFunction) ((TableController) parentController).getFunction()).apply(Double.parseDouble(x.getText())));
-        } catch (NumberFormatException e) {
-            AlertWindows.showWarning("Введите корректное значение");
-        }
+        state.accept(this);
     }
 
     @Override
@@ -51,7 +45,14 @@ public class CalculateController implements Initializable, Openable {
     }
 
     @Override
-    public void setParentController(Openable controller) {
-        this.parentController = controller;
+    void visit(TabController.TFState tfState) {
+        try {
+            y.setText("" + tfState.getFunction().apply(Double.parseDouble(x.getText())));
+        } catch (NumberFormatException e) {
+            AlertWindows.showWarning("Введите корректное значение");
+        }
     }
+
+    @Override
+    void visit(TabController.VMFState vmf) {}
 }

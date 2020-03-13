@@ -4,7 +4,7 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
-@ConnectableItem(name = "Целостепенная функция", priority = 13, type = Item.FUNCTION, hasParameter = true, parameterInstance = Integer.class)
+@ConnectableItem(name = "Целостепенная функция", priority = 13, type = Item.FUNCTION, hasParameter = true, parameterInstance = Integer.class, isAdjacentConstant = true)
 public class IntegerPowFunction extends AbstractPowFunction<Integer> {
     private static final long serialVersionUID = -8140593473469820529L;
 

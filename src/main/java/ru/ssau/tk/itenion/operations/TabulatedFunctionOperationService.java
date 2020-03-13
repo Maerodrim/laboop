@@ -1,5 +1,7 @@
 package ru.ssau.tk.itenion.operations;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import ru.ssau.tk.itenion.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
@@ -8,6 +10,9 @@ import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ConnectableItem(name = "", type = Item.OPERATION)
 public class TabulatedFunctionOperationService {
@@ -61,6 +66,14 @@ public class TabulatedFunctionOperationService {
             }
         }
         return points;
+    }
+
+    public static ObservableList<Point> asObservableList(TabulatedFunction function) {
+        List<Point> listPoint = new ArrayList<>();
+        for (Point point : function) {
+            listPoint.add(point);
+        }
+        return FXCollections.observableArrayList(listPoint);
     }
 
     public TabulatedFunctionFactory getFactory() {
