@@ -38,7 +38,6 @@ public class TabulatedFunctionController implements TabVisitorSimple, Initializa
     @FXML
     TableColumn<Point, Double> y;
     private Stage stage;
-    private TabulatedFunctionFactory factory;
     private ObservableList<Point> list;
 
     @Override
@@ -48,10 +47,6 @@ public class TabulatedFunctionController implements TabVisitorSimple, Initializa
         list = FXCollections.observableArrayList(new ArrayList<>());
         functionTable.setItems(list);
     }
-
-//    public void setFunctionTable(TableView<Point> functionTable) {
-//        this.functionTable = functionTable;
-//    }
 
     @FXML
     private void addRow() {
@@ -116,9 +111,5 @@ public class TabulatedFunctionController implements TabVisitorSimple, Initializa
 
     public void setStage(Stage stage) {
         this.stage = stage;
-    }
-
-    public void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
     }
 }

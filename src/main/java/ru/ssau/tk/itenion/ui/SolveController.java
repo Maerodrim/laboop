@@ -8,7 +8,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.numericalMethods.NumericalMethods;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 @ConnectableItem(name = "Solve", type = Item.CONTROLLER, pathFXML = "solve.fxml")
-public class SolveController implements TabVisitor, Initializable, Openable {
+public class SolveController implements TabVisitor, PlotAccessible, Initializable, Openable {
     @FXML
     ComboBox<String> numericalMethodsBox;
     @FXML
@@ -99,13 +98,9 @@ public class SolveController implements TabVisitor, Initializable, Openable {
         this.stage = stage;
     }
 
-    @Override
-    public void setFactory(TabulatedFunctionFactory factory) {
-    }
-
     @FXML
-    public void plot() {
-        anyState().accept(TabController.AnyTabState::plot);
+    public void locateTheRoots() {
+        plot();
     }
 
     @Override

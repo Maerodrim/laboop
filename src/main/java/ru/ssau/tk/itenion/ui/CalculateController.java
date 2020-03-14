@@ -41,10 +41,6 @@ public class CalculateController implements Initializable, Openable, TFTabVisito
     }
 
     @Override
-    public void setFactory(TabulatedFunctionFactory factory) {
-    }
-
-    @Override
     public void visit(TabController.TFState tfState) {
         try {
             y.setText("" + tfState.getFunction().apply(Double.parseDouble(x.getText())));

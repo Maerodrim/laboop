@@ -35,9 +35,6 @@ public class AddPointController implements TFTabVisitor, Openable {
     }
 
     @Override
-    public void setFactory(TabulatedFunctionFactory factory) {}
-
-    @Override
     public void visit(TabController.TFState tfState) {
         try {
             Point point = new Point(Double.parseDouble(x.getText()), Double.parseDouble(y.getText()));

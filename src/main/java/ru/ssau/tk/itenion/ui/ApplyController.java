@@ -22,9 +22,8 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Apply", type = Item.CONTROLLER, pathFXML = "apply.fxml")
-public class ApplyController implements TFTabVisitor, Initializable, Openable, TabulatedFunctionAccessible, MathFunctionAccessible, CompositeFunctionAccessible {
+public class ApplyController implements TFTabVisitor, FactoryAccessible, Initializable, Openable, TabulatedFunctionAccessible, MathFunctionAccessible, CompositeFunctionAccessible {
     private Stage stage;
-    private TabulatedFunctionFactory factory;
     private Map<String, Method> operationMap;
     private Map<String, MathFunction> fittingTabulatedFunctionsMap;
     private Map<String, MathFunction> mathFunctionsMap;
@@ -59,11 +58,6 @@ public class ApplyController implements TFTabVisitor, Initializable, Openable, T
     public void setStage(Stage stage) {
         this.stage = stage;
         this.stage.setOnCloseRequest(windowEvent -> fittingTabulatedFunctionsMap.clear());
-    }
-
-    @Override
-    public void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
     }
 
     @FXML
@@ -116,7 +110,7 @@ public class ApplyController implements TFTabVisitor, Initializable, Openable, T
     public void load() {
         File file = IO.load(stage);
         if (!Objects.equals(file, null)) {
-            applyFunction = new IO(factory).loadTabulatedFunctionAs(file);
+            applyFunction = new IO(factory()).loadTabulatedFunctionAs(file);
             if (((TabulatedFunction) applyFunction).isMathFunctionExist()) {
                 applyFunction = ((TabulatedFunction) applyFunction).getMathFunction();
             }
@@ -142,7 +136,7 @@ public class ApplyController implements TFTabVisitor, Initializable, Openable, T
             TabulatedFunction function = (TabulatedFunction) operationMap.get(operationComboBox.getValue())
                     .invoke(classes.get(operationMap.get(operationComboBox.getValue()))
                             .getDeclaredConstructor(TabulatedFunctionFactory.class)
-                                    .newInstance(factory), tfState.getFunction(), applyFunction);
+                                    .newInstance(factory()), tfState.getFunction(), applyFunction);
             tfState.createTab(function);
             stage.close();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {

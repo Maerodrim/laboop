@@ -47,8 +47,6 @@ public class VMFSV implements VMF {
                 dim++;
             }
         });
-        // fixme
-        System.out.println(this);
     }
 
     public boolean isCanBeSolved() {

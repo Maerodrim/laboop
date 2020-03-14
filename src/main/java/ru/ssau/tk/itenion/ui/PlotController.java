@@ -25,9 +25,11 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
+import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.Point;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
+import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,7 +39,7 @@ import java.util.*;
 import static java.lang.String.format;
 
 @ConnectableItem(name = "Plot", type = Item.CONTROLLER, pathFXML = "plot.fxml")
-public class PlotController implements Initializable, Openable {
+public class PlotController implements TabVisitor, FactoryAccessible, Initializable, Openable {
     private final Map<TabulatedFunction, Color> functionColorMap = new HashMap<>();
     private Stage stage;
     @FXML
@@ -45,11 +47,9 @@ public class PlotController implements Initializable, Openable {
     @FXML
     private LineChart<Number, Number> lineChart;
     private AnchorPane detailsWindow;
-    private Openable parentController;
     private PlotController.DetailsPopup detailsPopup;
     private double strokeWidth = 0.5;
     private int numberOfSeries = 0;
-    private TabulatedFunctionFactory factory;
 
     public static void removeLegend(LineChart<Number, Number> lineChart) {
         ((Legend) lineChart.lookup(".chart-legend")).getItems().clear();
@@ -79,17 +79,12 @@ public class PlotController implements Initializable, Openable {
         this.stage = stage;
     }
 
-    @Override
-    public void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
-    }
-
-    public void addSeriesInGeneral(ObservableList<Point> data, TabulatedFunction function) {
+    public void addSeriesInGeneral(ObservableList<XYChart.Data<Number, Number>> data, TabulatedFunction function) {
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.setName(function.getName());
         lineChart.getData().add(series);
         detailsPopup.addPopupRow(function);
-        data.forEach(point -> series.getData().add(new XYChart.Data<>(point.x, point.y)));
+        series.setData(data);
         functionColorMap.put(function, getColorFromCSS(series));
 
         removeLegend(lineChart);
@@ -144,62 +139,16 @@ public class PlotController implements Initializable, Openable {
         return color;
     }
 
-    public void setSeriesInGeneral(ObservableList<Point> data, TabulatedFunction function) {
+    public void setSeriesInGeneral(ObservableList<XYChart.Data<Number, Number>> data, TabulatedFunction function) {
         lineChart.getData().clear();
         detailsPopup.clear();
         numberOfSeries = 0;
         addSeriesInGeneral(data, function);
     }
 
-//    public void addSeries() {
-//        if (((TabController) parentController).isVMF()) {
-//            if (((VMF) ((TabController) parentController).getFunction()).isCanBePlotted()) {
-//                ((VMF) ((TabController) parentController).getFunction()).getIndexForPlot().ifPresent(matrix -> {
-//                    TabulatedFunction tabulatedFunction = factory.create(
-//                            ((VMF) ((TabController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(0, 0)], 0),
-//                            -10, 10, 1001
-//                    );
-//                    addSeriesInGeneral(((TabController) parentController).getObservableList(), tabulatedFunction);
-//                    for (int i = 1; i < matrix.getRowDimension(); i++) {
-//                        tabulatedFunction = factory.create(
-//                                ((VMF) ((TabController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(i, 0)], i),
-//                                -10, 10, 1001
-//                        );
-//                        addSeriesInGeneral(((TabController) parentController).getObservableList(), tabulatedFunction);
-//                    }
-//                });
-//            } else {
-//                AlertWindows.showWarning("Unsupported operation");
-//            }
-//        } else {
-//            addSeriesInGeneral(((TabController) parentController).getObservableList(), (TabulatedFunction) ((TabController) parentController).getFunction());
-//        }
-//    }
-//
-//    public void setSeries() {
-//        if (((TabController) parentController).isVMF()) {
-//            if (((VMF) ((TabController) parentController).getFunction()).isCanBePlotted()) {
-//                ((VMF) ((TabController) parentController).getFunction()).getIndexForPlot().ifPresent(matrix -> {
-//                    TabulatedFunction tabulatedFunction = factory.create(
-//                            ((VMF) ((TabController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(0, 0)], 0),
-//                            -10, 10, 1001
-//                    );
-//                    setSeriesInGeneral(((TabController) parentController).getObservableList(), tabulatedFunction);
-//                    for (int i = 1; i < matrix.getRowDimension(); i++) {
-//                        tabulatedFunction = factory.create(
-//                                ((VMF) ((TabController) parentController).getFunction()).getMathFunction(Variable.values()[(int) matrix.get(i, 0)], i),
-//                                -10, 10, 1001
-//                        );
-//                        addSeriesInGeneral(((TabController) parentController).getObservableList(), tabulatedFunction);
-//                    }
-//                });
-//            } else {
-//                AlertWindows.showWarning("Unsupported operation");
-//            }
-//        } else {
-//            setSeriesInGeneral(((TabController) parentController).getObservableList(), (TabulatedFunction) ((TabController) parentController).getFunction());
-//        }
-//    }
+    public void setSeries() {
+        state().accept(this);
+    }
 
     private void bindMouseEvents(LineChart<Number, Number> baseChart, Double strokeWidth) {
         detailsPopup = new PlotController.DetailsPopup();
@@ -280,6 +229,32 @@ public class PlotController implements Initializable, Openable {
 
     public int getNumberOfSeries() {
         return numberOfSeries;
+    }
+
+    @Override
+    public void visit(TabController.TFState tfState) {
+        setSeriesInGeneral(TabulatedFunctionOperationService.asSeriesData(tfState.getFunction()), tfState.getFunction());
+    }
+
+    @Override
+    public void visit(TabController.VMFState vmfState) {
+        if (vmfState.getFunction().isCanBePlotted()) {
+            vmfState.getFunction().getIndexForPlot().ifPresent(matrix -> {
+//                TabulatedFunction tabulatedFunction = factory().create(
+//                        vmfState.getFunction().getMathFunction(Variable.values()[(int) matrix.get(0, 0)], 0), 10, 10, 1001
+//                );
+//                addSeriesInGeneral(TabulatedFunctionOperationService.asSeriesData(tabulatedFunction), tabulatedFunction);
+//                for (int i = 1; i < matrix.getRowDimension(); i++) {
+//                    tabulatedFunction = factory().create(
+//                            vmfState.getFunction().getMathFunction(Variable.values()[(int) matrix.get(i, 0)], i),
+//                            -10, 10, 1001
+//                    );
+//                    addSeriesInGeneral(TabulatedFunctionOperationService.asSeriesData(tabulatedFunction), tabulatedFunction);
+//                }
+            });
+        } else {
+            AlertWindows.showWarning("Unsupported operation");
+        }
     }
 
     private class DetailsPopup extends VBox {

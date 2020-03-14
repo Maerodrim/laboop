@@ -3,8 +3,6 @@ package ru.ssau.tk.itenion.ui;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
-import javafx.beans.binding.NumberBinding;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,7 +19,6 @@ import javafx.util.Pair;
 import ru.ssau.tk.itenion.enums.SupportedSign;
 import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMFSV;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.ui.states.State;
@@ -34,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @ConnectableItem(name = "Vector function create", type = Item.CONTROLLER, pathFXML = "vectorFunction.fxml")
-public class VectorFunctionController implements Initializable, Openable, MathFunctionAccessible, CompositeFunctionAccessible, TabulatedFunctionAccessible, VMFTabVisitor {
+public class VectorFunctionController implements Initializable, FactoryAccessible, Openable, MathFunctionAccessible, CompositeFunctionAccessible, TabulatedFunctionAccessible, VMFTabVisitor {
     private Stage stage;
     private Map<Pair<Variable, Integer>, MathFunction> currentFunctions;
     private Map<Pair<Variable, Integer>, JFXTextField> functionTextFields;
@@ -52,7 +49,6 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
     @FXML
     private AnchorPane creatingPane;
     private AnchorPane createdPane;
-    private TabulatedFunctionFactory factory;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -98,7 +94,7 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
     public void load(Pair<Variable, Integer> nodeGrid) {
         File file = IO.loadTF(stage);
         if (!Objects.equals(file, null)) {
-            MathFunction function = new IO(factory).loadTabulatedFunctionAs(file);
+            MathFunction function = new IO(factory()).loadTabulatedFunctionAs(file);
             if (((TabulatedFunction) function).isMathFunctionExist()) {
                 function = ((TabulatedFunction) function).getMathFunction();
             }
@@ -168,11 +164,6 @@ public class VectorFunctionController implements Initializable, Openable, MathFu
         });
         stage.setWidth(width);
         this.stage = stage;
-    }
-
-    @Override
-    public void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
     }
 
     public void initGroup(Pair<Variable, Integer> nodeGrid) {

@@ -17,11 +17,10 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 @ConnectableItem(name = "Differentiate/Integrate", type = Item.CONTROLLER, pathFXML = "operator.fxml")
-public class OperatorController implements TFTabVisitor, Initializable, Openable {
+public class OperatorController implements TFTabVisitor, FactoryAccessible, Initializable, Openable {
 
     @FXML
     ComboBox<String> comboBox;
-    TabulatedFunctionFactory factory;
     private Stage stage;
     private Map<String, Method> operatorMap;
     private Map<Method, Class<?>> classes;
@@ -58,11 +57,6 @@ public class OperatorController implements TFTabVisitor, Initializable, Openable
         this.stage = stage;
     }
 
-    @Override
-    public void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
-    }
-
     @FXML
     public void cancel() {
         stage.close();
@@ -85,7 +79,7 @@ public class OperatorController implements TFTabVisitor, Initializable, Openable
                         .get(comboBox.getValue())
                         .invoke(classes.get(operatorMap.get(comboBox.getValue()))
                                 .getDeclaredConstructor(TabulatedFunctionFactory.class)
-                                .newInstance(factory), tfState.getFunction());
+                                .newInstance(factory()), tfState.getFunction());
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
                 AlertWindows.showError(e);
             }
@@ -97,7 +91,7 @@ public class OperatorController implements TFTabVisitor, Initializable, Openable
             } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
                 AlertWindows.showError(e);
             }
-            function = factory.create(
+            function = factory().create(
                     mathFunction,
                     sourceFunction.leftBound(), sourceFunction.rightBound(),
                     sourceFunction.getCount());

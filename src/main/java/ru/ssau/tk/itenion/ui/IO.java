@@ -6,7 +6,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -25,7 +28,6 @@ import ru.ssau.tk.itenion.functions.tabulatedFunctions.UnmodifiableTabulatedFunc
 import ru.ssau.tk.itenion.io.FunctionsIO;
 import ru.ssau.tk.itenion.numericalMethods.NumericalMethodsFactory;
 import ru.ssau.tk.itenion.numericalMethods.SNumericalMethodsFactory;
-import ru.ssau.tk.itenion.numericalMethods.VNumericalMethods;
 import ru.ssau.tk.itenion.numericalMethods.VNumericalMethodsFactory;
 
 import java.io.*;
@@ -46,9 +48,11 @@ class IO {
     static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions";
     private static final TextInputDialog dialog = new TextInputDialog();
     private static Map<BelongTo, NumericalMethodsFactory> numericalMethodsFactories = new HashMap<>();
+
     static {
         numericalMethodsFactories.put(BelongTo.VALENTIN, new VNumericalMethodsFactory());
         numericalMethodsFactories.put(BelongTo.STANISLAV, new SNumericalMethodsFactory());
+        dialog.setOnShowing(dialogEvent -> dialog.getEditor().setText(""));
     }
 
     public static NumericalMethodsFactory getNumericalMethodFactory() {
@@ -324,42 +328,49 @@ class IO {
         return isVMF;
     }
 
-    private TabHolderMathFunction loadFunctionAs(File file, boolean allowVMF, boolean allowTF) {
+    private TabHolderMathFunction loadFunctionAs(File file, boolean permitVMF, boolean permitTF) {
         TabHolderMathFunction function = null;
         Matcher m = FILE_EXTENSION_PATTERN.matcher(file.getPath());
         if ((!m.hitEnd() && (m.find()))) {
-            switch (m.group(1)) {
-                case ("json"): {
-                    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                        function = wrap(FunctionsIO.deserializeJson(reader, factory.getTabulatedFunctionClass()));
-                        isVMF = false;
-                    } catch (IOException e) {
-                        AlertWindows.showError(e);
+            if (permitTF) {
+                switch (m.group(1)) {
+                    case ("json"): {
+                        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                            function = wrap(FunctionsIO.deserializeJson(reader, factory.getTabulatedFunctionClass()));
+                            isVMF = false;
+                        } catch (IOException e) {
+                            AlertWindows.showError(e);
+                        }
+                        break;
                     }
-                    break;
-                }
-                case ("xml"): {
-                    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                        function = wrap(FunctionsIO.deserializeXml(reader, factory.getTabulatedFunctionClass()));
-                        isVMF = false;
-                    } catch (IOException e) {
-                        AlertWindows.showError(e);
+                    case ("xml"): {
+                        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                            function = wrap(FunctionsIO.deserializeXml(reader, factory.getTabulatedFunctionClass()));
+                            isVMF = false;
+                        } catch (IOException e) {
+                            AlertWindows.showError(e);
+                        }
+                        break;
                     }
-                    break;
-                }
-                case ("fnc"): {
-                    try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
-                        function = wrap(FunctionsIO.readTabulatedFunction(inputStream, factory));
-                        isVMF = false;
-                    } catch (IOException | ClassNotFoundException e) {
-                        AlertWindows.showError(e);
+                    case ("fnc"): {
+                        try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
+                            function = wrap(FunctionsIO.readTabulatedFunction(inputStream, factory));
+                            isVMF = false;
+                        } catch (IOException | ClassNotFoundException e) {
+                            AlertWindows.showError(e);
+                        }
+                        break;
                     }
-                    break;
+
                 }
-                case ("vmf"): {
-                    isVMF = true;
-                    //todo
-                    break;
+            }
+            if (permitVMF) {
+                switch (m.group(1)) {
+                    case ("vmf"): {
+                        isVMF = true;
+                        //todo
+                        break;
+                    }
                 }
             }
         }

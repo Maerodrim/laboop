@@ -62,10 +62,6 @@ public class AboutController implements TabVisitor, Openable, Initializable {
     }
 
     @Override
-    public void setFactory(TabulatedFunctionFactory factory) {
-    }
-
-    @Override
     public void visit(TabController.TFState tfState) {
         TabulatedFunction function = tfState.getFunction();
         try {

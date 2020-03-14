@@ -1,7 +1,7 @@
 package ru.ssau.tk.itenion.ui;
 
 public interface AnyTabVisitor{
-    default AnyTabHolderState anyState(){
+    default TabController.AnyTabState anyState(){
         return TabController.anyTabState;
     }
 

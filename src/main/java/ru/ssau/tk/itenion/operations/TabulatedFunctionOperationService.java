@@ -2,6 +2,7 @@ package ru.ssau.tk.itenion.operations;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.chart.XYChart;
 import ru.ssau.tk.itenion.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
@@ -74,6 +75,14 @@ public class TabulatedFunctionOperationService {
             listPoint.add(point);
         }
         return FXCollections.observableArrayList(listPoint);
+    }
+
+    public static ObservableList<XYChart.Data<Number, Number>> asSeriesData(TabulatedFunction function){
+        ObservableList<XYChart.Data<Number, Number>> data = FXCollections.observableArrayList();
+        for (Point point : function) {
+            data.add(new XYChart.Data<>(point.x, point.y));
+        }
+        return data;
     }
 
     public TabulatedFunctionFactory getFactory() {

@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.exceptions.NaNException;
 import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.ui.states.State;
 
@@ -18,7 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Create new math function", type = Item.CONTROLLER, pathFXML = "mathFunction.fxml")
-public class MathFunctionController implements Openable, TFTabVisitor, MathFunctionAccessible, CompositeFunctionAccessible {
+public class MathFunctionController implements Openable, FactoryAccessible, TFTabVisitor, MathFunctionAccessible, CompositeFunctionAccessible {
     @FXML
     TextField leftBorder;
     @FXML
@@ -35,7 +34,6 @@ public class MathFunctionController implements Openable, TFTabVisitor, MathFunct
     private boolean isEditing = true;
 
     private Optional<?> value = Optional.empty();
-    private TabulatedFunctionFactory factory;
     private Map<String, MathFunction> functionMap;
     private Map<String, MathFunction> compositeFunctionMap;
 
@@ -59,10 +57,6 @@ public class MathFunctionController implements Openable, TFTabVisitor, MathFunct
             value = IO.getValue(functionMap.get(comboBox.getSelectionModel().getSelectedItem())
                     .getClass().getDeclaredAnnotation(ConnectableItem.class));
         }
-    }
-
-    public void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
     }
 
     @Override
@@ -102,7 +96,7 @@ public class MathFunctionController implements Openable, TFTabVisitor, MathFunct
     public void visit(TabController.TFState tfState) {
         value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
         try {
-            TabulatedFunction function = factory.create(functionMap.get(comboBox.getValue()),
+            TabulatedFunction function = factory().create(functionMap.get(comboBox.getValue()),
                     Double.parseDouble(leftBorder.getText()),
                     Double.parseDouble(rightBorder.getText()),
                     Integer.parseInt(numberOfPoints.getText()),

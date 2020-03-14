@@ -12,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.atteo.classindex.ClassIndex;
+import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.ArrayTabulatedFunctionFactory;
@@ -74,7 +75,6 @@ public class TabController implements Initializable, Openable {
             controller = IO.initializeModalityWindow(path, controller);
             controller.getStage().initOwner(stage);
             controller.getStage().setTitle(controller.getClass().getDeclaredAnnotation(ConnectableItem.class).name());
-            controller.setFactory(factory);
             return controller;
         }
     };
@@ -289,11 +289,11 @@ public class TabController implements Initializable, Openable {
 
     @FXML
     public void plot() {
-//        if (isTabExist()) {
-//            PlotController controller = (PlotController) lookupController();
-//            controller.setSeries();
-//            controller.getStage().show();
-//        }
+        if (isTabExist()) {
+            PlotController controller = (PlotController) lookupController();
+            controller.setSeries();
+            controller.getStage().show();
+        }
     }
 
     @FXML
@@ -363,10 +363,6 @@ public class TabController implements Initializable, Openable {
         return tabulatedFunctionMap;
     }
 
-    public void addCompositeFunction(MathFunction function) {
-        compositeFunctionMap.put(function.getName(), function);
-    }
-
     public Tab getCurrentTab() {
         return currentTab;
     }
@@ -375,14 +371,9 @@ public class TabController implements Initializable, Openable {
         return compositeFunctionMap;
     }
 
-    public final class AnyTabState implements AnyTabHolderState {
+    public final class AnyTabState {
 
         private AnyTabState() {
-        }
-
-        @Override
-        public void accept(AnyTabVisitor visitor) {
-            visitor.visit(this);
         }
 
         public boolean isStrict() {
@@ -407,6 +398,14 @@ public class TabController implements Initializable, Openable {
 
         public void plot() {
             tabController.plot();
+        }
+
+        public TabulatedFunctionFactory getFactory(){
+            return factory;
+        }
+
+        public void addCompositeFunction(MathFunction function) {
+            compositeFunctionMap.put(function.getName(), function);
         }
     }
 

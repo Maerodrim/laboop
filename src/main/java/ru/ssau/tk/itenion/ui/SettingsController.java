@@ -29,23 +29,20 @@ public class SettingsController implements AnyTabVisitor, Initializable, Openabl
     @FXML
     ComboBox<Boolean> unmodifiableComboBox;
     private Stage stage;
-    private TabulatedFunctionFactory factory;
     private Map<String, TabulatedFunctionFactory> comboBoxMap;
+    private TabulatedFunctionFactory factory;
 
     @FXML
     private void save() {
-        anyState().accept(this);
         webView.getEngine().load(null);
         stage.close();
     }
 
     void start() {
         stage.show();
-        comboBox.setValue(comboBox.getItems().get(factory.getClass().getDeclaredAnnotation(ConnectableItem.class).priority() - 1));
-        anyState().accept(anyTabState -> {
-            strictComboBox.setValue(anyTabState.isStrict());
-            unmodifiableComboBox.setValue(anyTabState.isUnmodifiable());
-        });
+        comboBox.setValue(comboBox.getItems().get(anyState().getFactory().getClass().getDeclaredAnnotation(ConnectableItem.class).priority() - 1));
+        strictComboBox.setValue(anyState().isStrict());
+        unmodifiableComboBox.setValue(anyState().isUnmodifiable());
         WebEngine webEngine = webView.getEngine();
         String url = "https://www.youtube.com/watch?v=pYWocUFndO8";
         webEngine.load(url);
@@ -81,12 +78,12 @@ public class SettingsController implements AnyTabVisitor, Initializable, Openabl
 
     @FXML
     private void doOnClickOnStrictComboBox() {
-        anyState().accept(anyTabState -> anyTabState.setStrict(strictComboBox.getValue()));
+        anyState().setStrict(strictComboBox.getValue());
     }
 
     @FXML
     private void doOnClickOnUnmodifiableComboBox() {
-        anyState().accept(anyTabState -> anyTabState.setStrict(unmodifiableComboBox.getValue()));
+        anyState().setUnmodifiable(unmodifiableComboBox.getValue());
     }
 
     public Stage getStage() {
@@ -98,12 +95,7 @@ public class SettingsController implements AnyTabVisitor, Initializable, Openabl
     }
 
     @Override
-    public void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
-    }
-
-    @Override
-    public void visit(TabController.AnyTabState anyTabState) {
+    public void visit(TabController.AnyTabState anyTabState){
         anyTabState.setFactory(factory);
     }
 }

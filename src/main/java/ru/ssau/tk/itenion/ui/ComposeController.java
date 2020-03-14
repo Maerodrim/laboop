@@ -16,16 +16,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Compose", type = Item.CONTROLLER, pathFXML = "compose.fxml")
-public class ComposeController implements Openable, MathFunctionAccessible, CompositeFunctionAccessible, TFTabVisitor {
+public class ComposeController implements Openable, FactoryAccessible, MathFunctionAccessible, CompositeFunctionAccessible, TFTabVisitor {
     @FXML
     public CheckBox isStorable;
     @FXML
     ComboBox<String> comboBox;
     private Stage stage;
-    private Openable parentController;
     private Map<String, MathFunction> functionMap;
     private Map<String, MathFunction> compositeFunctionMap;
-    private TabulatedFunctionFactory factory;
     private Optional<?> value = Optional.empty();
     private boolean isEditing = true;
 
@@ -49,11 +47,6 @@ public class ComposeController implements Openable, MathFunctionAccessible, Comp
             isEditing = true;
         });
         this.stage = stage;
-    }
-
-    @Override
-    public void setFactory(TabulatedFunctionFactory factory) {
-        this.factory = factory;
     }
 
     @Override
@@ -99,14 +92,12 @@ public class ComposeController implements Openable, MathFunctionAccessible, Comp
         value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
         try {
             MathFunction mathFunction = functionMap.get(comboBox.getValue()).andThen(parentFunction.getMathFunction());
-            TabulatedFunction function = factory.create(
+            TabulatedFunction function = factory().create(
                     mathFunction,
                     parentFunction.leftBound(), parentFunction.rightBound(),
-                    parentFunction.getCount(),
-                    ((TabController) parentController).isStrict(),
-                    ((TabController) parentController).isUnmodifiable());
+                    parentFunction.getCount());
             if (isStorable.isSelected()) {
-                ((TabController) parentController).addCompositeFunction(mathFunction);
+                anyState().addCompositeFunction(mathFunction);
             }
             tfState.createTab(function);
             value = Optional.empty();

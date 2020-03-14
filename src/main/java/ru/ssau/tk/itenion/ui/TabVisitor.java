@@ -6,9 +6,9 @@ public interface TabVisitor {
 
     void visit(TabController.VMFState vmfState);
 
-    default AnyTabHolderState anyState(){
-        return TabController.anyTabState;
-    }
+    //default AnyTabHolderState anyState(){
+    //    return TabController.anyTabState;
+    //}
 
     default TabHolderState state(){
         return TabController.state;

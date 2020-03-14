@@ -32,10 +32,6 @@ public class DeletePointController implements Openable, TFTabVisitor {
     }
 
     @Override
-    public void setFactory(TabulatedFunctionFactory factory) {
-    }
-
-    @Override
     public void visit(TabController.TFState tfState) {
         try {
             int index = tfState.getFunction().indexOfX(Double.parseDouble(x.getText()));
