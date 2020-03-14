@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Compose", type = Item.CONTROLLER, pathFXML = "compose.fxml")
-public class ComposeController extends TFTabVisitor implements Openable, MathFunctionAccessible, CompositeFunctionAccessible {
+public class ComposeController implements Openable, MathFunctionAccessible, CompositeFunctionAccessible, TFTabVisitor {
     @FXML
     public CheckBox isStorable;
     @FXML
@@ -31,7 +31,7 @@ public class ComposeController extends TFTabVisitor implements Openable, MathFun
 
     @FXML
     public void composeFunction() {
-        state.accept(this);
+        state().accept(this);
     }
 
     @FXML
@@ -63,7 +63,7 @@ public class ComposeController extends TFTabVisitor implements Openable, MathFun
     }
 
     @Override
-    public void setMathFunctionMap(Map<String, MathFunction> functionMap) {
+    public void setMathFunctionsMap(Map<String, MathFunction> functionMap) {
         this.functionMap = functionMap;
     }
 
@@ -94,7 +94,7 @@ public class ComposeController extends TFTabVisitor implements Openable, MathFun
     }
 
     @Override
-    void visit(TabController.TFState tfState) {
+    public void visit(TabController.TFState tfState) {
         TabulatedFunction parentFunction = tfState.getFunction();
         value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
         try {

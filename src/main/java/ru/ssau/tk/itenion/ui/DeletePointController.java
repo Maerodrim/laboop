@@ -8,14 +8,14 @@ import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 
 @ConnectableItem(name = "Delete point", type = Item.CONTROLLER, pathFXML = "deletePoint.fxml")
-public class DeletePointController extends TFTabVisitor implements Openable {
+public class DeletePointController implements Openable, TFTabVisitor {
     @FXML
     TextField x;
     private Stage stage;
 
     @FXML
     private void delete() {
-        state.accept(this);
+        state().accept(this);
     }
 
     @FXML
@@ -36,7 +36,7 @@ public class DeletePointController extends TFTabVisitor implements Openable {
     }
 
     @Override
-    void visit(TabController.TFState tfState) {
+    public void visit(TabController.TFState tfState) {
         try {
             int index = tfState.getFunction().indexOfX(Double.parseDouble(x.getText()));
             if (index == -1) {

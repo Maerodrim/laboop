@@ -3,6 +3,8 @@ package ru.ssau.tk.itenion.ui;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
+import javafx.beans.binding.NumberBinding;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -32,7 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @ConnectableItem(name = "Vector function create", type = Item.CONTROLLER, pathFXML = "vectorFunction.fxml")
-public class VectorFunctionController extends TabVisitor implements Initializable, Openable, MathFunctionAccessible, CompositeFunctionAccessible, TabulatedFunctionAccessible {
+public class VectorFunctionController implements Initializable, Openable, MathFunctionAccessible, CompositeFunctionAccessible, TabulatedFunctionAccessible, VMFTabVisitor {
     private Stage stage;
     private Map<Pair<Variable, Integer>, MathFunction> currentFunctions;
     private Map<Pair<Variable, Integer>, JFXTextField> functionTextFields;
@@ -46,7 +48,6 @@ public class VectorFunctionController extends TabVisitor implements Initializabl
     private Map<String, MathFunction> compositeFunctionMap;
     private RegexValidator validator;
     private int width;
-    //определяет количество узлов
     private ObservableList<Pair<Variable, Integer>> nodesGrid;
     @FXML
     private AnchorPane creatingPane;
@@ -58,7 +59,7 @@ public class VectorFunctionController extends TabVisitor implements Initializabl
         nodesGrid = FXCollections.observableArrayList();
 
         validator = new RegexValidator();
-        validator.setRegexPattern("^([0-9]+.[0-9]+)|([0-9]+)$");
+        validator.setRegexPattern("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$");
         validator.setMessage("Incorrect");
 
         Arrays.stream(Variable.values())
@@ -138,21 +139,18 @@ public class VectorFunctionController extends TabVisitor implements Initializabl
     }
 
     @Override
-    void visit(TabController.TFState tfState) { }
-
-    @Override
-    void visit(TabController.VMFState vmf) {
+    public void visit(TabController.VMFState vmfState) {
         unbindFutureGroups();
         extractConstantsToXVariableFunctions();
         List<SupportedSign> supportedSignList = getSignList();
-        vmf.createTab(createdPane, new VMFSV(currentFunctions, supportedSignList));
+        vmfState.createTab(createdPane, new VMFSV(currentFunctions, supportedSignList));
         stage.close();
     }
 
     @FXML
     public void ok() {
-        state.changeState(State.VMF);
-        state.accept(this);
+        state().changeState(State.VMF);
+        state().accept(this);
     }
 
     @Override
@@ -164,11 +162,6 @@ public class VectorFunctionController extends TabVisitor implements Initializabl
     public void setStage(Stage stage) {
         stage.setOnShowing(windowEvent -> {
             functionTextFields.forEach((variableIntegerPair, textField) -> textField.setText(""));
-            extraTextFields.forEach((variableIntegerPair, textField) -> {
-                if (variableIntegerPair.getKey().ordinal() == Variable.values().length - 1) {
-                    textField.setText("");
-                }
-            });
             currentFunctions.clear();
             createdPane = new AnchorPane();
             initFutureGroups();
@@ -197,6 +190,7 @@ public class VectorFunctionController extends TabVisitor implements Initializabl
 
         JFXTextField extraTextField = extraTextFields.get(nodeGrid);
 
+        // относится к полям знаков
         if (nodeGrid.getKey().ordinal() != Variable.values().length - 1) {
             JFXComboBox<String> operationComboBox = new JFXComboBox<>();
             operationComboBox.setPrefSize(55, 35);
@@ -214,12 +208,14 @@ public class VectorFunctionController extends TabVisitor implements Initializabl
             extraTextField.textProperty().bind(operationComboBox.valueProperty());
 
             creatingPane.getChildren().addAll(functionsMenuBar, textField, operationComboBox, extraTextField);
-        } else {
+        }
+        // относится к полям констант справа
+        else {
             extraTextField.setPrefSize(70, 30);
             AnchorPane.setTopAnchor(extraTextField, 60. + (nodeGrid.getValue() - 1) * 100);
             AnchorPane.setLeftAnchor(extraTextField, 215. + nodeGrid.getKey().ordinal() * 180);
-            extraTextField.setText("0");
             extraTextField.getValidators().add(validator);
+            extraTextField.textProperty().setValue("0");
             extraTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue)
                     extraTextField.validate();
@@ -293,12 +289,12 @@ public class VectorFunctionController extends TabVisitor implements Initializabl
     }
 
     @Override
-    public void setMathFunctionMap(Map<String, MathFunction> mathFunctionMap) {
+    public void setMathFunctionsMap(Map<String, MathFunction> mathFunctionMap) {
         this.mathFunctionMap = mathFunctionMap;
     }
 
     @Override
-    public Map<String, MathFunction> getTabulatedFunctionMap() {
+    public Map<String, MathFunction> getFittingTabulatedFunctionsMap() {
         return tabulatedFunctionMap;
     }
 

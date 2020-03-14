@@ -14,26 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ConnectableItem(name = "Valentin", type = Item.NUMERICAL_METHOD)
-public class VNumericalMethods {
-    double left, right, eps;
-    Matrix initialApproximation;
-    private int iterationsNumber = 0;
-    private int dim = Variable.values().length;
-
+public class VNumericalMethods extends NumericalMethods{
     public VNumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
-        this(left, right, new double[]{initialApproximation}, eps);
+        super(left, right, initialApproximation, eps);
     }
 
     public VNumericalMethods(Double left, Double right, double[] initialApproximation, Double eps) {
-        if (initialApproximation.length == 1) {
-            dim = 1;
-        }
-        this.initialApproximation = new Matrix(dim, 1);
-        this.left = left;
-        this.right = right;
-        for (int i = 0; i < dim; i++)
-            this.initialApproximation.set(i, 0, initialApproximation[i]);
-        this.eps = eps;
+        super(left, right, initialApproximation, eps);
     }
 
     @ConnectableItem(name = "Valentin's Newton method", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)

@@ -22,13 +22,13 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Apply", type = Item.CONTROLLER, pathFXML = "apply.fxml")
-public class ApplyController extends TabVisitor implements Initializable, Openable, TabulatedFunctionAccessible, MathFunctionAccessible, CompositeFunctionAccessible {
+public class ApplyController implements TFTabVisitor, Initializable, Openable, TabulatedFunctionAccessible, MathFunctionAccessible, CompositeFunctionAccessible {
     private Stage stage;
     private TabulatedFunctionFactory factory;
     private Map<String, Method> operationMap;
-    private Map<String, MathFunction> tabulatedFunctionMap;
-    private Map<String, MathFunction> mathFunctionMap;
-    private Map<String, MathFunction> compositeFunctionMap;
+    private Map<String, MathFunction> fittingTabulatedFunctionsMap;
+    private Map<String, MathFunction> mathFunctionsMap;
+    private Map<String, MathFunction> compositeFunctionsMap;
     private Map<Method, Class<?>> classes;
     private MathFunction applyFunction;
 
@@ -40,14 +40,14 @@ public class ApplyController extends TabVisitor implements Initializable, Openab
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        tabulatedFunctionMap = new LinkedHashMap<>();
+        fittingTabulatedFunctionsMap = new LinkedHashMap<>();
         operationMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
         Map[] maps = IO.initializeMap(classes, operationMap, Item.OPERATION);
         classes = (Map<Method, Class<?>>) maps[0];
         operationMap = (Map<String, Method>) maps[1];
         operationComboBox.getItems().addAll(operationMap.keySet());
-        operationComboBox.setValue(operationComboBox.getItems().get(0));
+        operationComboBox.getSelectionModel().selectFirst();
     }
 
     @Override
@@ -58,9 +58,7 @@ public class ApplyController extends TabVisitor implements Initializable, Openab
     @Override
     public void setStage(Stage stage) {
         this.stage = stage;
-        this.stage.setOnCloseRequest(windowEvent -> {
-            tabulatedFunctionMap.clear();
-        });
+        this.stage.setOnCloseRequest(windowEvent -> fittingTabulatedFunctionsMap.clear());
     }
 
     @Override
@@ -70,7 +68,7 @@ public class ApplyController extends TabVisitor implements Initializable, Openab
 
     @FXML
     public void apply() {
-        state.accept(this);
+        state().accept(this);
     }
 
     @FXML
@@ -78,8 +76,8 @@ public class ApplyController extends TabVisitor implements Initializable, Openab
         stage.close();
     }
 
-    public Map<String, MathFunction> getTabulatedFunctionMap() {
-        return tabulatedFunctionMap;
+    public Map<String, MathFunction> getFittingTabulatedFunctionsMap() {
+        return fittingTabulatedFunctionsMap;
     }
 
     private void setMenuItems(Menu menu, Map<String, MathFunction> map) {
@@ -97,8 +95,8 @@ public class ApplyController extends TabVisitor implements Initializable, Openab
 
     @Override
     public void updateTabulatedFunctionNode() {
-        if (!tabulatedFunctionMap.isEmpty()) {
-            setMenuItems(currentFunctionMenu, tabulatedFunctionMap);
+        if (!fittingTabulatedFunctionsMap.isEmpty()) {
+            setMenuItems(currentFunctionMenu, fittingTabulatedFunctionsMap);
         } else {
             currentFunctionMenu.getItems().clear();
         }
@@ -106,12 +104,12 @@ public class ApplyController extends TabVisitor implements Initializable, Openab
 
     @Override
     public void setMathFunctionNode() {
-        setMenuItems(mathFunctionMenu, mathFunctionMap);
+        setMenuItems(mathFunctionMenu, mathFunctionsMap);
     }
 
     @Override
-    public void setMathFunctionMap(Map<String, MathFunction> functionMap) {
-        mathFunctionMap = functionMap;
+    public void setMathFunctionsMap(Map<String, MathFunction> functionMap) {
+        mathFunctionsMap = functionMap;
     }
 
     @FXML
@@ -127,16 +125,16 @@ public class ApplyController extends TabVisitor implements Initializable, Openab
 
     @Override
     public void updateCompositeFunctionNode() {
-        setMenuItems(compositeFunctionMenu, compositeFunctionMap);
+        setMenuItems(compositeFunctionMenu, compositeFunctionsMap);
     }
 
     @Override
     public void updateCompositeFunctionMap(Map<String, MathFunction> compositeFunctionMap) {
-        this.compositeFunctionMap = compositeFunctionMap;
+        this.compositeFunctionsMap = compositeFunctionMap;
     }
 
     @Override
-    void visit(TabController.TFState tfState) {
+    public void visit(TabController.TFState tfState) {
         try {
             if (applyFunction instanceof TabulatedFunction) {
                 applyFunction = ((TabulatedFunction) applyFunction).getMathFunction();
@@ -145,8 +143,6 @@ public class ApplyController extends TabVisitor implements Initializable, Openab
                     .invoke(classes.get(operationMap.get(operationComboBox.getValue()))
                             .getDeclaredConstructor(TabulatedFunctionFactory.class)
                                     .newInstance(factory), tfState.getFunction(), applyFunction);
-            function.offerStrict(tfState.isStrict());
-            function.offerUnmodifiable(tfState.isUnmodifiable());
             tfState.createTab(function);
             stage.close();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {
@@ -161,7 +157,4 @@ public class ApplyController extends TabVisitor implements Initializable, Openab
             }
         }
     }
-
-    @Override
-    void visit(TabController.VMFState vmf) {}
 }

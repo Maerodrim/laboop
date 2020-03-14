@@ -6,11 +6,11 @@ import java.util.Map;
 
 public interface MathFunctionAccessible {
     default void connectMathFunctionMap(Map<String, MathFunction> functionMap) {
-        setMathFunctionMap(functionMap);
+        setMathFunctionsMap(functionMap);
         setMathFunctionNode();
     }
 
     void setMathFunctionNode();
 
-    void setMathFunctionMap(Map<String, MathFunction> functionMap);
+    void setMathFunctionsMap(Map<String, MathFunction> functionMap);
 }

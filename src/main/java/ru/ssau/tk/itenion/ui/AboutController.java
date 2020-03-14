@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 @ConnectableItem(name = "About function", type = Item.CONTROLLER, pathFXML = "about.fxml")
-public class AboutController extends TabVisitor implements Openable, Initializable {
+public class AboutController implements TabVisitor, Openable, Initializable {
     @FXML
     Label baseMathFunction;
     @FXML
@@ -33,7 +33,7 @@ public class AboutController extends TabVisitor implements Openable, Initializab
 
     @FXML
     public void setInfo() {
-        state.accept(this);
+        state().accept(this);
     }
 
     private String getNameForce(MathFunction mathFunction) {

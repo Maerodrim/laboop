@@ -1,9 +1,16 @@
 package ru.ssau.tk.itenion.ui;
 
-public abstract class TabVisitor {
-    public static TabHolderState state;
+public interface TabVisitor {
 
-    abstract void visit(TabController.TFState tfState);
+    void visit(TabController.TFState tfState);
 
-    abstract void visit(TabController.VMFState vmf);
+    void visit(TabController.VMFState vmfState);
+
+    default AnyTabHolderState anyState(){
+        return TabController.anyTabState;
+    }
+
+    default TabHolderState state(){
+        return TabController.state;
+    }
 }

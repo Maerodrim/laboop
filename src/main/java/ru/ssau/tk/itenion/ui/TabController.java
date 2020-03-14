@@ -25,11 +25,13 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.StreamSupport;
 
 public class TabController implements Initializable, Openable {
 
+    private TabController tabController = this;
     private final TableColumn<Point, Double> x = new TableColumn<>("X");
     private final TableColumn<Point, Double> y = new TableColumn<>("Y");
     private Stage stage;
@@ -46,6 +48,8 @@ public class TabController implements Initializable, Openable {
     private boolean isUnmodifiable = false;
     public TFState tfState;
     public VMFState vmfState;
+    public static AnyTabState anyTabState;
+    public static TabHolderState state;
 
     @FXML
     private TabPane tabPane;
@@ -79,7 +83,8 @@ public class TabController implements Initializable, Openable {
     public void initialize(URL location, ResourceBundle resources) {
         tfState = new TFState();
         vmfState = new VMFState();
-        TabVisitor.state = tfState;
+        anyTabState = new AnyTabState();
+        state = tfState;
 
         bottomPane.setTop(null);
         bottomPane.setLeft(null);
@@ -181,27 +186,25 @@ public class TabController implements Initializable, Openable {
     }
 
     private boolean isTabExist() {
-        return !Objects.equals(currentTab, null);
+        return !Objects.isNull(currentTab);
     }
 
-//    private Openable lookupController() {
-//        return lookupController(Thread.currentThread().getStackTrace()[2].getMethodName());
-//    }
+    private void show(boolean isResizable, StackTraceElement stackTraceElement) {
+        Stage stage = lookupController(stackTraceElement.getMethodName()).getStage();
+        stage.setResizable(isResizable);
+        stage.showAndWait();
+    }
 
-    private Openable lookupController() {
-        return lookupController(Thread.currentThread().getStackTrace()[4].getMethodName());
+    private void showFromNestedClass(boolean isResizable) {
+        show(isResizable, Thread.currentThread().getStackTrace()[4]);
     }
 
     private void show(boolean isResizable) {
-        Stage stage = lookupController(Thread.currentThread().getStackTrace()[4].getMethodName()).getStage();
-        stage.setResizable(isResizable);
-        stage.showAndWait();
+        show(isResizable, Thread.currentThread().getStackTrace()[2]);
     }
 
-    private void show(boolean isResizable, int stackIndexShift) {
-        Stage stage = lookupController(Thread.currentThread().getStackTrace()[4 + stackIndexShift].getMethodName()).getStage();
-        stage.setResizable(isResizable);
-        stage.showAndWait();
+    private Openable lookupController() {
+        return lookupController(Thread.currentThread().getStackTrace()[2].getMethodName());
     }
 
     private Openable lookupController(String path) {
@@ -217,73 +220,70 @@ public class TabController implements Initializable, Openable {
 
     @FXML
     public void mathFunction() {
-        show(true, -2);
+        show(true);
     }
 
     @FXML
     public void vectorFunction() {
-        show(true, -2);
+        show(true);
     }
 
     Function<Boolean, TabVisitor> tabVisitorFunction = aBoolean -> new TabVisitor() {
         @Override
-        void visit(TFState tfState) {
-            if (aBoolean?!tfState.getFunction().isStrict():!tfState.getFunction().isUnmodifiable()) {
-                show(true);
+        public void visit(TFState tfState) {
+            if (aBoolean ? !tfState.getFunction().isStrict() : !tfState.getFunction().isUnmodifiable()) {
+                showFromNestedClass(true);
             } else {
-                String temp = aBoolean?"strict":"unmodifiable";
+                String temp = aBoolean ? "strict" : "unmodifiable";
                 AlertWindows.showWarning("Function is " + temp);
             }
         }
 
         @Override
-        void visit(VMFState vmf) {}
+        public void visit(VMFState vmfState) {
+        }
     };
 
     @FXML
     private void deletePoint() {
         if (isTabExist()) {
-            TabVisitor.state.accept(tabVisitorFunction.apply(false));
+            state.accept(tabVisitorFunction.apply(false));
         }
     }
 
     @FXML
     private void addPoint() {
         if (isTabExist()) {
-            TabVisitor.state.accept(tabVisitorFunction.apply(false));
+            state.accept(tabVisitorFunction.apply(false));
         }
     }
 
     @FXML
     private void calculate() {
         if (isTabExist()) {
-            TabVisitor.state.accept(tabVisitorFunction.apply(true));
+            state.accept(tabVisitorFunction.apply(true));
+        }
+    }
+
+    @FXML
+    private void compose() {
+        if (isTabExist()) {
+            state.accept(tabVisitorFunction.apply(true));
         }
     }
 
     @FXML
     private void about() {
         if (isTabExist()) {
-            TabVisitor.state.accept(new TabVisitor() {
-                @Override
-                void visit(TFState tabulatedFunction) {
-                    if (tabulatedFunction.getFunction().isMathFunctionExist()) {
-                        Openable controller = lookupController();
-                        ((AboutController) controller).setInfo();
-                        controller.getStage().show();
-                    } else {
-                        AlertWindows.showWarning("Function doesn't have base math function");
-                    }
-                }
-
-                @Override
-                void visit(VMFState vmf) {
-                    Openable controller = lookupController();
-                    ((AboutController) controller).setInfo();
-                    controller.getStage().show();
-                }
-
-            });
+            AtomicBoolean atomicBoolean = new AtomicBoolean(true);
+            state.accept((TFTabVisitor) tabulatedFunction -> atomicBoolean.set(tabulatedFunction.getFunction().isMathFunctionExist()));
+            if (atomicBoolean.get()) {
+                Openable controller = lookupController();
+                ((AboutController) controller).setInfo();
+                controller.getStage().show();
+            } else {
+                AlertWindows.showWarning("Function doesn't have base math function");
+            }
         }
     }
 
@@ -297,23 +297,18 @@ public class TabController implements Initializable, Openable {
     }
 
     @FXML
-    private void compose() {
-        if (isTabExist()) {
-            TabVisitor.state.accept(tabVisitorFunction.apply(true));
-        }
-    }
-
-    @FXML
     private void solve() {
-//        if (isTabExist()) {
-//            if (isVMF || !((TabulatedFunction) getFunction()).isStrict()) {
-//                SolveController controller = (SolveController) lookupController();
-//                controller.getStage().setResizable(false);
-//                controller.getStage().show();
-//            } else {
-//                AlertWindows.showWarning("Function is strict");
-//            }
-//        }
+        if (isTabExist()){
+            AtomicBoolean atomicBoolean = new AtomicBoolean(true);
+            state.accept((TFTabVisitor) tabulatedFunction -> atomicBoolean.set(!tabulatedFunction.getFunction().isStrict()));
+            if (atomicBoolean.get()) {
+                SolveController controller = (SolveController) lookupController();
+                controller.getStage().setResizable(false);
+                controller.getStage().show();
+            } else {
+                AlertWindows.showWarning("Function is strict");
+            }
+        }
     }
 
     @FXML
@@ -329,27 +324,15 @@ public class TabController implements Initializable, Openable {
     @FXML
     private void apply() {
         if (isTabExist()) {
-            TabVisitor.state.accept(new TabVisitor() {
-                @Override
-                void visit(TFState tfState) {
-                    show(false);
-                }
-
-                @Override
-                void visit(VMFState vmf) {}
-            });
+            state.accept((TFTabVisitor) tfState -> showFromNestedClass(false));
         }
     }
 
     @FXML
     private void operator() {
-//        if (!isVMF && isTabExist()) {
-//            if (!((TabulatedFunction) getFunction()).isStrict()) {
-//                show(true);
-//            } else {
-//                AlertWindows.showWarning("Function is strict");
-//            }
-//        }
+        if (isTabExist()) {
+            state.accept(tabVisitorFunction.apply(true));
+        }
     }
 
     public boolean isStrict() {
@@ -392,17 +375,54 @@ public class TabController implements Initializable, Openable {
         return compositeFunctionMap;
     }
 
+    public final class AnyTabState implements AnyTabHolderState {
+
+        private AnyTabState() {
+        }
+
+        @Override
+        public void accept(AnyTabVisitor visitor) {
+            visitor.visit(this);
+        }
+
+        public boolean isStrict() {
+            return isStrict;
+        }
+
+        public boolean isUnmodifiable() {
+            return isUnmodifiable;
+        }
+
+        public void setFactory(TabulatedFunctionFactory tfFactory) {
+            factory = tfFactory;
+        }
+
+        public void setStrict(boolean strict) {
+            isStrict = strict;
+        }
+
+        public void setUnmodifiable(boolean unmodifiable) {
+            isUnmodifiable = unmodifiable;
+        }
+
+        public void plot() {
+            tabController.plot();
+        }
+    }
+
     public final class TFState implements TabHolderState {
 
         public final State state = State.TF;
 
-        private TFState(){}
+        private TFState() {
+        }
 
+        @Override
         public TabulatedFunction getFunction() {
             return tabulatedFunctionMap.get(currentTab);
         }
 
-        public void createTab(TabulatedFunction function){
+        public void createTab(TabulatedFunction function) {
             createTab(TabulatedFunctionOperationService.asObservableList(function), function);
         }
 
@@ -415,6 +435,8 @@ public class TabController implements Initializable, Openable {
         }
 
         private void createTab(ObservableList<Point> list, TabulatedFunction function) {
+            function.offerStrict(isStrict);
+            function.offerUnmodifiable(isUnmodifiable);
             TableView<Point> table = new TableView<>();
             table.setItems(list);
             table.getColumns().addAll(x, y);
@@ -431,8 +453,7 @@ public class TabController implements Initializable, Openable {
                     currentTab = tab;
                     mainPane.setBottom(null);
                     mainPane.setBottom(bottomPane);
-                    TabVisitor.state = this;
-                    //isVMF = !tabulatedFunctionMap.containsKey(tab);
+                    TabController.state = this;
                     notifyAboutAccessibility(getFunction());
                 }
             });
@@ -503,32 +524,12 @@ public class TabController implements Initializable, Openable {
         public void changeState(State state) {
             switch (state) {
                 case TF:
-                    TabVisitor.state = tfState;
+                    TabController.state = tfState;
                     break;
                 case VMF:
-                    TabVisitor.state = vmfState;
+                    TabController.state = vmfState;
                     break;
             }
-        }
-
-        public boolean isStrict() {
-            return isStrict;
-        }
-
-        public boolean isUnmodifiable() {
-            return isUnmodifiable;
-        }
-
-        public void setFactory(TabulatedFunctionFactory tfFactory) {
-            factory = tfFactory;
-        }
-
-        public void setStrict(boolean strict) {
-            isStrict = strict;
-        }
-
-        public void setUnmodifiable(boolean unmodifiable) {
-            isUnmodifiable = unmodifiable;
         }
 
         @Override
@@ -541,8 +542,10 @@ public class TabController implements Initializable, Openable {
 
         public final State state = State.VMF;
 
-        private VMFState(){}
+        private VMFState() {
+        }
 
+        @Override
         public VMF getFunction() {
             return VMFMap.get(currentTab);
         }
@@ -556,12 +559,10 @@ public class TabController implements Initializable, Openable {
             tabPane.getTabs().add(tab);
             tabPane.getSelectionModel().select(tab);
             currentTab = tab;
-            //isVMF = true;
             VMFMap.put(tab, vmf);
             tab.setOnSelectionChanged(event -> {
                 if (tab.isSelected()) {
-                    //isVMF = !tabulatedFunctionMap.containsKey(tab);
-                    TabVisitor.state = this;
+                    TabController.state = this;
                     mainPane.setBottom(null);
                     currentTab = tab;
                 }
@@ -578,32 +579,12 @@ public class TabController implements Initializable, Openable {
         public void changeState(State state) {
             switch (state) {
                 case TF:
-                    TabVisitor.state = tfState;
+                    TabController.state = tfState;
                     break;
                 case VMF:
-                    TabVisitor.state = vmfState;
+                    TabController.state = vmfState;
                     break;
             }
-        }
-
-        public boolean isStrict() {
-            return isStrict;
-        }
-
-        public boolean isUnmodifiable() {
-            return isUnmodifiable;
-        }
-
-        public void setFactory(TabulatedFunctionFactory tfFactory) {
-            factory = tfFactory;
-        }
-
-        public void setStrict(boolean strict) {
-            isStrict = strict;
-        }
-
-        public void setUnmodifiable(boolean unmodifiable) {
-            isUnmodifiable = unmodifiable;
         }
 
         @Override

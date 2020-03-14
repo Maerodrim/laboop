@@ -10,9 +10,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public interface TabulatedFunctionAccessible {
     default void connectTabulatedFunctionMap(Map<Tab, TabulatedFunction> tabulatedFunctionMap) {
         AtomicBoolean isNotSuitableSet = new AtomicBoolean(true);
-        TabVisitor.state.accept(new TabVisitor() {
+        TabController.state.accept(new TabVisitor() {
             @Override
-            void visit(TabController.TFState tfState) {
+            public void visit(TabController.TFState tfState) {
                 tabulatedFunctionMap.forEach((tab, function) -> {
                     if (function != tfState.getFunction() &&
                             !function.isStrict() &&
@@ -23,7 +23,7 @@ public interface TabulatedFunctionAccessible {
             }
 
             @Override
-            void visit(TabController.VMFState vmfState) {
+            public void visit(TabController.VMFState vmfState) {
                 tabulatedFunctionMap.forEach(this::putFunction);
             }
 
@@ -31,17 +31,17 @@ public interface TabulatedFunctionAccessible {
                 String name = function.isMathFunctionExist()
                         ? function.getName()
                         : tab.getText();
-                getTabulatedFunctionMap().put(name, function);
+                getFittingTabulatedFunctionsMap().put(name, function);
                 isNotSuitableSet.set(false);
             }
         });
         if (isNotSuitableSet.get()) {
-            getTabulatedFunctionMap().clear();
+            getFittingTabulatedFunctionsMap().clear();
         }
         updateTabulatedFunctionNode();
     }
 
-    Map<String, MathFunction> getTabulatedFunctionMap();
+    Map<String, MathFunction> getFittingTabulatedFunctionsMap();
 
     void updateTabulatedFunctionNode();
 }

@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 @ConnectableItem(name = "Calculate", type = Item.CONTROLLER, pathFXML = "calculate.fxml")
-public class CalculateController extends TabVisitor implements Initializable, Openable {
+public class CalculateController implements Initializable, Openable, TFTabVisitor {
     @FXML
     TextField x;
     @FXML
@@ -24,7 +24,7 @@ public class CalculateController extends TabVisitor implements Initializable, Op
 
     @FXML
     private void calc() {
-        state.accept(this);
+        state().accept(this);
     }
 
     @Override
@@ -45,14 +45,11 @@ public class CalculateController extends TabVisitor implements Initializable, Op
     }
 
     @Override
-    void visit(TabController.TFState tfState) {
+    public void visit(TabController.TFState tfState) {
         try {
             y.setText("" + tfState.getFunction().apply(Double.parseDouble(x.getText())));
         } catch (NumberFormatException e) {
             AlertWindows.showWarning("Введите корректное значение");
         }
     }
-
-    @Override
-    void visit(TabController.VMFState vmf) {}
 }

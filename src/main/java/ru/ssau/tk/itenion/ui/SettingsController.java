@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 import java.util.stream.StreamSupport;
 
 @ConnectableItem(name = "Settings", type = Item.CONTROLLER, pathFXML = "settings.fxml")
-public class SettingsController extends TabVisitor implements Initializable, Openable {
+public class SettingsController implements AnyTabVisitor, Initializable, Openable {
     @FXML
     WebView webView;
     @FXML
@@ -34,7 +34,7 @@ public class SettingsController extends TabVisitor implements Initializable, Ope
 
     @FXML
     private void save() {
-        state.accept(this);
+        anyState().accept(this);
         webView.getEngine().load(null);
         stage.close();
     }
@@ -42,18 +42,9 @@ public class SettingsController extends TabVisitor implements Initializable, Ope
     void start() {
         stage.show();
         comboBox.setValue(comboBox.getItems().get(factory.getClass().getDeclaredAnnotation(ConnectableItem.class).priority() - 1));
-        TabVisitor.state.accept(new TabVisitor() {
-            @Override
-            void visit(TabController.TFState tfState) {
-                strictComboBox.setValue(tfState.isStrict());
-                unmodifiableComboBox.setValue(tfState.isUnmodifiable());
-            }
-
-            @Override
-            void visit(TabController.VMFState vmf) {
-                strictComboBox.setValue(vmf.isStrict());
-                unmodifiableComboBox.setValue(vmf.isUnmodifiable());
-            }
+        anyState().accept(anyTabState -> {
+            strictComboBox.setValue(anyTabState.isStrict());
+            unmodifiableComboBox.setValue(anyTabState.isUnmodifiable());
         });
         WebEngine webEngine = webView.getEngine();
         String url = "https://www.youtube.com/watch?v=pYWocUFndO8";
@@ -90,32 +81,12 @@ public class SettingsController extends TabVisitor implements Initializable, Ope
 
     @FXML
     private void doOnClickOnStrictComboBox() {
-        TabVisitor.state.accept(new TabVisitor() {
-            @Override
-            void visit(TabController.TFState tfState) {
-                tfState.setStrict(strictComboBox.getValue());
-            }
-
-            @Override
-            void visit(TabController.VMFState vmf) {
-                vmf.setStrict(strictComboBox.getValue());
-            }
-        });
+        anyState().accept(anyTabState -> anyTabState.setStrict(strictComboBox.getValue()));
     }
 
     @FXML
     private void doOnClickOnUnmodifiableComboBox() {
-        TabVisitor.state.accept(new TabVisitor() {
-            @Override
-            void visit(TabController.TFState tfState) {
-                tfState.setUnmodifiable(unmodifiableComboBox.getValue());
-            }
-
-            @Override
-            void visit(TabController.VMFState vmf) {
-                vmf.setUnmodifiable(unmodifiableComboBox.getValue());
-            }
-        });
+        anyState().accept(anyTabState -> anyTabState.setStrict(unmodifiableComboBox.getValue()));
     }
 
     public Stage getStage() {
@@ -132,12 +103,7 @@ public class SettingsController extends TabVisitor implements Initializable, Ope
     }
 
     @Override
-    void visit(TabController.TFState tfState) {
-        tfState.setFactory(factory);
-    }
-
-    @Override
-    void visit(TabController.VMFState vmf) {
-        vmf.setFactory(factory);
+    public void visit(TabController.AnyTabState anyTabState) {
+        anyTabState.setFactory(factory);
     }
 }

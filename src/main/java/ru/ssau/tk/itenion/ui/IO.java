@@ -6,10 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -26,6 +23,10 @@ import ru.ssau.tk.itenion.functions.tabulatedFunctions.StrictTabulatedFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.UnmodifiableTabulatedFunction;
 import ru.ssau.tk.itenion.io.FunctionsIO;
+import ru.ssau.tk.itenion.numericalMethods.NumericalMethodsFactory;
+import ru.ssau.tk.itenion.numericalMethods.SNumericalMethodsFactory;
+import ru.ssau.tk.itenion.numericalMethods.VNumericalMethods;
+import ru.ssau.tk.itenion.numericalMethods.VNumericalMethodsFactory;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -40,10 +41,20 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 class IO {
-    public static final BelongTo belongTo = BelongTo.VALENTIN;
+    public static final BelongTo belongTo = BelongTo.STANISLAV;
     static final String FXML_PATH = "fxml/";
     static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions";
     private static final TextInputDialog dialog = new TextInputDialog();
+    private static Map<BelongTo, NumericalMethodsFactory> numericalMethodsFactories = new HashMap<>();
+    static {
+        numericalMethodsFactories.put(BelongTo.VALENTIN, new VNumericalMethodsFactory());
+        numericalMethodsFactories.put(BelongTo.STANISLAV, new SNumericalMethodsFactory());
+    }
+
+    public static NumericalMethodsFactory getNumericalMethodFactory() {
+        return numericalMethodsFactories.get(belongTo);
+    }
+
     public static Predicate<String> isDouble = s -> {
         try {
             Double.parseDouble(s);
@@ -184,6 +195,11 @@ class IO {
     public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item) {
         return initializeMap(classes, map, item, connectableItem -> true, connectableItem -> true);
     }
+
+//    public static ConnectableItem getConnectableItem(Map<String, Method> map, ActionEvent event){
+//        return map.get(((ComboBox<String>) event.getSource()).getValue())
+//                .getDeclaredAnnotation(ConnectableItem.class);
+//    }
 
     public static Optional<String> getValue(String title, String headerText, String contentText, Predicate<String> isValid) {
         dialog.setTitle(title);

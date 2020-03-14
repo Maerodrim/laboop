@@ -13,27 +13,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ConnectableItem(name = "Stanislav", type = Item.NUMERICAL_METHOD)
-public class SNumericalMethods {
+public class SNumericalMethods extends NumericalMethods{
     private static final int NUMBER_OF_SEGMENT_SPLITS = 1001;
-    double left, right, eps;
-    Matrix initialApproximation;
-    private int iterationsNumber = 0;
-    private int dim = Variable.values().length;
 
     public SNumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
-        this(left, right, new double[]{initialApproximation}, eps);
+        super(left, right, initialApproximation, eps);
     }
 
     public SNumericalMethods(Double left, Double right, double[] initialApproximation, Double eps) {
-        if (initialApproximation.length == 1) {
-            dim = 1;
-        }
-        this.initialApproximation = new Matrix(dim, 1);
-        this.left = left;
-        this.right = right;
-        for (int i = 0; i < dim; i++)
-            this.initialApproximation.set(i, 0, initialApproximation[i]);
-        this.eps = eps;
+        super(left, right, initialApproximation, eps);
     }
 
     @ConnectableItem(name = "Half-division method all roots", type = Item.NUMERICAL_METHOD, priority = 1)
@@ -124,9 +112,5 @@ public class SNumericalMethods {
             iterationsNumber++;
         }
         return a;
-    }
-
-    public int getIterationsNumber() {
-        return iterationsNumber;
     }
 }

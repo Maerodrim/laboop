@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ConnectableItem(name = "Create new math function", type = Item.CONTROLLER, pathFXML = "mathFunction.fxml")
-public class MathFunctionController extends TabVisitor implements Openable, MathFunctionAccessible, CompositeFunctionAccessible {
+public class MathFunctionController implements Openable, TFTabVisitor, MathFunctionAccessible, CompositeFunctionAccessible {
     @FXML
     TextField leftBorder;
     @FXML
@@ -41,8 +41,8 @@ public class MathFunctionController extends TabVisitor implements Openable, Math
 
     @FXML
     private void createFunction() {
-        state.changeState(State.TF);
-        state.accept(this);
+        state().changeState(State.TF);
+        state().accept(this);
     }
 
     @FXML
@@ -72,7 +72,7 @@ public class MathFunctionController extends TabVisitor implements Openable, Math
     }
 
     @Override
-    public void setMathFunctionMap(Map<String, MathFunction> functionMap) {
+    public void setMathFunctionsMap(Map<String, MathFunction> functionMap) {
         this.functionMap = functionMap;
     }
 
@@ -99,7 +99,7 @@ public class MathFunctionController extends TabVisitor implements Openable, Math
     }
 
     @Override
-    void visit(TabController.TFState tfState) {
+    public void visit(TabController.TFState tfState) {
         value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
         try {
             TabulatedFunction function = factory.create(functionMap.get(comboBox.getValue()),
@@ -121,7 +121,4 @@ public class MathFunctionController extends TabVisitor implements Openable, Math
             AlertWindows.showWarning("Результат не существует");
         }
     }
-
-    @Override
-    void visit(TabController.VMFState vmf) {}
 }
