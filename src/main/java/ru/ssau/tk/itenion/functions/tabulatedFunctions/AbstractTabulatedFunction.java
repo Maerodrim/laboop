@@ -1,12 +1,8 @@
 package ru.ssau.tk.itenion.functions.tabulatedFunctions;
 
-import javafx.collections.ObservableList;
 import ru.ssau.tk.itenion.exceptions.ArrayIsNotSortedException;
 import ru.ssau.tk.itenion.exceptions.DifferentLengthOfArraysException;
 import ru.ssau.tk.itenion.functions.Point;
-
-import java.lang.ref.SoftReference;
-import java.util.Optional;
 
 public abstract class AbstractTabulatedFunction implements TabulatedFunction {
 

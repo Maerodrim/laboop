@@ -10,9 +10,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import ru.ssau.tk.itenion.enums.State;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
-import ru.ssau.tk.itenion.enums.State;
 
 import java.net.URL;
 import java.util.ArrayList;

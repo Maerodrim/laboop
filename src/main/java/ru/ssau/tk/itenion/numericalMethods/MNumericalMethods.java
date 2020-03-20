@@ -2,7 +2,6 @@ package ru.ssau.tk.itenion.numericalMethods;
 
 import Jama.Matrix;
 import ru.ssau.tk.itenion.enums.BelongTo;
-import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.operations.DifferentialOperator;
@@ -14,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ConnectableItem(name = "", type = Item.NUMERICAL_METHOD, belongTo = BelongTo.MAERODRIM)
-public class MNumericalMethods extends NumericalMethods{
+public class MNumericalMethods extends NumericalMethods {
     private static final int NUMBER_OF_SEGMENT_SPLITS = 1001;
 
     public MNumericalMethods(Double left, Double right, double initialApproximation, Double eps) {

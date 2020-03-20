@@ -78,7 +78,7 @@ public abstract class AbstractVAMF implements VAMF {
     public boolean isExistIdentityFunction() {
         AtomicReference<Boolean> isExist = new AtomicReference<>(false);
         functionMap.forEach((variable, function) -> {
-            if (LinearCombinationFunction.isValid(function)) {
+            if (LinearCombinationFunction.isValidForSimplePlot(function)) {
                 isExist.set(true);
             }
         });
@@ -89,7 +89,7 @@ public abstract class AbstractVAMF implements VAMF {
         if (dimension != 2) {
             return -1;
         }
-        if (functionMap.get(Variable.values()[0]) instanceof IdentityFunction || functionMap.get(Variable.values()[0]) instanceof LinearCombinationFunction && ((LinearCombinationFunction) functionMap.get(Variable.values()[0])).getFunction() instanceof IdentityFunction) {
+        if (LinearCombinationFunction.isValidForSimplePlot(functionMap.get(Variable.values()[0]))) {
             return 1;
         } else return 0;
     }

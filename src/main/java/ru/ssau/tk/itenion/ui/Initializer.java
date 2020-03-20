@@ -37,7 +37,7 @@ public class Initializer {
         }
     };
 
-    public Initializer(Stage ownerStage){
+    public Initializer(Stage ownerStage) {
         this.ownerStage = ownerStage;
     }
 
@@ -56,13 +56,6 @@ public class Initializer {
             AlertWindows.showError(e);
         }
         return modalityWindow;
-    }
-
-    public void initializeWindowControllers(Map<String, OpenableWindow> controllerMap) {
-        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.CONTROLLER)
-                .forEach(clazz -> controllerMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).pathFXML(),
-                        initializeWindowController.apply(clazz)));
     }
 
     public static void initializeMathFunctionMap(Map<String, MathFunction> mathFunctionMap) {
@@ -101,5 +94,12 @@ public class Initializer {
 
     public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item) {
         return initializeMap(classes, map, item, connectableItem -> true, connectableItem -> true);
+    }
+
+    public void initializeWindowControllers(Map<String, OpenableWindow> controllerMap) {
+        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.CONTROLLER)
+                .forEach(clazz -> controllerMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).pathFXML(),
+                        initializeWindowController.apply(clazz)));
     }
 }

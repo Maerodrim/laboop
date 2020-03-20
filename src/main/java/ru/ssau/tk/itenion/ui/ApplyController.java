@@ -28,6 +28,8 @@ import static ru.ssau.tk.itenion.ui.ParameterSupplier.setActualParameter;
 
 @ConnectableItem(name = "Apply", type = Item.CONTROLLER, pathFXML = "apply.fxml")
 public class ApplyController implements TFTabVisitor, FactoryAccessible, Initializable, OpenableWindow, TabulatedFunctionAccessible, MathFunctionAccessible, CompositeFunctionAccessible {
+    @FXML
+    public CheckBox isStorable;
     private Stage stage;
     private Map<String, Method> operationMap;
     private Map<String, MathFunction> fittingTabulatedFunctionsMap;
@@ -35,9 +37,6 @@ public class ApplyController implements TFTabVisitor, FactoryAccessible, Initial
     private Map<String, MathFunction> compositeFunctionsMap;
     private Map<Method, Class<?>> classes;
     private MathFunction applyFunction;
-    @FXML
-    public CheckBox isStorable;
-
     @FXML
     private Menu mathFunctionMenu, compositeFunctionMenu, currentFunctionMenu;
 
@@ -146,7 +145,7 @@ public class ApplyController implements TFTabVisitor, FactoryAccessible, Initial
             TabulatedFunction function = (TabulatedFunction) operationMap.get(operationComboBox.getValue())
                     .invoke(classes.get(operationMap.get(operationComboBox.getValue()))
                             .getDeclaredConstructor(TabulatedFunctionFactory.class)
-                                    .newInstance(factory()), tfState.getFunction(), applyFunction);
+                            .newInstance(factory()), tfState.getFunction(), applyFunction);
             tfState.createTab(function);
             stage.close();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException e) {

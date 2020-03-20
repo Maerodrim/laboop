@@ -1,11 +1,9 @@
 package ru.ssau.tk.itenion.functions.powerFunctions.polynomial;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Polynomial implements Serializable {
@@ -182,5 +180,15 @@ public class Polynomial implements Serializable {
             isFirstMember = false;
         }
         return builder.toString();
+    }
+
+    public boolean isEqualLinearCombination() {
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        members.forEach((degree, value) -> {
+            if ((degree == 1 && !Objects.isNull(value)) || (degree > 1 && Objects.isNull(value))) {
+                atomicBoolean.set(true);
+            }
+        });
+        return atomicBoolean.get();
     }
 }

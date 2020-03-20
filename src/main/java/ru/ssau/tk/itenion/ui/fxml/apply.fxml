@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
-<?import javafx.scene.*?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="597.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.ssau.tk.itenion.ui.ApplyController">
-   <children>
-       <MenuBar layoutY="5.0" prefHeight="35.0" prefWidth="102.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="490.0" AnchorPane.topAnchor="5.0">
-           <cursor>
-               <Cursor fx:constant="DEFAULT" />
-           </cursor>
-          <menus>
-              <Menu mnemonicParsing="false" text="Функции">
-                 <items>
-                     <Menu fx:id="mathFunctionMenu" mnemonicParsing="false" text="Мат. функции" />
-                     <Menu fx:id="currentFunctionMenu" mnemonicParsing="false" text="Текущие функции" />
-                     <Menu fx:id="compositeFunctionMenu" mnemonicParsing="false" text="Сохраненные композиции" />
-                     <MenuItem mnemonicParsing="false" onAction="#load" text="Загрузить" />
-                 </items>
-              </Menu>
-          </menus>
-       </MenuBar>
-       <ComboBox fx:id="operationComboBox" layoutX="113.0" layoutY="5.0" prefWidth="150.0" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="5.0" />
-       <Button layoutX="378.0" layoutY="7.0" mnemonicParsing="false" onAction="#apply" prefHeight="31.0" prefWidth="102.0" text="Принять" />
-       <Button layoutX="486.0" layoutY="7.0" mnemonicParsing="false" onAction="#cancel" prefHeight="31.0" prefWidth="102.0" text="Отменить" />
-      <JFXCheckBox fx:id="isStorable" layoutX="270.0" layoutY="12.0" prefHeight="21.0" prefWidth="102.0" text="Сохранить" />
-   </children>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="45.0" prefWidth="597.0" xmlns="http://javafx.com/javafx/8"
+            fx:controller="ru.ssau.tk.itenion.ui.ApplyController">
+    <children>
+        <MenuBar layoutY="5.0" prefHeight="35.0" prefWidth="102.0" AnchorPane.bottomAnchor="5.0"
+                 AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="490.0" AnchorPane.topAnchor="5.0">
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+            <menus>
+                <Menu mnemonicParsing="false" text="Функции">
+                    <items>
+                        <Menu fx:id="mathFunctionMenu" mnemonicParsing="false" text="Мат. функции"/>
+                        <Menu fx:id="currentFunctionMenu" mnemonicParsing="false" text="Текущие функции"/>
+                        <Menu fx:id="compositeFunctionMenu" mnemonicParsing="false" text="Сохраненные композиции"/>
+                        <MenuItem mnemonicParsing="false" onAction="#load" text="Загрузить"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <ComboBox fx:id="operationComboBox" layoutX="113.0" layoutY="5.0" prefWidth="150.0"
+                  AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="5.0"/>
+        <Button layoutX="378.0" layoutY="7.0" mnemonicParsing="false" onAction="#apply" prefHeight="31.0"
+                prefWidth="102.0" text="Принять"/>
+        <Button layoutX="486.0" layoutY="7.0" mnemonicParsing="false" onAction="#cancel" prefHeight="31.0"
+                prefWidth="102.0" text="Отменить"/>
+        <JFXCheckBox fx:id="isStorable" layoutX="270.0" layoutY="12.0" prefHeight="21.0" prefWidth="102.0"
+                     text="Сохранить"/>
+    </children>
 </AnchorPane>

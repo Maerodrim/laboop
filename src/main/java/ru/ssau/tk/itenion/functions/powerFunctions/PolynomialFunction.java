@@ -1,6 +1,7 @@
 package ru.ssau.tk.itenion.functions.powerFunctions;
 
 import ru.ssau.tk.itenion.functions.AbstractMathFunction;
+import ru.ssau.tk.itenion.functions.LinearCombinationFunction;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.powerFunctions.polynomial.Polynomial;
 import ru.ssau.tk.itenion.functions.powerFunctions.polynomial.PolynomialParser;
@@ -8,6 +9,7 @@ import ru.ssau.tk.itenion.functions.wrapFunctions.PseudoPolynomialFunction;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @ConnectableItem(name = "Полином", priority = 14, type = Item.FUNCTION, hasParameter = true, parameterInstance = String.class)
@@ -139,6 +141,20 @@ public class PolynomialFunction extends AbstractMathFunction implements MathFunc
                 }
             }
             return result;
+        }
+    }
+
+    public boolean isValidForPlot(){
+        return polynomial.isEqualLinearCombination();
+    }
+
+    public LinearCombinationFunction getLinearCombinationFunction() {
+        if (isValidForPlot()) {
+            var members = new HashMap<>(polynomial.getMembers());
+            members.putIfAbsent(0, 0.);
+            return new LinearCombinationFunction(new IdentityFunction(), members.get(1), members.get(0));
+        } else {
+            throw new UnsupportedOperationException("Cannot be convert to linear combination");
         }
     }
 

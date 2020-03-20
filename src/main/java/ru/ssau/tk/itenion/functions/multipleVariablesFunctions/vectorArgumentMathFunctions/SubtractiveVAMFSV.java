@@ -6,12 +6,12 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 
 import java.util.ArrayList;
 
-public class SubtractiveVAMF extends AbstractVAMF {
-    public SubtractiveVAMF() {
-        super(" + ");
+public class SubtractiveVAMFSV extends AbstractVAMF {
+    public SubtractiveVAMFSV() {
+        super(" - ");
     }
 
-    public SubtractiveVAMF(Variable variable, MathFunction mathFunction) {
+    public SubtractiveVAMFSV(Variable variable, MathFunction mathFunction) {
         super(variable, mathFunction, " - ");
     }
 

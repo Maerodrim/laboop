@@ -1,12 +1,10 @@
 package ru.ssau.tk.itenion.functions.tabulatedFunctions;
 
-import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
 
 import java.util.Iterator;
-import java.util.Optional;
 
 public class StrictTabulatedFunction implements TabulatedFunction {
     private static final long serialVersionUID = -3410726428353433261L;

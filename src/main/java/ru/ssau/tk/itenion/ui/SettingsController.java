@@ -95,7 +95,7 @@ public class SettingsController implements AnyTabVisitor, Initializable, Openabl
     }
 
     @Override
-    public void visit(TabController.AnyTabHolderState anyTabHolderState){
+    public void visit(TabController.AnyTabHolderState anyTabHolderState) {
         anyTabHolderState.setFactory(factory);
     }
 }

@@ -6,10 +6,10 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import ru.ssau.tk.itenion.enums.State;
 import ru.ssau.tk.itenion.exceptions.NaNException;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
-import ru.ssau.tk.itenion.enums.State;
 
 import java.util.ArrayList;
 import java.util.Map;

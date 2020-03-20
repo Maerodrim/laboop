@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
 import ru.ssau.tk.itenion.enums.Variable;
+import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
 
@@ -38,7 +39,7 @@ import static java.lang.String.format;
 
 @ConnectableItem(name = "Plot", type = Item.CONTROLLER, pathFXML = "plot.fxml")
 public class PlotController implements TabVisitor, FactoryAccessible, Initializable, OpenableWindow {
-    private final Map<TabulatedFunction, Color> functionColorMap = new HashMap<>();
+    private final Map<MathFunction, Color> functionColorMap = new HashMap<>();
     private Stage stage;
     @FXML
     private StackPane stackPane;
@@ -88,28 +89,20 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
         this.stage = stage;
     }
 
-    public void addSeriesInGeneral(ObservableList<XYChart.Data<Number, Number>> data, TabulatedFunction function) {
+    public void addSeries(ObservableList<XYChart.Data<Number, Number>> data, TabulatedFunction function, Variable variable) {
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.setData(data);
         series.setName(function.getName());
         lineChart.getData().add(series);
-        functionColorMap.putIfAbsent(function, getColorFromCSS(series));
-        detailsPopup.addPopupRow(function);
         removeLegend(lineChart);
-        //addSeriesInGeneral(series, false);
+        functionColorMap.putIfAbsent(function.getMathFunction(), getColorFromCSS(series));
+        detailsPopup.addPopupRow(function, variable);
     }
 
-//    public void addSeriesInGeneral(XYChart.Series<Number, Number> series, boolean haveToAddSeries) {
-//        if (haveToAddSeries) {
-//            lineChart.getData().add(series);
-//        }
-//    }
-
-    public void setSeriesInGeneral(ObservableList<XYChart.Data<Number, Number>> data, TabulatedFunction function) {
+    public void setSeries(ObservableList<XYChart.Data<Number, Number>> data, TabulatedFunction function, Variable variable) {
         lineChart.getData().clear();
         detailsPopup.clear();
-        //numberOfSeries = 0;
-        addSeriesInGeneral(data, function);
+        addSeries(data, function, variable);
     }
 
     public void setSeries() {
@@ -119,7 +112,9 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
     @Override
     public void visit(TabController.TFState tfState) {
         lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.X_AXIS);
-        setSeriesInGeneral(TabulatedFunctionOperationService.asSeriesData(tfState.getFunction()), tfState.getFunction());
+        setSeries(
+                TabulatedFunctionOperationService.asSeriesData(tfState.getFunction(), Variable.x),
+                tfState.getFunction(), Variable.x);
     }
 
     @Override
@@ -129,19 +124,14 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
             vmfState.getFunction().getIndexForPlot().ifPresent(matrix -> {
                 lineChart.getData().clear();
                 detailsPopup.clear();
-                //numberOfSeries = 0;
                 TabulatedFunction tabulatedFunction;
-                for (int i = 0; i < 2; i++){
+                for (int i = 0; i < 2; i++) {
                     Variable variable = Variable.values()[(int) matrix.get(i, 0)];
                     tabulatedFunction = factory().create(
                             vmfState.getFunction().getMathFunction(variable, i).negate(),
                             -10, 10, 1001
                     );
-                    if (variable == Variable.y) {
-                        addSeriesInGeneral(TabulatedFunctionOperationService.asInverseSeriesData(tabulatedFunction), tabulatedFunction);
-                    } else {
-                        addSeriesInGeneral(TabulatedFunctionOperationService.asSeriesData(tabulatedFunction), tabulatedFunction);
-                    }
+                    addSeries(TabulatedFunctionOperationService.asSeriesData(tabulatedFunction, variable), tabulatedFunction, variable);
                 }
             });
         } else {
@@ -266,16 +256,32 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
     private class DetailsPopup extends VBox {
 
         private ObservableList<TabulatedFunction> functions = FXCollections.observableArrayList();
+        private ObservableList<TabulatedFunction> onlyNameFunctions = FXCollections.observableArrayList();
+
 
         private DetailsPopup() {
             setStyle("-fx-border-width: 1; -fx-padding: 5 5 5 5; -fx-border-color: gray; -fx-background-color: whitesmoke;");
             setVisible(false);
         }
 
-        public void addPopupRow(TabulatedFunction function) { if (!functions.contains(function)) functions.add(function); }
+        public void addPopupRow(TabulatedFunction function, Variable variable) {
+            if (!functions.contains(function)) {
+                switch (variable) {
+                    case x: {
+                        functions.add(function);
+                        break;
+                    }
+                    case y: {
+                        onlyNameFunctions.add(function);
+                        break;
+                    }
+                }
+            }
+        }
 
         public void clear() {
             functions.clear();
+            onlyNameFunctions.clear();
         }
 
         public void showChartDescription(MouseEvent event) {
@@ -286,11 +292,21 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
                 HBox popupRow = buildPopupRow(event, x, function);
                 getChildren().add(popupRow);
             }
+            for (TabulatedFunction function : onlyNameFunctions) {
+                HBox popupRow = buildOnlyNamePopupRow(function);
+                getChildren().add(popupRow);
+            }
+        }
+
+        private HBox buildOnlyNamePopupRow(TabulatedFunction function) {
+            Label seriesName = new Label(function.getName());
+            seriesName.setTextFill(functionColorMap.get(function.getMathFunction()));
+            return new HBox(10, seriesName, new Label("Not a function"));
         }
 
         private HBox buildPopupRow(MouseEvent event, double x, TabulatedFunction function) {
             Label seriesName = new Label(function.getName());
-            seriesName.setTextFill(functionColorMap.get(function));
+            seriesName.setTextFill(functionColorMap.get(function.getMathFunction()));
 
             double y = function.isMathFunctionExist()
                     ? function.getMathFunction().apply(x)

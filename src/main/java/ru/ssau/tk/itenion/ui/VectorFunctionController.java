@@ -1,12 +1,10 @@
 package ru.ssau.tk.itenion.ui;
 
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,12 +20,13 @@ import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.LinearCombinationFunction;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMFSV;
+import ru.ssau.tk.itenion.functions.powerFunctions.PolynomialFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
-import javax.swing.*;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -77,7 +76,7 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
 
         cancelButton.setPrefSize(130, 30);
         AnchorPane.setTopAnchor(cancelButton, (Variable.values().length - 1.) * 100 + 110);
-        AnchorPane.setLeftAnchor(cancelButton,155. + (Variable.values().length - 1.) * 180);
+        AnchorPane.setLeftAnchor(cancelButton, 155. + (Variable.values().length - 1.) * 180);
         creatingPane.getChildren().add(cancelButton);
         cancelButton.addEventHandler(ActionEvent.ACTION, event -> {
             stage.close();
@@ -85,7 +84,7 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
 
         okButton.setPrefSize(130, 30);
         AnchorPane.setTopAnchor(okButton, (Variable.values().length - 1.) * 100 + 110);
-        AnchorPane.setLeftAnchor(okButton,180. + (Variable.values().length - 2.) * 180);
+        AnchorPane.setLeftAnchor(okButton, 180. + (Variable.values().length - 2.) * 180);
         creatingPane.getChildren().add(okButton);
         okButton.addEventHandler(ActionEvent.ACTION, event -> {
             if (currentFunctions.size() == Math.pow(Variable.values().length, 2)) {
@@ -134,7 +133,7 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
                         .forEach(value -> nodesGrid.add(new Pair<>(variable, value))));
     }
 
-    private void initializeMenuItems(){
+    private void initializeMenuItems() {
         nodesGrid.forEach(nodeGrid -> {
             mathFunctionMenuItems.put(nodeGrid, new Menu("Мат. функции"));
             currentFunctionMenuItems.put(nodeGrid, new Menu("Текущие функции"));
@@ -152,7 +151,7 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
         });
     }
 
-    private void rebuildWindow(){
+    private void rebuildWindow() {
         initializeNodesGrid();
         initializeMenuItems();
         createdPane.getChildren().clear();
@@ -172,11 +171,19 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
         extraTextFields.forEach((variableIntegerPair, textField) -> {
             if (variableIntegerPair.getKey().ordinal() == Variable.values().length - 1) {
                 Variable variable = Variable.x;
-                if (LinearCombinationFunction.isValid(currentFunctions.get(new Pair<>(Variable.x, variableIntegerPair.getValue())))) {
+                if (LinearCombinationFunction.isValidForSimplePlot(currentFunctions.get(new Pair<>(Variable.x, variableIntegerPair.getValue())))) {
                     variable = Variable.y;
                 }
+                Variable finalVariable = variable;
                 currentFunctions.computeIfPresent(new Pair<>(variable, variableIntegerPair.getValue()),
-                        (variableIntegerPair1, function) -> function.subtract(Double.parseDouble(textField.getText())));
+                        (variableIntegerPair1, function) -> {
+                    MathFunction aFunction = currentFunctions.get(new Pair<>(finalVariable.getAnotherVariable(), variableIntegerPair.getValue()));
+                    MathFunction result = function.subtract(Double.parseDouble(textField.getText()));
+                    if (aFunction instanceof LinearCombinationFunction) {
+                        result = result.sum(((LinearCombinationFunction) aFunction).getShift()).multiply(1./((LinearCombinationFunction) aFunction).getConstant());
+                    }
+                    return result;
+                });
             }
         });
     }
@@ -279,7 +286,7 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
         createdPane.getChildren().filtered(node -> node instanceof JFXTextField).forEach(node -> ((JFXTextField) node).textProperty().unbind());
     }
 
-    private void addMenuItems(Pair<Variable, Integer> nodeGrid, Menu menu, Map<String, MathFunction> map) {
+    private void addMenuItems(Menu menu, Map<String, MathFunction> map) {
         menu.getItems()
                 .addAll(map.keySet()
                         .stream()
@@ -300,16 +307,20 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
                                     setActualParameter(map, f.getText(), getValue(item));
                                 }
                             }
-                            currentFunctions.computeIfPresent(nodeGrid, (integerIntegerPair, presentFunction) -> map.get(f.getText()));
-                            currentFunctions.putIfAbsent(nodeGrid, map.get(f.getText()));
-                            functionTextFields.get(nodeGrid).setText(map.get(f.getText()).getName(nodeGrid.getKey()));
+                            AtomicReference<MathFunction> aFunction = new AtomicReference<>(map.get(f.getText()));
+                            if (aFunction.get() instanceof PolynomialFunction && ((PolynomialFunction) aFunction.get()).isValidForPlot()) {
+                                aFunction.set(((PolynomialFunction) aFunction.get()).getLinearCombinationFunction()); // преобразование PolynomialFunction в LinearCombinationFunction, если это возможно
+                            }
+                            currentFunctions.computeIfPresent(nodeGrid, (integerIntegerPair, presentFunction) -> aFunction.get());
+                            currentFunctions.putIfAbsent(nodeGrid, aFunction.get());
+                            functionTextFields.get(nodeGrid).setText(aFunction.get().getName(nodeGrid.getKey()));
                         }));
     }
 
     @Override
     public void setMathFunctionNode() {
         mathFunctionMenuItems.forEach((nodeGrid, menu) -> {
-            addMenuItems(nodeGrid, menu, mathFunctionMap);
+            addMenuItems(menu, mathFunctionMap);
             bindMenuItem(nodeGrid, menu, mathFunctionMap);
         });
     }
@@ -328,7 +339,7 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
     public void updateTabulatedFunctionNode() {
         if (!tabulatedFunctionMap.isEmpty()) {
             currentFunctionMenuItems.forEach((nodeGrid, menu) -> {
-                addMenuItems(nodeGrid, menu, tabulatedFunctionMap);
+                addMenuItems(menu, tabulatedFunctionMap);
                 bindMenuItem(nodeGrid, menu, tabulatedFunctionMap);
             });
         } else {
@@ -339,7 +350,7 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
     @Override
     public void updateCompositeFunctionNode() {
         compositeFunctionMenuItems.forEach((nodeGrid, menu) -> {
-            addMenuItems(nodeGrid, menu, compositeFunctionMap);
+            addMenuItems(menu, compositeFunctionMap);
             bindMenuItem(nodeGrid, menu, compositeFunctionMap);
         });
     }

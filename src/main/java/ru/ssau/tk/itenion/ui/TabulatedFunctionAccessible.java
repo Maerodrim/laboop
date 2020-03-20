@@ -32,11 +32,11 @@ public interface TabulatedFunctionAccessible {
                 });
             }
 
-            void putFunction(Tab tab, TabulatedFunction function){
+            void putFunction(Tab tab, TabulatedFunction function) {
                 String name = function.isMathFunctionExist()
                         ? function.getName()
                         : tab.getText();
-                getFittingTabulatedFunctionsMap().put(name, function);
+                getFittingTabulatedFunctionsMap().putIfAbsent(name, function);
                 isNotSuitableSet.set(false);
             }
         });

@@ -1,7 +1,7 @@
 package ru.ssau.tk.itenion.numericalMethods.factory;
 
-import ru.ssau.tk.itenion.numericalMethods.NumericalMethods;
 import ru.ssau.tk.itenion.numericalMethods.MNumericalMethods;
+import ru.ssau.tk.itenion.numericalMethods.NumericalMethods;
 
 public class MNumericalMethodsFactory implements NumericalMethodsFactory {
 

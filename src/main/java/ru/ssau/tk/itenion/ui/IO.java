@@ -4,7 +4,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.enums.BelongTo;
 import ru.ssau.tk.itenion.functions.AnyTabHolderMathFunction;
-import ru.ssau.tk.itenion.functions.TabHolderMathFunction;
 import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.StrictTabulatedFunction;
@@ -28,8 +27,6 @@ class IO {
     public static final BelongTo belongTo = BelongTo.LAUFINSCONSCA;
     static final String FXML_PATH = "fxml/";
     static final String DEFAULT_DIRECTORY = System.getenv("APPDATA") + "\\tempFunctions";     // на компьютерах под управлением OS Windows 7/8/8.1/10
-
-    private static Map<BelongTo, NumericalMethodsFactory> numericalMethodsFactories = new HashMap<>();
     private static final FileChooser.ExtensionFilter vmfExtensionFilter =
             new FileChooser.ExtensionFilter("Vector math function files (*.vmf)", "*.vmf");
     private static final FileChooser.ExtensionFilter tfExtensionFilter =
@@ -38,16 +35,6 @@ class IO {
             new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
     private static final FileChooser.ExtensionFilter xmlTFExtensionFilter =
             new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
-
-    static {
-        numericalMethodsFactories.put(BelongTo.LAUFINSCONSCA, new LNumericalMethodsFactory());
-        numericalMethodsFactories.put(BelongTo.MAERODRIM, new MNumericalMethodsFactory());
-    }
-
-    public static NumericalMethodsFactory getNumericalMethodFactory() {
-        return numericalMethodsFactories.get(belongTo);
-    }
-
     public static Predicate<String> isDouble = s -> {
         try {
             Double.parseDouble(s);
@@ -56,7 +43,6 @@ class IO {
         }
         return true;
     };
-
     public static Predicate<String> isInteger = s -> {
         try {
             Integer.parseInt(s);
@@ -65,6 +51,7 @@ class IO {
         }
         return true;
     };
+    private static Map<BelongTo, NumericalMethodsFactory> numericalMethodsFactories = new HashMap<>();
     private static Collection<FileChooser.ExtensionFilter> VMF_EXTENSION_FILTERS = List.of(vmfExtensionFilter);
     private static Collection<FileChooser.ExtensionFilter> TF_EXTENSION_FILTERS = List.of(
             tfExtensionFilter,
@@ -76,10 +63,19 @@ class IO {
             jsonTFExtensionFilter,
             tfExtensionFilter);
     private static Pattern FILE_EXTENSION_PATTERN = Pattern.compile(".*\\.(.+)");
-    private final TabulatedFunctionFactory factory;
 
+    static {
+        numericalMethodsFactories.put(BelongTo.LAUFINSCONSCA, new LNumericalMethodsFactory());
+        numericalMethodsFactories.put(BelongTo.MAERODRIM, new MNumericalMethodsFactory());
+    }
+
+    private final TabulatedFunctionFactory factory;
     IO(TabulatedFunctionFactory factory) {
         this.factory = factory;
+    }
+
+    public static NumericalMethodsFactory getNumericalMethodFactory() {
+        return numericalMethodsFactories.get(belongTo);
     }
 
     public static File load(Stage stage) {
@@ -137,6 +133,33 @@ class IO {
 //        return map.get(((ComboBox<String>) event.getSource()).getValue())
 //                .getDeclaredAnnotation(ConnectableItem.class);
 //    }
+
+    private static TabulatedFunction unwrap(TabulatedFunction function) {
+        boolean isStrict = function.isStrict();
+        boolean isUnmodifiable = function.isUnmodifiable();
+        if (isUnmodifiable && isStrict) {
+            function = function.unwrap().unwrap();
+        } else if (isUnmodifiable || isStrict) {
+            function = function.unwrap();
+        }
+        function.offerStrict(isStrict);
+        function.offerUnmodifiable(isUnmodifiable);
+        return function;
+    }
+
+    static TabulatedFunction wrap(TabulatedFunction function) {
+        boolean isStrict = function.isStrict();
+        boolean isUnmodifiable = function.isUnmodifiable();
+        if (isUnmodifiable && isStrict) {
+            return new UnmodifiableTabulatedFunction(new StrictTabulatedFunction(function));
+        } else if (isUnmodifiable) {
+            return new UnmodifiableTabulatedFunction(function);
+        } else if (isStrict) {
+            return new StrictTabulatedFunction(function);
+        } else {
+            return function;
+        }
+    }
 
     private AnyTabHolderMathFunction loadFunctionAs(File file, boolean permitVMF, boolean permitTF) {
         AnyTabHolderMathFunction function = null;
@@ -198,7 +221,7 @@ class IO {
         Matcher m = FILE_EXTENSION_PATTERN.matcher(file.getPath());
         if ((!m.hitEnd() && (m.find()))) {
             if (permitTF) {
-                TabulatedFunction tabulatedFunction = (TabulatedFunction)function;
+                TabulatedFunction tabulatedFunction = (TabulatedFunction) function;
                 switch (m.group(1)) {
                     case ("json"): {
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
@@ -248,33 +271,6 @@ class IO {
 
     public void saveVMFAs(File file, VMF function) {
         saveFunctionAs(file, function, true, false);
-    }
-
-    private static TabulatedFunction unwrap(TabulatedFunction function) {
-        boolean isStrict = function.isStrict();
-        boolean isUnmodifiable = function.isUnmodifiable();
-        if (isUnmodifiable && isStrict) {
-            function = function.unwrap().unwrap();
-        } else if (isUnmodifiable || isStrict) {
-            function = function.unwrap();
-        }
-        function.offerStrict(isStrict);
-        function.offerUnmodifiable(isUnmodifiable);
-        return function;
-    }
-
-    static TabulatedFunction wrap(TabulatedFunction function) {
-        boolean isStrict = function.isStrict();
-        boolean isUnmodifiable = function.isUnmodifiable();
-        if (isUnmodifiable && isStrict) {
-            return new UnmodifiableTabulatedFunction(new StrictTabulatedFunction(function));
-        } else if (isUnmodifiable) {
-            return new UnmodifiableTabulatedFunction(function);
-        } else if (isStrict) {
-            return new StrictTabulatedFunction(function);
-        } else {
-            return function;
-        }
     }
 
 }

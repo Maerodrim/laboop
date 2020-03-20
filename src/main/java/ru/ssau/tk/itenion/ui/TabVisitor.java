@@ -6,7 +6,7 @@ public interface TabVisitor {
 
     void visit(TabController.VMFState vmfState);
 
-    default TabHolderState state(){
+    default TabHolderState state() {
         return TabController.state;
     }
 }

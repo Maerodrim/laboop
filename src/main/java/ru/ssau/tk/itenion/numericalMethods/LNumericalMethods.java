@@ -1,7 +1,6 @@
 package ru.ssau.tk.itenion.numericalMethods;
 
 import Jama.Matrix;
-import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.operations.DifferentialOperator;
@@ -14,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ConnectableItem(name = "", type = Item.NUMERICAL_METHOD)
-public class LNumericalMethods extends NumericalMethods{
+public class LNumericalMethods extends NumericalMethods {
     public LNumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
         super(left, right, initialApproximation, eps);
     }

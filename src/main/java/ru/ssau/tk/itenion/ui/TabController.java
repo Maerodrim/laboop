@@ -30,9 +30,13 @@ import static ru.ssau.tk.itenion.ui.Initializer.initializeMathFunctionMap;
 
 public class TabController implements Initializable, OpenableWindow {
 
-    private TabController tabController = this;
+    public static AnyTabHolderState anyTabHolderState;
+    public static TabHolderState state;
     private final TableColumn<Point, Double> x = new TableColumn<>("X");
     private final TableColumn<Point, Double> y = new TableColumn<>("Y");
+    public TFState tfState;
+    public VMFState vmfState;
+    private TabController tabController = this;
     private Stage stage;
     private int numberId = 1;
     private TabulatedFunctionFactory factory;
@@ -42,14 +46,24 @@ public class TabController implements Initializable, OpenableWindow {
     private Map<String, OpenableWindow> controllerMap;
     private Map<String, MathFunction> compositeFunctionMap;
     private Tab currentTab;
+    Function<Boolean, TabVisitor> tabVisitorFunction = aBoolean -> new TabVisitor() {
+        @Override
+        public void visit(TFState tfState) {
+            if (aBoolean ? !tfState.getFunction().isStrict() : !tfState.getFunction().isUnmodifiable()) {
+                showFromNestedClass(true);
+            } else {
+                String temp = aBoolean ? "strict" : "unmodifiable";
+                AlertWindows.showWarning("Function is " + temp);
+            }
+        }
+
+        @Override
+        public void visit(VMFState vmfState) {
+        }
+    };
     private IO io;
     private boolean isStrict = false;
     private boolean isUnmodifiable = false;
-    public TFState tfState;
-    public VMFState vmfState;
-    public static AnyTabHolderState anyTabHolderState;
-    public static TabHolderState state;
-
     @FXML
     private TabPane tabPane;
     @FXML
@@ -155,7 +169,6 @@ public class TabController implements Initializable, OpenableWindow {
         }
     }
 
-
     @FXML
     private void exit() {
         stage.close();
@@ -204,22 +217,6 @@ public class TabController implements Initializable, OpenableWindow {
         show(true);
     }
 
-    Function<Boolean, TabVisitor> tabVisitorFunction = aBoolean -> new TabVisitor() {
-        @Override
-        public void visit(TFState tfState) {
-            if (aBoolean ? !tfState.getFunction().isStrict() : !tfState.getFunction().isUnmodifiable()) {
-                showFromNestedClass(true);
-            } else {
-                String temp = aBoolean ? "strict" : "unmodifiable";
-                AlertWindows.showWarning("Function is " + temp);
-            }
-        }
-
-        @Override
-        public void visit(VMFState vmfState) {
-        }
-    };
-
     @FXML
     private void deletePoint() {
         if (isTabExist()) {
@@ -267,8 +264,23 @@ public class TabController implements Initializable, OpenableWindow {
     public void plot() {
         if (isTabExist()) {
             PlotController controller = (PlotController) lookupController();
-            controller.setSeries();
-            controller.getStage().show();
+            state.accept(new TabVisitor() {
+                @Override
+                public void visit(TFState tfState) {
+                    controller.setSeries();
+                    controller.getStage().show();
+                }
+
+                @Override
+                public void visit(VMFState vmfState) {
+                    if (vmfState.getFunction().isCanBePlotted()) {
+                        controller.setSeries();
+                        controller.getStage().show();
+                    } else {
+                        AlertWindows.showWarning("It cannot be plotted now");
+                    }
+                }
+            });
         }
     }
 
@@ -356,16 +368,12 @@ public class TabController implements Initializable, OpenableWindow {
             return isStrict;
         }
 
-        public boolean isUnmodifiable() {
-            return isUnmodifiable;
-        }
-
-        public void setFactory(TabulatedFunctionFactory tfFactory) {
-            factory = tfFactory;
-        }
-
         public void setStrict(boolean strict) {
             isStrict = strict;
+        }
+
+        public boolean isUnmodifiable() {
+            return isUnmodifiable;
         }
 
         public void setUnmodifiable(boolean unmodifiable) {
@@ -378,6 +386,10 @@ public class TabController implements Initializable, OpenableWindow {
 
         public TabulatedFunctionFactory getFactory() {
             return factory;
+        }
+
+        public void setFactory(TabulatedFunctionFactory tfFactory) {
+            factory = tfFactory;
         }
 
         public void addCompositeFunction(MathFunction function) {

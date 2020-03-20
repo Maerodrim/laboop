@@ -3,6 +3,7 @@ package ru.ssau.tk.itenion.enums;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.AbstractVAMF;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.AdditiveVAMFSV;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.MultiplicativeVAMFSV;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.SubtractiveVAMFSV;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,11 +38,15 @@ public enum SupportedSign {
 
     public AbstractVAMF getVAMF() {
         switch (this) {
-            case MULTIPLY: {
-                return new MultiplicativeVAMFSV();
-            }
             case SUM: {
                 return new AdditiveVAMFSV();
+            }
+            // todo
+            case SUBTRACT: {
+                return new SubtractiveVAMFSV();
+            }
+            case MULTIPLY: {
+                return new MultiplicativeVAMFSV();
             }
         }
         return null;

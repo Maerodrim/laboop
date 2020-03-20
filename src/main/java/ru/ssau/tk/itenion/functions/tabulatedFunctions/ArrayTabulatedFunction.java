@@ -1,8 +1,6 @@
 package ru.ssau.tk.itenion.functions.tabulatedFunctions;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.itenion.exceptions.InconsistentFunctionsException;
@@ -13,10 +11,10 @@ import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
 
 import java.io.Serializable;
-import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 //@JsonAutoDetect
 public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Serializable {
     private static final long serialVersionUID = 3990511369369675738L;
@@ -32,19 +30,20 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     private boolean isUnmodifiable = false;
     //@JsonProperty("math function")
     private MathFunction mathFunction = null;
+
     public ArrayTabulatedFunction(ObservableList<Point> points) {
         if (points.size() < 2) {
             throw new IllegalArgumentException("Array less than minimum length");
         }
-        if (points.stream().anyMatch(point -> point.y != point.y)){
+        if (points.stream().anyMatch(point -> point.y != point.y)) {
             throw new NaNException();
         }
-        points.sorted((o1, o2) -> (int)Math.signum(o1.x - o2.x));
+        points.sorted((o1, o2) -> (int) Math.signum(o1.x - o2.x));
         xValues = new double[points.size()];
         yValues = new double[points.size()];
         count = points.size();
         int i = 0;
-        for(Point point: points){
+        for (Point point : points) {
             xValues[i] = point.x;
             yValues[i++] = point.y;
         }
@@ -110,6 +109,9 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
 
     @Override
     public void setMathFunction(MathFunction mathFunction) {
+        if (mathFunction instanceof TabulatedFunction) {
+            throw new UnsupportedOperationException("The generating math function cannot be a tabulated function");
+        }
         this.mathFunction = mathFunction;
     }
 
@@ -264,7 +266,10 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @Override
     @JsonIgnore
     public TabulatedFunction getInverseOperator() {
-        return new ArrayTabulatedFunction(TabulatedFunctionOperationService.forInverseOperatorObservableList(this));
+        TabulatedFunction inverseTabulatedFunction = new ArrayTabulatedFunction(
+                TabulatedFunctionOperationService.forInverseOperatorObservableList(this));
+        inverseTabulatedFunction.setMathFunction(this.getMathFunction());
+        return inverseTabulatedFunction;
     }
 
     @Override

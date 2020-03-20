@@ -1,10 +1,11 @@
 package ru.ssau.tk.itenion.ui;
 
-public interface PlotAccessible extends AnyTabVisitor{
+public interface PlotAccessible extends AnyTabVisitor {
     @Override
-    default void visit(TabController.AnyTabHolderState anyTabHolderState){}
+    default void visit(TabController.AnyTabHolderState anyTabHolderState) {
+    }
 
-    default void plot(){
+    default void plot() {
         anyState().plot();
     }
 }

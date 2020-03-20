@@ -1,15 +1,12 @@
 package ru.ssau.tk.itenion.functions.tabulatedFunctions;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javafx.collections.ObservableList;
 import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.*;
 import ru.ssau.tk.itenion.operations.TabulatedDifferentialOperator;
 import ru.ssau.tk.itenion.ui.ExplicitAccessControllable;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public interface TabulatedFunction extends MathFunction, TabHolderMathFunction<TabulatedFunction>, Iterable<Point>, ExplicitAccessControllable, Insertable, Removable {
 
@@ -83,7 +80,7 @@ public interface TabulatedFunction extends MathFunction, TabHolderMathFunction<T
 
     @Override
     @JsonIgnore
-    default double[] getDimensionArray(){
-        return new double[]{1,1};
+    default double[] getDimensionArray() {
+        return new double[]{1, 1};
     }
 }

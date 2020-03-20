@@ -2,6 +2,7 @@ package ru.ssau.tk.itenion.functions;
 
 import ru.ssau.tk.itenion.functions.powerFunctions.ConstantFunction;
 import ru.ssau.tk.itenion.functions.powerFunctions.IdentityFunction;
+import ru.ssau.tk.itenion.functions.powerFunctions.PolynomialFunction;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 
 import java.util.Objects;
@@ -46,9 +47,31 @@ public class LinearCombinationFunction implements MathFunction {
         }
     }
 
+    public static boolean isValidForSimplePlot(MathFunction function) {
+        return function instanceof IdentityFunction
+                || function instanceof LinearCombinationFunction && ((LinearCombinationFunction) function).getFunction() instanceof IdentityFunction
+                || function instanceof PolynomialFunction && ((PolynomialFunction) function).isValidForPlot()
+                || function instanceof LinearCombinationFunction && ((LinearCombinationFunction) function).getFunction() instanceof PolynomialFunction && ((PolynomialFunction) ((LinearCombinationFunction) function).getFunction()).isValidForPlot();
+    }
+
     @Override
-    public MathFunction negate(){
-        return new LinearCombinationFunction(function, -1, -shift);
+    public MathFunction sum(double number) {
+        return new LinearCombinationFunction(this, constant, number);
+    }
+
+    @Override
+    public MathFunction subtract(double number) {
+        return new LinearCombinationFunction(this, constant, -number);
+    }
+
+    @Override
+    public MathFunction multiply(double number) {
+        return new LinearCombinationFunction(this.getFunction(), number*constant, shift*number);
+    }
+
+    @Override
+    public MathFunction negate() {
+        return new LinearCombinationFunction(function, -constant, -shift);
     }
 
     @Override
@@ -73,9 +96,9 @@ public class LinearCombinationFunction implements MathFunction {
             } else {
                 if (constant == 1) {
                     name = function.getName();
-                } else if (constant == -1){
+                } else if (constant == -1) {
                     name = "-" + function.getName();
-                } else{
+                } else {
                     name = constant + function.getName();
                 }
             }
@@ -102,10 +125,5 @@ public class LinearCombinationFunction implements MathFunction {
 
     public double getShift() {
         return shift;
-    }
-
-    public static boolean isValid(MathFunction function){
-        return function instanceof IdentityFunction
-                || function instanceof LinearCombinationFunction && ((LinearCombinationFunction) function).getFunction() instanceof IdentityFunction;
     }
 }
