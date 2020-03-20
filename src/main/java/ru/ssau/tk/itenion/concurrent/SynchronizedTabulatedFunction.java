@@ -1,6 +1,5 @@
 package ru.ssau.tk.itenion.concurrent;
 
-import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
@@ -9,21 +8,20 @@ import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 public class SynchronizedTabulatedFunction implements TabulatedFunction {
     private static final long serialVersionUID = -1376170918005747022L;
-    private final TabulatedFunction function;
+    private final TabulatedFunction tabulatedFunction;
 
-    public SynchronizedTabulatedFunction(TabulatedFunction function) {
-        this.function = function;
+    public SynchronizedTabulatedFunction(TabulatedFunction tabulatedFunction) {
+        this.tabulatedFunction = tabulatedFunction;
     }
 
     @NotNull
     @Override
     public Iterator<Point> iterator() {
-        synchronized (function) {
-            Point[] copy = TabulatedFunctionOperationService.asPoints(function);
+        synchronized (tabulatedFunction) {
+            Point[] copy = TabulatedFunctionOperationService.asPoints(tabulatedFunction);
             return new Iterator<>() {
                 int i = 0;
 
@@ -46,78 +44,78 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
 
     @Override
     public double apply(double x) {
-        synchronized (function) {
-            return function.apply(x);
+        synchronized (tabulatedFunction) {
+            return tabulatedFunction.apply(x);
         }
     }
 
     @Override
     public int getCount() {
-        synchronized (function) {
-            return function.getCount();
+        synchronized (tabulatedFunction) {
+            return tabulatedFunction.getCount();
         }
     }
 
     @Override
     public double getX(int index) {
-        synchronized (function) {
-            return function.getX(index);
+        synchronized (tabulatedFunction) {
+            return tabulatedFunction.getX(index);
         }
     }
 
     @Override
     public double getY(int index) {
-        synchronized (function) {
-            return function.getY(index);
+        synchronized (tabulatedFunction) {
+            return tabulatedFunction.getY(index);
         }
     }
 
     @Override
     public void setY(int index, double value) {
-        synchronized (function) {
-            function.setY(index, value);
+        synchronized (tabulatedFunction) {
+            tabulatedFunction.setY(index, value);
         }
     }
 
     @Override
     public void setY(TabulatedFunction function) {
-        synchronized (this.function) {
-            this.function.setY(function);
+        synchronized (this.tabulatedFunction) {
+            this.tabulatedFunction.setY(function);
         }
     }
 
     @Override
     public int indexOfX(double x) {
-        synchronized (function) {
-            return function.indexOfX(x);
+        synchronized (tabulatedFunction) {
+            return tabulatedFunction.indexOfX(x);
         }
     }
 
     @Override
     public int indexOfY(double y) {
-        synchronized (function) {
-            return function.indexOfY(y);
+        synchronized (tabulatedFunction) {
+            return tabulatedFunction.indexOfY(y);
         }
     }
 
     @Override
     public double leftBound() {
-        synchronized (function) {
-            return function.leftBound();
+        synchronized (tabulatedFunction) {
+            return tabulatedFunction.leftBound();
         }
     }
 
     @Override
     public double rightBound() {
-        synchronized (function) {
-            return function.rightBound();
+        synchronized (tabulatedFunction) {
+            return tabulatedFunction.rightBound();
         }
     }
 
     @Override
     public TabulatedFunction copy() {
-        synchronized (function) {
-            return function.copy();
+        synchronized (tabulatedFunction) {
+            return tabulatedFunction.copy();
         }
     }
 
@@ -133,17 +131,22 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
 
     @Override
     public TabulatedFunction unwrap() {
-        return function;
+        return tabulatedFunction;
+    }
+
+    @Override
+    public TabulatedFunction getInverseOperator() {
+        return tabulatedFunction.getInverseOperator();
     }
 
     @Override
     public MathFunction getMathFunction() {
-        return function.getMathFunction();
+        return tabulatedFunction.getMathFunction();
     }
 
     @Override
     public void setMathFunction(MathFunction math) {
-        function.setMathFunction(math);
+        tabulatedFunction.setMathFunction(math);
     }
 
     @Override
@@ -160,15 +163,15 @@ public class SynchronizedTabulatedFunction implements TabulatedFunction {
 
     @Override
     public void insert(double x, double y) {
-        synchronized (function) {
-            function.insert(x, y);
+        synchronized (tabulatedFunction) {
+            tabulatedFunction.insert(x, y);
         }
     }
 
     @Override
     public void remove(int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
-        synchronized (function) {
-            function.remove(index);
+        synchronized (tabulatedFunction) {
+            tabulatedFunction.remove(index);
         }
     }
 

@@ -1,6 +1,7 @@
 package ru.ssau.tk.itenion.ui;
 
 import org.atteo.classindex.IndexAnnotated;
+import ru.ssau.tk.itenion.enums.BelongTo;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,6 +21,8 @@ public @interface ConnectableItem {
     int priority() default 0;
 
     Item type();
+
+    BelongTo belongTo() default BelongTo.LAUFINSCONSCA;
 
     /**
      * @return function parameters

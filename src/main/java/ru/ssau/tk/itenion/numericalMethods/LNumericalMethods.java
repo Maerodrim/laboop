@@ -13,13 +13,13 @@ import ru.ssau.tk.itenion.ui.Item;
 import java.util.HashMap;
 import java.util.Map;
 
-@ConnectableItem(name = "Valentin", type = Item.NUMERICAL_METHOD)
-public class VNumericalMethods extends NumericalMethods{
-    public VNumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
+@ConnectableItem(name = "", type = Item.NUMERICAL_METHOD)
+public class LNumericalMethods extends NumericalMethods{
+    public LNumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
         super(left, right, initialApproximation, eps);
     }
 
-    public VNumericalMethods(Double left, Double right, double[] initialApproximation, Double eps) {
+    public LNumericalMethods(Double left, Double right, double[] initialApproximation, Double eps) {
         super(left, right, initialApproximation, eps);
     }
 

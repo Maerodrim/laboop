@@ -13,6 +13,7 @@ import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @ConnectableItem(name = "", type = Item.OPERATION)
@@ -69,6 +70,19 @@ public class TabulatedFunctionOperationService {
         return points;
     }
 
+    public static void sort(ObservableList<Point> list) {
+        list.sort(Comparator.comparingDouble(point -> point.x));
+    }
+
+    public static ObservableList<Point> forInverseOperatorObservableList(TabulatedFunction function) {
+        List<Point> listPoint = new ArrayList<>();
+        for (Point point : function) {
+            listPoint.add(new Point(point.y, point.x));
+        }
+        listPoint.sort(Comparator.comparingDouble(point -> point.y));
+        return FXCollections.observableArrayList(listPoint);
+    }
+
     public static ObservableList<Point> asObservableList(TabulatedFunction function) {
         List<Point> listPoint = new ArrayList<>();
         for (Point point : function) {
@@ -77,11 +91,22 @@ public class TabulatedFunctionOperationService {
         return FXCollections.observableArrayList(listPoint);
     }
 
-    public static ObservableList<XYChart.Data<Number, Number>> asSeriesData(TabulatedFunction function){
+    public static ObservableList<XYChart.Data<Number, Number>> asSeriesData(TabulatedFunction function) {
         ObservableList<XYChart.Data<Number, Number>> data = FXCollections.observableArrayList();
         for (Point point : function) {
             data.add(new XYChart.Data<>(point.x, point.y));
         }
+        return data;
+    }
+
+    public static ObservableList<XYChart.Data<Number, Number>> asInverseSeriesData(TabulatedFunction function) {
+        List<Point> points = new ArrayList<>();
+        for (Point point : function) {
+            points.add(new Point(point.y, -point.x));
+        }
+        points.sort(Comparator.comparingDouble(point -> point.y));
+        ObservableList<XYChart.Data<Number, Number>> data = FXCollections.observableArrayList();
+        points.forEach(point -> data.add(new XYChart.Data<>(point.x, point.y)));
         return data;
     }
 

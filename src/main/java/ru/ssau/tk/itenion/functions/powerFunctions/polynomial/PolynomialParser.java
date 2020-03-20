@@ -19,7 +19,7 @@ public class PolynomialParser {
      * Предикат, выполняющий проверку, является ли строка полиномом
      */
     public static Predicate<String> isPolynomial =
-            s -> Pattern.compile("([+-])").splitAsStream(normalizeSourceString(s)).allMatch(s1 -> s1.matches(MONOMIAL_TEMPLATE));
+            s -> Pattern.compile("([+-])").splitAsStream(normalizeSourceString(s)).allMatch(s1 -> (s1.isEmpty()?s:s1).matches(MONOMIAL_TEMPLATE));
 
     /**
      * Удаление из строки всех пробелов и

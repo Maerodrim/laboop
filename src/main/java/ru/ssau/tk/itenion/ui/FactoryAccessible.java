@@ -4,7 +4,7 @@ import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 
 public interface FactoryAccessible extends AnyTabVisitor {
     @Override
-    default void visit(TabController.AnyTabState anyTabState) {
+    default void visit(TabController.AnyTabHolderState anyTabHolderState) {
     }
 
     default TabulatedFunctionFactory factory() {

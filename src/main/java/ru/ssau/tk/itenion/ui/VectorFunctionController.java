@@ -1,28 +1,30 @@
 package ru.ssau.tk.itenion.ui;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import ru.ssau.tk.itenion.enums.State;
 import ru.ssau.tk.itenion.enums.SupportedSign;
 import ru.ssau.tk.itenion.enums.Variable;
+import ru.ssau.tk.itenion.functions.LinearCombinationFunction;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMFSV;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
-import ru.ssau.tk.itenion.ui.states.State;
 
+import javax.swing.*;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
@@ -30,9 +32,14 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static ru.ssau.tk.itenion.ui.ParameterSupplier.getValue;
+import static ru.ssau.tk.itenion.ui.ParameterSupplier.setActualParameter;
+
 @ConnectableItem(name = "Vector function create", type = Item.CONTROLLER, pathFXML = "vectorFunction.fxml")
-public class VectorFunctionController implements Initializable, FactoryAccessible, Openable, MathFunctionAccessible, CompositeFunctionAccessible, TabulatedFunctionAccessible, VMFTabVisitor {
+public class VectorFunctionController implements Initializable, FactoryAccessible, OpenableWindow, MathFunctionAccessible, CompositeFunctionAccessible, TabulatedFunctionAccessible, VMFTabVisitor {
     private Stage stage;
+    private Button okButton;
+    private Button cancelButton;
     private Map<Pair<Variable, Integer>, MathFunction> currentFunctions;
     private Map<Pair<Variable, Integer>, JFXTextField> functionTextFields;
     private Map<Pair<Variable, Integer>, JFXTextField> extraTextFields;
@@ -45,31 +52,89 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
     private Map<String, MathFunction> compositeFunctionMap;
     private RegexValidator validator;
     private int width;
-    private ObservableList<Pair<Variable, Integer>> nodesGrid;
+    private ObservableList<Pair<Variable, Integer>> nodesGrid = FXCollections.observableArrayList();
     @FXML
     private AnchorPane creatingPane;
     private AnchorPane createdPane;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        nodesGrid = FXCollections.observableArrayList();
-
         validator = new RegexValidator();
         validator.setRegexPattern("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$");
         validator.setMessage("Incorrect");
 
-        Arrays.stream(Variable.values())
-                .forEach(variable -> IntStream.range(1, Variable.values().length + 1)
-                        .forEach(value -> nodesGrid.add(new Pair<>(variable, value))));
         createdPane = new AnchorPane();
-
+        cancelButton = new Button("Cancel");
+        okButton = new Button("Ok");
         loadFunctionMenu = new LinkedHashMap<>();
         mathFunctionMenuItems = new LinkedHashMap<>();
         currentFunctionMenuItems = new LinkedHashMap<>();
         compositeFunctionMenuItems = new LinkedHashMap<>();
         extraTextFields = new LinkedHashMap<>();
         functionTextFields = new LinkedHashMap<>();
+        currentFunctions = new LinkedHashMap<>();
+        tabulatedFunctionMap = new LinkedHashMap<>();
 
+        cancelButton.setPrefSize(130, 30);
+        AnchorPane.setTopAnchor(cancelButton, (Variable.values().length - 1.) * 100 + 110);
+        AnchorPane.setLeftAnchor(cancelButton,155. + (Variable.values().length - 1.) * 180);
+        creatingPane.getChildren().add(cancelButton);
+        cancelButton.addEventHandler(ActionEvent.ACTION, event -> {
+            stage.close();
+        });
+
+        okButton.setPrefSize(130, 30);
+        AnchorPane.setTopAnchor(okButton, (Variable.values().length - 1.) * 100 + 110);
+        AnchorPane.setLeftAnchor(okButton,180. + (Variable.values().length - 2.) * 180);
+        creatingPane.getChildren().add(okButton);
+        okButton.addEventHandler(ActionEvent.ACTION, event -> {
+            if (currentFunctions.size() == Math.pow(Variable.values().length, 2)) {
+                state().changeState(State.VMF);
+                state().accept(this);
+            }
+        });
+
+        rebuildWindow();
+    }
+
+    @Override
+    public void visit(TabController.VMFState vmfState) {
+        unbindFutureGroups();
+        if (Variable.values().length == 2) {
+            extractConstantsIfTwoVariables();
+        } else {
+            extractConstantsToXVariableFunctions();
+        }
+        List<SupportedSign> supportedSignList = getSignList();
+        vmfState.createTab(createdPane, new VMFSV(currentFunctions, supportedSignList));
+        stage.close();
+    }
+
+    @Override
+    public Stage getStage() {
+        return stage;
+    }
+
+    @Override
+    public void setStage(Stage stage) {
+        stage.setOnShowing(windowEvent -> {
+            functionTextFields.forEach((variableIntegerPair, textField) -> textField.setText(""));
+            currentFunctions.clear();
+            createdPane = new AnchorPane();
+            initFutureGroups();
+        });
+        stage.setWidth(width);
+        this.stage = stage;
+    }
+
+    private void initializeNodesGrid() {
+        nodesGrid.clear();
+        Arrays.stream(Variable.values())
+                .forEach(variable -> IntStream.range(1, Variable.values().length + 1)
+                        .forEach(value -> nodesGrid.add(new Pair<>(variable, value))));
+    }
+
+    private void initializeMenuItems(){
         nodesGrid.forEach(nodeGrid -> {
             mathFunctionMenuItems.put(nodeGrid, new Menu("Мат. функции"));
             currentFunctionMenuItems.put(nodeGrid, new Menu("Текущие функции"));
@@ -85,30 +150,32 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
             functionTextFields.put(nodeGrid, new JFXTextField());
             extraTextFields.put(nodeGrid, new JFXTextField());
         });
-
-        currentFunctions = new LinkedHashMap<>();
-        tabulatedFunctionMap = new LinkedHashMap<>();
-        nodesGrid.forEach(this::initGroup);
     }
 
-    public void load(Pair<Variable, Integer> nodeGrid) {
-        File file = IO.loadTF(stage);
-        if (!Objects.equals(file, null)) {
-            MathFunction function = new IO(factory()).loadTabulatedFunctionAs(file);
-            if (((TabulatedFunction) function).isMathFunctionExist()) {
-                function = ((TabulatedFunction) function).getMathFunction();
-            }
-            MathFunction finalFunction = function;
-            currentFunctions.computeIfPresent(nodeGrid, (integerIntegerPair, presentFunction) -> finalFunction);
-            currentFunctions.putIfAbsent(nodeGrid, function);
-            functionTextFields.get(nodeGrid).setText(function.getName(nodeGrid.getKey()));
-        }
+    private void rebuildWindow(){
+        initializeNodesGrid();
+        initializeMenuItems();
+        createdPane.getChildren().clear();
+        nodesGrid.forEach(this::initGroup);
     }
 
     private void extractConstantsToXVariableFunctions() {
         extraTextFields.forEach((variableIntegerPair, textField) -> {
             if (variableIntegerPair.getKey().ordinal() == Variable.values().length - 1) {
                 currentFunctions.computeIfPresent(new Pair<>(Variable.x, variableIntegerPair.getValue()),
+                        (variableIntegerPair1, function) -> function.subtract(Double.parseDouble(textField.getText())));
+            }
+        });
+    }
+
+    private void extractConstantsIfTwoVariables() {
+        extraTextFields.forEach((variableIntegerPair, textField) -> {
+            if (variableIntegerPair.getKey().ordinal() == Variable.values().length - 1) {
+                Variable variable = Variable.x;
+                if (LinearCombinationFunction.isValid(currentFunctions.get(new Pair<>(Variable.x, variableIntegerPair.getValue())))) {
+                    variable = Variable.y;
+                }
+                currentFunctions.computeIfPresent(new Pair<>(variable, variableIntegerPair.getValue()),
                         (variableIntegerPair1, function) -> function.subtract(Double.parseDouble(textField.getText())));
             }
         });
@@ -132,38 +199,6 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
             }
         });
         return currentSigns;
-    }
-
-    @Override
-    public void visit(TabController.VMFState vmfState) {
-        unbindFutureGroups();
-        extractConstantsToXVariableFunctions();
-        List<SupportedSign> supportedSignList = getSignList();
-        vmfState.createTab(createdPane, new VMFSV(currentFunctions, supportedSignList));
-        stage.close();
-    }
-
-    @FXML
-    public void ok() {
-        state().changeState(State.VMF);
-        state().accept(this);
-    }
-
-    @Override
-    public Stage getStage() {
-        return stage;
-    }
-
-    @Override
-    public void setStage(Stage stage) {
-        stage.setOnShowing(windowEvent -> {
-            functionTextFields.forEach((variableIntegerPair, textField) -> textField.setText(""));
-            currentFunctions.clear();
-            createdPane = new AnchorPane();
-            initFutureGroups();
-        });
-        stage.setWidth(width);
-        this.stage = stage;
     }
 
     public void initGroup(Pair<Variable, Integer> nodeGrid) {
@@ -262,7 +297,7 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
                             if (menu.getText().equals("Мат. функции")) {
                                 ConnectableItem item = map.get(f.getText()).getClass().getDeclaredAnnotation(ConnectableItem.class);
                                 if (item.hasParameter()) {
-                                    IO.setActualParameter(map, f.getText(), IO.getValue(item));
+                                    setActualParameter(map, f.getText(), getValue(item));
                                 }
                             }
                             currentFunctions.computeIfPresent(nodeGrid, (integerIntegerPair, presentFunction) -> map.get(f.getText()));
@@ -312,6 +347,20 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
     @Override
     public void updateCompositeFunctionMap(Map<String, MathFunction> compositeFunctionMap) {
         this.compositeFunctionMap = compositeFunctionMap;
+    }
+
+    public void load(Pair<Variable, Integer> nodeGrid) {
+        File file = IO.loadTF(stage);
+        if (!Objects.equals(file, null)) {
+            MathFunction function = new IO(factory()).loadTabulatedFunctionAs(file);
+            if (((TabulatedFunction) function).isMathFunctionExist()) {
+                function = ((TabulatedFunction) function).getMathFunction();
+            }
+            MathFunction finalFunction = function;
+            currentFunctions.computeIfPresent(nodeGrid, (integerIntegerPair, presentFunction) -> finalFunction);
+            currentFunctions.putIfAbsent(nodeGrid, function);
+            functionTextFields.get(nodeGrid).setText(function.getName(nodeGrid.getKey()));
+        }
     }
 
 }

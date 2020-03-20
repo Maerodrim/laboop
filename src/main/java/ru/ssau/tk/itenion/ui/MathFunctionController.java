@@ -9,15 +9,18 @@ import javafx.stage.Stage;
 import ru.ssau.tk.itenion.exceptions.NaNException;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
-import ru.ssau.tk.itenion.ui.states.State;
+import ru.ssau.tk.itenion.enums.State;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static ru.ssau.tk.itenion.ui.ParameterSupplier.getValue;
+import static ru.ssau.tk.itenion.ui.ParameterSupplier.setActualParameter;
+
 @ConnectableItem(name = "Create new math function", type = Item.CONTROLLER, pathFXML = "mathFunction.fxml")
-public class MathFunctionController implements Openable, FactoryAccessible, TFTabVisitor, MathFunctionAccessible, CompositeFunctionAccessible {
+public class MathFunctionController implements OpenableWindow, FactoryAccessible, TFTabVisitor, MathFunctionAccessible, CompositeFunctionAccessible {
     @FXML
     TextField leftBorder;
     @FXML
@@ -54,7 +57,7 @@ public class MathFunctionController implements Openable, FactoryAccessible, TFTa
                 isEditing = false;
             }
         } else {
-            value = IO.getValue(functionMap.get(comboBox.getSelectionModel().getSelectedItem())
+            value = getValue(functionMap.get(comboBox.getSelectionModel().getSelectedItem())
                     .getClass().getDeclaredAnnotation(ConnectableItem.class));
         }
     }
@@ -94,7 +97,7 @@ public class MathFunctionController implements Openable, FactoryAccessible, TFTa
 
     @Override
     public void visit(TabController.TFState tfState) {
-        value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
+        value.ifPresent(unwrapValue -> setActualParameter(functionMap, comboBox.getValue(), value));
         try {
             TabulatedFunction function = factory().create(functionMap.get(comboBox.getValue()),
                     Double.parseDouble(leftBorder.getText()),

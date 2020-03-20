@@ -1,6 +1,7 @@
 package ru.ssau.tk.itenion.functions;
 
 import Jama.Matrix;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 import ru.ssau.tk.itenion.functions.powerFunctions.ConstantFunction;
@@ -216,6 +217,7 @@ public interface MathFunction extends Serializable, Nameable, VAMF, Differentiab
     }
 
     @Override
+    @JsonIgnore
     default int getDimension() {
         return 1;
     }

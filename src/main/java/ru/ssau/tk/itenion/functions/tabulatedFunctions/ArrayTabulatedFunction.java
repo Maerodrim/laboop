@@ -1,8 +1,6 @@
 package ru.ssau.tk.itenion.functions.tabulatedFunctions;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import javafx.collections.ObservableList;
@@ -12,28 +10,28 @@ import ru.ssau.tk.itenion.exceptions.InterpolationException;
 import ru.ssau.tk.itenion.exceptions.NaNException;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
+import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
 
 import java.io.Serializable;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.stream.IntStream;
-
+//@JsonAutoDetect
 public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Serializable {
     private static final long serialVersionUID = 3990511369369675738L;
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     private double[] xValues;
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     private double[] yValues;
+    @JsonProperty("count")
     private int count;
     @JsonProperty("strict")
     private boolean isStrict = false;
     @JsonProperty("unmodifiable")
     private boolean isUnmodifiable = false;
-    @JsonProperty("math function")
-    @JsonSerialize(using = ToStringSerializer.class)
+    //@JsonProperty("math function")
     private MathFunction mathFunction = null;
-
     public ArrayTabulatedFunction(ObservableList<Point> points) {
         if (points.size() < 2) {
             throw new IllegalArgumentException("Array less than minimum length");
@@ -75,6 +73,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         this.yValues = Arrays.copyOf(yValues, count);
     }
 
+    //@JsonCreator
     public ArrayTabulatedFunction(MathFunction source, double xFrom, double xTo, int count) {
         if (count < 2) {
             throw new IllegalArgumentException("Count less than minimum length");
@@ -104,6 +103,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         return new ArrayTabulatedFunction();
     }
 
+    @JsonGetter("math function")
     public MathFunction getMathFunction() {
         return mathFunction;
     }
@@ -219,11 +219,13 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
+    @JsonGetter("left bound")
     public double leftBound() {
         return xValues[0];
     }
 
     @Override
+    @JsonGetter("right bound")
     public double rightBound() {
         return xValues[count - 1];
     }
@@ -257,6 +259,12 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     @Override
     public TabulatedFunction unwrap() {
         return this;
+    }
+
+    @Override
+    @JsonIgnore
+    public TabulatedFunction getInverseOperator() {
+        return new ArrayTabulatedFunction(TabulatedFunctionOperationService.forInverseOperatorObservableList(this));
     }
 
     @Override

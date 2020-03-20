@@ -17,8 +17,10 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
+import static ru.ssau.tk.itenion.ui.Initializer.initializeMap;
+
 @ConnectableItem(name = "Solve", type = Item.CONTROLLER, pathFXML = "solve.fxml")
-public class SolveController implements TabVisitor, PlotAccessible, Initializable, Openable {
+public class SolveController implements TabVisitor, PlotAccessible, Initializable, OpenableWindow {
     @FXML
     ComboBox<String> numericalMethodsBox;
     @FXML
@@ -87,8 +89,8 @@ public class SolveController implements TabVisitor, PlotAccessible, Initializabl
                     predicateAtomicReference.set(ConnectableItem::forVMF);
                 }
             });
-            Map[] maps = IO.initializeMap(classes, numericalMethodMap, Item.NUMERICAL_METHOD,
-                    item -> item.name().equals(IO.belongTo.toString()),
+            Map[] maps = initializeMap(classes, numericalMethodMap, Item.NUMERICAL_METHOD,
+                    item -> item.belongTo().equals(IO.belongTo),
                     predicateAtomicReference.get());
             classes = (Map<Method, Class<?>>) maps[0];
             numericalMethodMap = (Map<String, Method>) maps[1];

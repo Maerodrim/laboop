@@ -9,6 +9,7 @@ import java.util.Map;
 
 public enum SupportedSign {
     SUM("+"),
+    SUBTRACT("-"),
     MULTIPLY("*");
 
     private static final Map<String, SupportedSign> lookup = new HashMap<>();

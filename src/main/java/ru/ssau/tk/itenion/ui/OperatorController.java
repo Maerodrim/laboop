@@ -16,8 +16,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+import static ru.ssau.tk.itenion.ui.Initializer.initializeMap;
+
 @ConnectableItem(name = "Differentiate/Integrate", type = Item.CONTROLLER, pathFXML = "operator.fxml")
-public class OperatorController implements TFTabVisitor, FactoryAccessible, Initializable, Openable {
+public class OperatorController implements TFTabVisitor, FactoryAccessible, Initializable, OpenableWindow {
 
     @FXML
     ComboBox<String> comboBox;
@@ -29,7 +31,7 @@ public class OperatorController implements TFTabVisitor, FactoryAccessible, Init
     public void initialize(URL url, ResourceBundle resourceBundle) {
         operatorMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
-        Map[] maps = IO.initializeMap(classes, operatorMap, Item.OPERATOR);
+        Map[] maps = initializeMap(classes, operatorMap, Item.OPERATOR);
         classes = (Map<Method, Class<?>>) maps[0];
         operatorMap = (Map<String, Method>) maps[1];
         comboBox.getItems().addAll(operatorMap.keySet());

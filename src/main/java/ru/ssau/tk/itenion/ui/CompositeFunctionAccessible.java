@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface CompositeFunctionAccessible {
 
-    default void connectCompositeFunctionMap(Map<String, MathFunction> compositeFunctionMap) {
+    default void bindCompositeFunctionMap(Map<String, MathFunction> compositeFunctionMap) {
         updateCompositeFunctionMap(compositeFunctionMap);
         updateCompositeFunctionNode();
     }

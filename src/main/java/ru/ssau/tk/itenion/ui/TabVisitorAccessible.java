@@ -1,6 +1,6 @@
 package ru.ssau.tk.itenion.ui;
 
-public interface TabVisitorSimple extends TabVisitor {
+public interface TabVisitorAccessible extends TabVisitor {
     @Override
     default void visit(TabController.TFState tfState){}
 

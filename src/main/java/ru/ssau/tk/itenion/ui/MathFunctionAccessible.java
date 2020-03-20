@@ -5,7 +5,7 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 import java.util.Map;
 
 public interface MathFunctionAccessible {
-    default void connectMathFunctionMap(Map<String, MathFunction> functionMap) {
+    default void bindMathFunctionMap(Map<String, MathFunction> functionMap) {
         setMathFunctionsMap(functionMap);
         setMathFunctionNode();
     }

@@ -6,7 +6,6 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Nameable;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.lang.reflect.Field;
@@ -14,7 +13,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 @ConnectableItem(name = "About function", type = Item.CONTROLLER, pathFXML = "about.fxml")
-public class AboutController implements TabVisitor, Openable, Initializable {
+public class AboutController implements TabVisitor, OpenableWindow, Initializable {
     @FXML
     Label baseMathFunction;
     @FXML

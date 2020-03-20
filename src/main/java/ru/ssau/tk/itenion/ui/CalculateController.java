@@ -4,13 +4,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 @ConnectableItem(name = "Calculate", type = Item.CONTROLLER, pathFXML = "calculate.fxml")
-public class CalculateController implements Initializable, Openable, TFTabVisitor {
+public class CalculateController implements Initializable, OpenableWindow, TFTabVisitor {
     @FXML
     TextField x;
     @FXML

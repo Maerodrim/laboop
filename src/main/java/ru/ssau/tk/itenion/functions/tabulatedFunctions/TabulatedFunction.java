@@ -1,5 +1,7 @@
 package ru.ssau.tk.itenion.functions.tabulatedFunctions;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javafx.collections.ObservableList;
 import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.*;
@@ -37,6 +39,8 @@ public interface TabulatedFunction extends MathFunction, TabHolderMathFunction<T
 
     TabulatedFunction unwrap();
 
+    TabulatedFunction getInverseOperator();
+
     default boolean isCanBeComposed(TabulatedFunction function) {
         return Math.abs(leftBound() - function.leftBound()) < 1E-12
                 && Math.abs(rightBound() - function.rightBound()) < 1E-12
@@ -44,6 +48,7 @@ public interface TabulatedFunction extends MathFunction, TabHolderMathFunction<T
     }
 
     @Override
+    @JsonIgnore
     default String getName() {
         if (!Objects.isNull(getMathFunction())) {
             return getMathFunction().getName();
@@ -53,6 +58,7 @@ public interface TabulatedFunction extends MathFunction, TabHolderMathFunction<T
     }
 
     @Override
+    @JsonIgnore
     default String getName(Variable variable) {
         if (!Objects.isNull(getMathFunction())) {
             return getMathFunction().getName();
@@ -65,6 +71,7 @@ public interface TabulatedFunction extends MathFunction, TabHolderMathFunction<T
 
     void setMathFunction(MathFunction math);
 
+    @JsonIgnore
     default boolean isMathFunctionExist() {
         return !Objects.isNull(getMathFunction());
     }
@@ -75,6 +82,7 @@ public interface TabulatedFunction extends MathFunction, TabHolderMathFunction<T
     }
 
     @Override
+    @JsonIgnore
     default double[] getDimensionArray(){
         return new double[]{1,1};
     }

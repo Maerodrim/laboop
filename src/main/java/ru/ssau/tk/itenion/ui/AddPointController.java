@@ -5,10 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.Point;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
 
 @ConnectableItem(name = "Add point", type = Item.CONTROLLER, pathFXML = "addPoint.fxml")
-public class AddPointController implements TFTabVisitor, Openable {
+public class AddPointController implements TFTabVisitor, OpenableWindow {
     @FXML
     TextField x;
     @FXML
@@ -42,7 +42,7 @@ public class AddPointController implements TFTabVisitor, Openable {
             if (index == -1) {
                 ObservableList<Point> observableList = tfState.getObservableList();
                 observableList.add(point);
-                IO.sort(observableList);
+                TabulatedFunctionOperationService.sort(observableList);
                 tfState.getFunction().insert(point.x, point.y);
                 tfState.getFunction().setMathFunction(null);
                 stage.close();

@@ -6,28 +6,27 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 
 import java.util.ArrayList;
 
-/**
- * TODO
- * It's expected to work as a general case of the {@link AdditiveVAMFSV} and {@link MultiplicativeVAMFSV}
- */
+public class SubtractiveVAMF extends AbstractVAMF {
+    public SubtractiveVAMF() {
+        super(" + ");
+    }
 
-public class MixedVAMFSV extends AbstractVAMF {
-
-    public MixedVAMFSV(String delimiter) {
-        super(delimiter);
+    public SubtractiveVAMF(Variable variable, MathFunction mathFunction) {
+        super(variable, mathFunction, " - ");
     }
 
     @Override
     public void put(Variable variable, MathFunction function) {
+        super.put(variable, function, MathFunction::subtract);
     }
 
     @Override
     public double apply(ArrayList<Double> x) {
-        return 0;
+        return super.apply(x, (y, z) -> y - z);
     }
 
     @Override
     public double apply(Matrix x) {
-        return 0;
+        return super.apply(x, (y, z) -> y - z);
     }
 }

@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 import java.util.stream.StreamSupport;
 
 @ConnectableItem(name = "Settings", type = Item.CONTROLLER, pathFXML = "settings.fxml")
-public class SettingsController implements AnyTabVisitor, Initializable, Openable {
+public class SettingsController implements AnyTabVisitor, Initializable, OpenableWindow {
     @FXML
     WebView webView;
     @FXML
@@ -95,7 +95,7 @@ public class SettingsController implements AnyTabVisitor, Initializable, Openabl
     }
 
     @Override
-    public void visit(TabController.AnyTabState anyTabState){
-        anyTabState.setFactory(factory);
+    public void visit(TabController.AnyTabHolderState anyTabHolderState){
+        anyTabHolderState.setFactory(factory);
     }
 }

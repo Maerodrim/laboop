@@ -1,6 +1,7 @@
 package ru.ssau.tk.itenion.functions;
 
 import ru.ssau.tk.itenion.functions.powerFunctions.ConstantFunction;
+import ru.ssau.tk.itenion.functions.powerFunctions.IdentityFunction;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 
 import java.util.Objects;
@@ -46,6 +47,11 @@ public class LinearCombinationFunction implements MathFunction {
     }
 
     @Override
+    public MathFunction negate(){
+        return new LinearCombinationFunction(function, -1, -shift);
+    }
+
+    @Override
     public double apply(double x) {
         return constant * function.apply(x) + shift;
     }
@@ -67,7 +73,9 @@ public class LinearCombinationFunction implements MathFunction {
             } else {
                 if (constant == 1) {
                     name = function.getName();
-                } else {
+                } else if (constant == -1){
+                    name = "-" + function.getName();
+                } else{
                     name = constant + function.getName();
                 }
             }
@@ -94,5 +102,10 @@ public class LinearCombinationFunction implements MathFunction {
 
     public double getShift() {
         return shift;
+    }
+
+    public static boolean isValid(MathFunction function){
+        return function instanceof IdentityFunction
+                || function instanceof LinearCombinationFunction && ((LinearCombinationFunction) function).getFunction() instanceof IdentityFunction;
     }
 }

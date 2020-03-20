@@ -5,10 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.Point;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
 
 @ConnectableItem(name = "Delete point", type = Item.CONTROLLER, pathFXML = "deletePoint.fxml")
-public class DeletePointController implements Openable, TFTabVisitor {
+public class DeletePointController implements OpenableWindow, TFTabVisitor {
     @FXML
     TextField x;
     private Stage stage;
@@ -40,7 +40,7 @@ public class DeletePointController implements Openable, TFTabVisitor {
             } else {
                 ObservableList<Point> observableList = tfState.getObservableList();
                 observableList.remove(index);
-                IO.sort(observableList);
+                TabulatedFunctionOperationService.sort(observableList);
                 tfState.getFunction().remove(index);
                 stage.close();
             }

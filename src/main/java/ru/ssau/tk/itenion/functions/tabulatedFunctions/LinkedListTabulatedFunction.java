@@ -160,6 +160,11 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return this;
     }
 
+    @Override
+    public TabulatedFunction getInverseOperator() {
+        return new LinkedListTabulatedFunction(TabulatedFunctionOperationService.forInverseOperatorObservableList(this));
+    }
+
     private Node getNode(int index) {
         Node buff;
         if (index > (count / 2)) {

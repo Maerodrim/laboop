@@ -2,6 +2,7 @@ package ru.ssau.tk.itenion.ui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -21,8 +22,12 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static ru.ssau.tk.itenion.ui.Initializer.initializeMap;
+import static ru.ssau.tk.itenion.ui.ParameterSupplier.getValue;
+import static ru.ssau.tk.itenion.ui.ParameterSupplier.setActualParameter;
+
 @ConnectableItem(name = "Apply", type = Item.CONTROLLER, pathFXML = "apply.fxml")
-public class ApplyController implements TFTabVisitor, FactoryAccessible, Initializable, Openable, TabulatedFunctionAccessible, MathFunctionAccessible, CompositeFunctionAccessible {
+public class ApplyController implements TFTabVisitor, FactoryAccessible, Initializable, OpenableWindow, TabulatedFunctionAccessible, MathFunctionAccessible, CompositeFunctionAccessible {
     private Stage stage;
     private Map<String, Method> operationMap;
     private Map<String, MathFunction> fittingTabulatedFunctionsMap;
@@ -30,6 +35,8 @@ public class ApplyController implements TFTabVisitor, FactoryAccessible, Initial
     private Map<String, MathFunction> compositeFunctionsMap;
     private Map<Method, Class<?>> classes;
     private MathFunction applyFunction;
+    @FXML
+    public CheckBox isStorable;
 
     @FXML
     private Menu mathFunctionMenu, compositeFunctionMenu, currentFunctionMenu;
@@ -42,7 +49,7 @@ public class ApplyController implements TFTabVisitor, FactoryAccessible, Initial
         fittingTabulatedFunctionsMap = new LinkedHashMap<>();
         operationMap = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
-        Map[] maps = IO.initializeMap(classes, operationMap, Item.OPERATION);
+        Map[] maps = initializeMap(classes, operationMap, Item.OPERATION);
         classes = (Map<Method, Class<?>>) maps[0];
         operationMap = (Map<String, Method>) maps[1];
         operationComboBox.getItems().addAll(operationMap.keySet());
@@ -81,7 +88,7 @@ public class ApplyController implements TFTabVisitor, FactoryAccessible, Initial
             if (menu.getText().equals("Мат. функции")) {
                 ConnectableItem item = applyFunction.getClass().getDeclaredAnnotation(ConnectableItem.class);
                 if (item.hasParameter()) {
-                    applyFunction = IO.setActualParameter(applyFunction, IO.getValue(item));
+                    applyFunction = setActualParameter(applyFunction, getValue(item));
                 }
             }
         }));
@@ -132,6 +139,9 @@ public class ApplyController implements TFTabVisitor, FactoryAccessible, Initial
         try {
             if (applyFunction instanceof TabulatedFunction) {
                 applyFunction = ((TabulatedFunction) applyFunction).getMathFunction();
+            }
+            if (isStorable.isSelected()) {
+                anyState().addCompositeFunction(applyFunction);
             }
             TabulatedFunction function = (TabulatedFunction) operationMap.get(operationComboBox.getValue())
                     .invoke(classes.get(operationMap.get(operationComboBox.getValue()))

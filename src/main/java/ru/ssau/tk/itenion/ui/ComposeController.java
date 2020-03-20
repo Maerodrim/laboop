@@ -7,7 +7,6 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.exceptions.NaNException;
 import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 
 import java.util.ArrayList;
@@ -15,8 +14,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static ru.ssau.tk.itenion.ui.ParameterSupplier.getValue;
+import static ru.ssau.tk.itenion.ui.ParameterSupplier.setActualParameter;
+
 @ConnectableItem(name = "Compose", type = Item.CONTROLLER, pathFXML = "compose.fxml")
-public class ComposeController implements Openable, FactoryAccessible, MathFunctionAccessible, CompositeFunctionAccessible, TFTabVisitor {
+public class ComposeController implements OpenableWindow, FactoryAccessible, MathFunctionAccessible, CompositeFunctionAccessible, TFTabVisitor {
     @FXML
     public CheckBox isStorable;
     @FXML
@@ -71,7 +73,7 @@ public class ComposeController implements Openable, FactoryAccessible, MathFunct
                 isEditing = false;
             }
         } else {
-            value = IO.getValue(functionMap.get(comboBox.getSelectionModel().getSelectedItem())
+            value = getValue(functionMap.get(comboBox.getSelectionModel().getSelectedItem())
                     .getClass().getDeclaredAnnotation(ConnectableItem.class));
         }
     }
@@ -89,7 +91,7 @@ public class ComposeController implements Openable, FactoryAccessible, MathFunct
     @Override
     public void visit(TabController.TFState tfState) {
         TabulatedFunction parentFunction = tfState.getFunction();
-        value.ifPresent(unwrapValue -> IO.setActualParameter(functionMap, comboBox.getValue(), value));
+        value.ifPresent(unwrapValue -> setActualParameter(functionMap, comboBox.getValue(), value));
         try {
             MathFunction mathFunction = functionMap.get(comboBox.getValue()).andThen(parentFunction.getMathFunction());
             TabulatedFunction function = factory().create(

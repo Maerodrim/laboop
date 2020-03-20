@@ -11,8 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.Point;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
-import ru.ssau.tk.itenion.ui.states.State;
+import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
+import ru.ssau.tk.itenion.enums.State;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @ConnectableItem(name = "Create new tabulated function", type = Item.CONTROLLER, pathFXML = "tabulatedFunction.fxml")
-public class TabulatedFunctionController implements TabVisitorSimple, Initializable, Openable {
+public class TabulatedFunctionController implements TabVisitorAccessible, Initializable, OpenableWindow {
     private final Map<String, Boolean> existingPoints = new LinkedHashMap<>();
     @FXML
     TextField textX;
@@ -59,7 +59,7 @@ public class TabulatedFunctionController implements TabVisitorSimple, Initializa
                     list.add(new Point(x, y));
                 }
                 existingPoints.putIfAbsent(x + "", true);
-                IO.sort(list);
+                TabulatedFunctionOperationService.sort(list);
             } else if (textX.getText().isEmpty()) {
                 AlertWindows.showWarning("X field is empty");
             } else if (textY.getText().isEmpty()) {

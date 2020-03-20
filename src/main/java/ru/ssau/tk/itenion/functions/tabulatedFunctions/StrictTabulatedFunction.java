@@ -97,6 +97,11 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
+    public TabulatedFunction getInverseOperator() {
+        return tabulatedFunction.getInverseOperator();
+    }
+
+    @Override
     public MathFunction getMathFunction() {
         return tabulatedFunction.getMathFunction();
     }

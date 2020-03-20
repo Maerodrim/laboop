@@ -11,8 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.atteo.classindex.ClassIndex;
-import ru.ssau.tk.itenion.enums.Variable;
+import ru.ssau.tk.itenion.enums.State;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.ArrayTabulatedFunctionFactory;
@@ -20,17 +19,16 @@ import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
-import ru.ssau.tk.itenion.ui.states.State;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
-import java.util.stream.StreamSupport;
 
-public class TabController implements Initializable, Openable {
+import static ru.ssau.tk.itenion.ui.Initializer.initializeMathFunctionMap;
+
+public class TabController implements Initializable, OpenableWindow {
 
     private TabController tabController = this;
     private final TableColumn<Point, Double> x = new TableColumn<>("X");
@@ -41,7 +39,7 @@ public class TabController implements Initializable, Openable {
     private Map<Tab, TabulatedFunction> tabulatedFunctionMap;
     private Map<Tab, VMF> VMFMap;
     private Map<String, MathFunction> mathFunctionMap;
-    private Map<String, Openable> controllerMap;
+    private Map<String, OpenableWindow> controllerMap;
     private Map<String, MathFunction> compositeFunctionMap;
     private Tab currentTab;
     private IO io;
@@ -49,7 +47,7 @@ public class TabController implements Initializable, Openable {
     private boolean isUnmodifiable = false;
     public TFState tfState;
     public VMFState vmfState;
-    public static AnyTabState anyTabState;
+    public static AnyTabHolderState anyTabHolderState;
     public static TabHolderState state;
 
     @FXML
@@ -62,28 +60,12 @@ public class TabController implements Initializable, Openable {
     private Button addPointButton, deletePointButton, calculateValueButton;
     @FXML
     private Label label;
-    private Function<Class<?>, Openable> initializeWindowController = new Function<>() {
-        @Override
-        public Openable apply(Class<?> clazz) {
-            Openable controller = null;
-            try {
-                controller = (Openable) clazz.getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-            String path = IO.FXML_PATH + controller.getClass().getDeclaredAnnotation(ConnectableItem.class).pathFXML();
-            controller = IO.initializeModalityWindow(path, controller);
-            controller.getStage().initOwner(stage);
-            controller.getStage().setTitle(controller.getClass().getDeclaredAnnotation(ConnectableItem.class).name());
-            return controller;
-        }
-    };
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tfState = new TFState();
         vmfState = new VMFState();
-        anyTabState = new AnyTabState();
+        anyTabHolderState = new AnyTabHolderState();
         state = tfState;
 
         bottomPane.setTop(null);
@@ -93,6 +75,7 @@ public class TabController implements Initializable, Openable {
         bottomPane.setBottom(null);
 
         controllerMap = new HashMap<>();
+        mathFunctionMap = new LinkedHashMap<>();
         tabulatedFunctionMap = new LinkedHashMap<>();
         VMFMap = new LinkedHashMap<>();
         compositeFunctionMap = new LinkedHashMap<>();
@@ -104,36 +87,15 @@ public class TabController implements Initializable, Openable {
         factory = new ArrayTabulatedFunctionFactory();
         io = new IO(factory);
         boolean isCreated = new File(IO.DEFAULT_DIRECTORY).mkdir();
-        initializeMathFunctionMap();
-        initializeWindowControllers();
-        connectMathFunctionMap();
+        new Initializer(stage).initializeWindowControllers(controllerMap);
+        initializeMathFunctionMap(mathFunctionMap);
+        bindMathFunctionMap();
     }
 
-    private void initializeMathFunctionMap() {
-        mathFunctionMap = new LinkedHashMap<>();
-        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.FUNCTION)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
-                .forEach(clazz -> {
-                    try {
-                        mathFunctionMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(),
-                                (MathFunction) clazz.getDeclaredConstructor().newInstance());
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        AlertWindows.showError(e);
-                    }
-                });
-    }
-
-    private void initializeWindowControllers() {
-        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.CONTROLLER)
-                .forEach(clazz -> controllerMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).pathFXML(), initializeWindowController.apply(clazz)));
-    }
-
-    private void connectMathFunctionMap() {
+    private void bindMathFunctionMap() {
         controllerMap.values().stream()
                 .filter(f -> f instanceof MathFunctionAccessible)
-                .forEach(f -> ((MathFunctionAccessible) f).connectMathFunctionMap(mathFunctionMap));
+                .forEach(f -> ((MathFunctionAccessible) f).bindMathFunctionMap(mathFunctionMap));
     }
 
     @Override
@@ -147,15 +109,20 @@ public class TabController implements Initializable, Openable {
 
     @FXML
     private void loadFunction() {
-//        File file = IO.load(stage);
-//        if (!Objects.equals(file, null)) {
-//            TabHolderMathFunction function = io.loadFunctionAs(file);
-//            if (io.isVMF()) {
-//                // todo for VMF
-//            } else {
-//                createTab((TabulatedFunction) function);
-//            }
-//        }
+        state.accept(new TabVisitor() {
+            @Override
+            public void visit(TFState tfState) {
+                File file = IO.loadTF(stage);
+                if (!Objects.isNull(file)) {
+                    tfState.createTab(io.loadTabulatedFunctionAs(file));
+                }
+            }
+
+            @Override
+            public void visit(VMFState vmfState) {
+
+            }
+        });
     }
 
     @FXML
@@ -169,14 +136,23 @@ public class TabController implements Initializable, Openable {
     }
 
     private void save(boolean toTempPath) {
-//        if (!isVMF && isTabExist()) {
-//            File file = toTempPath
-//                    ? new File(IO.DEFAULT_DIRECTORY + "\\" + ((TabulatedFunction) getFunction()).getMathFunction() + ".fnc")
-//                    : IO.save(stage);
-//            if (!Objects.equals(file, null)) {
-//                io.saveFunctionAs(file, (TabulatedFunction) getFunction());
-//            }
-//        }
+        if (isTabExist()) {
+            state.accept(new TabVisitor() {
+                @Override
+                public void visit(TFState tfState) {
+                    File file = toTempPath
+                            ? new File(IO.DEFAULT_DIRECTORY + "\\" + tfState.getFunction().getMathFunction() + ".fnc")
+                            : IO.saveTF(stage);
+                    if (!Objects.isNull(file)) {
+                        io.saveTabulatedFunctionAs(file, tfState.getFunction());
+                    }
+                }
+
+                @Override
+                public void visit(VMFState vmfState) {
+                }
+            });
+        }
     }
 
 
@@ -203,17 +179,17 @@ public class TabController implements Initializable, Openable {
         show(isResizable, Thread.currentThread().getStackTrace()[2]);
     }
 
-    private Openable lookupController() {
+    private OpenableWindow lookupController() {
         return lookupController(Thread.currentThread().getStackTrace()[2].getMethodName());
     }
 
-    private Openable lookupController(String path) {
-        Openable controller = controllerMap.get(path + ".fxml");
+    private OpenableWindow lookupController(String path) {
+        OpenableWindow controller = controllerMap.get(path + ".fxml");
         if (controller instanceof TabulatedFunctionAccessible) {
-            ((TabulatedFunctionAccessible) controller).connectTabulatedFunctionMap(tabulatedFunctionMap);
+            ((TabulatedFunctionAccessible) controller).bindTabulatedFunctionMap(tabulatedFunctionMap);
         }
         if (controller instanceof CompositeFunctionAccessible) {
-            ((CompositeFunctionAccessible) controller).connectCompositeFunctionMap(compositeFunctionMap);
+            ((CompositeFunctionAccessible) controller).bindCompositeFunctionMap(compositeFunctionMap);
         }
         return controllerMap.get(path + ".fxml");
     }
@@ -278,7 +254,7 @@ public class TabController implements Initializable, Openable {
             AtomicBoolean atomicBoolean = new AtomicBoolean(true);
             state.accept((TFTabVisitor) tabulatedFunction -> atomicBoolean.set(tabulatedFunction.getFunction().isMathFunctionExist()));
             if (atomicBoolean.get()) {
-                Openable controller = lookupController();
+                OpenableWindow controller = lookupController();
                 ((AboutController) controller).setInfo();
                 controller.getStage().show();
             } else {
@@ -298,7 +274,7 @@ public class TabController implements Initializable, Openable {
 
     @FXML
     private void solve() {
-        if (isTabExist()){
+        if (isTabExist()) {
             AtomicBoolean atomicBoolean = new AtomicBoolean(true);
             state.accept((TFTabVisitor) tabulatedFunction -> atomicBoolean.set(!tabulatedFunction.getFunction().isStrict()));
             if (atomicBoolean.get()) {
@@ -371,9 +347,9 @@ public class TabController implements Initializable, Openable {
         return compositeFunctionMap;
     }
 
-    public final class AnyTabState {
+    public final class AnyTabHolderState {
 
-        private AnyTabState() {
+        private AnyTabHolderState() {
         }
 
         public boolean isStrict() {
@@ -400,7 +376,7 @@ public class TabController implements Initializable, Openable {
             tabController.plot();
         }
 
-        public TabulatedFunctionFactory getFactory(){
+        public TabulatedFunctionFactory getFactory() {
             return factory;
         }
 
