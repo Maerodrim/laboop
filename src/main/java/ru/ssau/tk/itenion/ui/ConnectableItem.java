@@ -47,4 +47,8 @@ public @interface ConnectableItem {
      * @return VMF
      */
     boolean forVMF() default false;
+    /**
+     * @return numerical methods parameters
+     */
+    boolean isBorderRequired() default false;
 }

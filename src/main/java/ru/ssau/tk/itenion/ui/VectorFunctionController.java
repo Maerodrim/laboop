@@ -50,7 +50,6 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
     private Map<String, MathFunction> mathFunctionMap;
     private Map<String, MathFunction> compositeFunctionMap;
     private RegexValidator validator;
-    private int width;
     private ObservableList<Pair<Variable, Integer>> nodesGrid = FXCollections.observableArrayList();
     @FXML
     private AnchorPane creatingPane;
@@ -122,7 +121,8 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
             createdPane = new AnchorPane();
             initFutureGroups();
         });
-        stage.setWidth(width);
+        stage.setHeight((Variable.values().length - 1.) * 100 + 190);
+        stage.setWidth(315 + (Variable.values().length - 1.) * 180);
         this.stage = stage;
     }
 
@@ -177,13 +177,26 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
                 Variable finalVariable = variable;
                 currentFunctions.computeIfPresent(new Pair<>(variable, variableIntegerPair.getValue()),
                         (variableIntegerPair1, function) -> {
-                    MathFunction aFunction = currentFunctions.get(new Pair<>(finalVariable.getAnotherVariable(), variableIntegerPair.getValue()));
-                    MathFunction result = function.subtract(Double.parseDouble(textField.getText()));
-                    if (aFunction instanceof LinearCombinationFunction) {
-                        result = result.sum(((LinearCombinationFunction) aFunction).getShift()).multiply(1./((LinearCombinationFunction) aFunction).getConstant());
-                    }
-                    return result;
-                });
+                            MathFunction aFunction = currentFunctions.get(new Pair<>(finalVariable.getAnotherVariable(), variableIntegerPair.getValue()));
+                            MathFunction result;
+                            if (finalVariable.ordinal() != 1 || !SupportedSign.SUBTRACT.equals(getSignList().get(variableIntegerPair.getValue() - 1))) {
+                                result = function.subtract(Double.parseDouble(textField.getText())); // учёт того, что если стоит знак минус, то не нужно не вычитать константу, а прибавлять
+                            } else {
+                                result = function.sum(Double.parseDouble(textField.getText()));
+                            }
+                            if (aFunction instanceof LinearCombinationFunction) {
+                                result = result.sum(((LinearCombinationFunction) aFunction).getShift()).multiply(1. / ((LinearCombinationFunction) aFunction).getConstant());
+                            }
+                            currentFunctions.computeIfPresent(new Pair<>(finalVariable.getAnotherVariable(), variableIntegerPair.getValue()),
+                                    (variableIntegerPair2, function2) -> {
+                                        if (aFunction instanceof LinearCombinationFunction) {
+                                            return function2.multiply(1. / ((LinearCombinationFunction) aFunction).getConstant());
+                                        } else {
+                                            return function2;
+                                        }
+                                    });
+                            return result;
+                        });
             }
         });
     }
@@ -261,7 +274,6 @@ public class VectorFunctionController implements Initializable, FactoryAccessibl
             AnchorPane.setLeftAnchor(equalSign, 155. + nodeGrid.getKey().ordinal() * 180);
 
             creatingPane.getChildren().addAll(functionsMenuBar, textField, equalSign, extraTextField);
-            width = 315 + nodeGrid.getKey().ordinal() * 180;
         }
     }
 

@@ -18,6 +18,7 @@ public class PolynomialParser {
     /**
      * Предикат, выполняющий проверку, является ли строка полиномом
      */
+    //fixme -x^3 + x^2 isn't valid
     public static Predicate<String> isPolynomial =
             s -> Pattern.compile("([+-])").splitAsStream(normalizeSourceString(s)).allMatch(s1 -> (s1.isEmpty() ? s : s1).matches(MONOMIAL_TEMPLATE));
 

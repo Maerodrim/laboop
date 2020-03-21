@@ -63,9 +63,9 @@ public abstract class AbstractVAMF implements VAMF {
     }
 
     public double apply(Matrix x, DoubleBinaryOperator operator) {
-        double y = 0;
         Variable[] variables = Variable.values();
-        for (int i = 0; i < functionMap.size(); i++) {
+        double y = functionMap.get(variables[0]).apply(x.get(0, 0));
+        for (int i = 1; i < functionMap.size(); i++) {
             y = operator.applyAsDouble(y, functionMap.get(variables[i]).apply(x.get(0, i)));
         }
         return y;

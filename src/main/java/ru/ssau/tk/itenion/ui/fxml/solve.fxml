@@ -1,53 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="300.0" prefWidth="770.0" xmlns="http://javafx.com/javafx/8"
-            fx:controller="ru.ssau.tk.itenion.ui.SolveController">
+
+<AnchorPane prefHeight="300.0" prefWidth="770.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.ssau.tk.itenion.ui.SolveController">
     <children>
-        <Button layoutX="555.0" layoutY="257.0" mnemonicParsing="false" onAction="#ok" prefHeight="31.0"
-                prefWidth="90.0" text="Ok" AnchorPane.leftAnchor="555.0" AnchorPane.topAnchor="257.0"/>
-        <Button layoutX="666.0" layoutY="257.0" mnemonicParsing="false" onAction="#cancel" prefHeight="31.0"
-                prefWidth="90.0" text="Cancel" AnchorPane.leftAnchor="665.0" AnchorPane.topAnchor="257.0"/>
-        <ListView fx:id="listOfRoots" layoutX="342.0" layoutY="50.0" prefHeight="193.0" prefWidth="201.0"
-                  AnchorPane.leftAnchor="342.0" AnchorPane.topAnchor="48.0"/>
-        <TextField fx:id="eps" layoutX="130.0" layoutY="77.0" prefHeight="31.0" prefWidth="201.0"
-                   AnchorPane.leftAnchor="129.0" AnchorPane.topAnchor="67.0"/>
-        <TextField fx:id="initialApproximationTextField" layoutX="130.0" layoutY="118.0" prefHeight="31.0"
-                   prefWidth="201.0" AnchorPane.leftAnchor="129.0" AnchorPane.topAnchor="107.0"/>
-        <TextField fx:id="left" layoutX="130.0" layoutY="157.0" prefHeight="31.0" prefWidth="201.0"
-                   AnchorPane.leftAnchor="129.0" AnchorPane.topAnchor="147.0"/>
-        <TextField fx:id="numberOfIterations" editable="false" layoutX="129.0" layoutY="258.0" prefHeight="31.0"
-                   prefWidth="201.0" AnchorPane.leftAnchor="129.0" AnchorPane.topAnchor="258.0"/>
-        <Label layoutX="15.0" layoutY="152.0" prefHeight="21.0" prefWidth="36.0" text="Left"
-               AnchorPane.topAnchor="152.0"/>
-        <Label layoutX="15.0" layoutY="192.0" prefHeight="21.0" prefWidth="36.0" text="Right"
-               AnchorPane.topAnchor="192.0"/>
-        <ComboBox fx:id="numericalMethodsBox" layoutX="7.0" layoutY="14.0" prefHeight="37.0" prefWidth="317.0"
-                  AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="14.0"/>
-        <Button layoutX="342.0" layoutY="257.0" mnemonicParsing="false" onAction="#locateTheRoots" prefHeight="31.0"
-                prefWidth="201.0" text="Locate the roots" AnchorPane.leftAnchor="342.0" AnchorPane.topAnchor="257.0"/>
-        <ListView fx:id="listOfEps" layoutX="555.0" layoutY="48.0" prefHeight="193.0" prefWidth="201.0"
-                  AnchorPane.leftAnchor="555.0" AnchorPane.topAnchor="48.0"/>
-        <Label layoutX="15.0" layoutY="72.0" prefHeight="21.0" prefWidth="64.0" text="Accuracy"
-               AnchorPane.topAnchor="70.0"/>
-        <Label layoutX="14.0" layoutY="252.0" prefHeight="42.0" prefWidth="90.0" text="Iterations number"
-               wrapText="true"/>
-        <TextField fx:id="right" layoutX="130.0" layoutY="198.0" prefHeight="31.0" prefWidth="201.0"
-                   AnchorPane.leftAnchor="129.0" AnchorPane.topAnchor="187.0"/>
-        <Label layoutX="15.0" layoutY="102.0" prefHeight="42.0" prefWidth="101.0" text="Initial approximation"
-               wrapText="true" AnchorPane.topAnchor="97.0"/>
-        <Label layoutX="422.0" layoutY="-1.0" prefHeight="51.0" prefWidth="77.0" text="Roots" textAlignment="CENTER"
-               wrapText="true" AnchorPane.leftAnchor="422.0" AnchorPane.topAnchor="0.0">
+        <Button layoutX="555.0" layoutY="257.0" mnemonicParsing="false" onAction="#ok" prefHeight="31.0" prefWidth="90.0" text="Ok" AnchorPane.leftAnchor="555.0" AnchorPane.topAnchor="257.0" />
+        <Button layoutX="666.0" layoutY="257.0" mnemonicParsing="false" onAction="#cancel" prefHeight="31.0" prefWidth="90.0" text="Cancel" AnchorPane.leftAnchor="665.0" AnchorPane.topAnchor="257.0" />
+        <ListView fx:id="listOfRoots" layoutX="342.0" layoutY="50.0" prefHeight="193.0" prefWidth="201.0" AnchorPane.leftAnchor="342.0" AnchorPane.topAnchor="48.0" />
+        <TextField fx:id="accuracy" layoutX="130.0" layoutY="77.0" prefHeight="31.0" prefWidth="201.0" AnchorPane.leftAnchor="129.0" AnchorPane.topAnchor="67.0" />
+        <TextField fx:id="initialApproximationTextField" layoutX="130.0" layoutY="118.0" prefHeight="31.0" prefWidth="201.0" AnchorPane.leftAnchor="129.0" AnchorPane.topAnchor="107.0" />
+        <TextField fx:id="left" layoutX="130.0" layoutY="157.0" prefHeight="31.0" prefWidth="201.0" AnchorPane.leftAnchor="129.0" AnchorPane.topAnchor="147.0" />
+        <TextField fx:id="numberOfIterations" editable="false" layoutX="129.0" layoutY="258.0" prefHeight="31.0" prefWidth="201.0" AnchorPane.leftAnchor="129.0" AnchorPane.topAnchor="258.0" />
+        <Label fx:id="leftLabel" layoutX="15.0" layoutY="152.0" prefHeight="21.0" prefWidth="36.0" text="Left" AnchorPane.topAnchor="152.0" />
+        <Label fx:id="rightLabel" layoutX="15.0" layoutY="192.0" prefHeight="21.0" prefWidth="36.0" text="Right" AnchorPane.topAnchor="192.0" />
+        <ComboBox fx:id="numericalMethodsBox" layoutX="7.0" layoutY="14.0" prefHeight="37.0" prefWidth="317.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="14.0" />
+        <Button layoutX="342.0" layoutY="257.0" mnemonicParsing="false" onAction="#locateTheRoots" prefHeight="31.0" prefWidth="201.0" text="Locate the roots" AnchorPane.leftAnchor="342.0" AnchorPane.topAnchor="257.0" />
+        <ListView fx:id="listOfEps" layoutX="555.0" layoutY="48.0" prefHeight="193.0" prefWidth="201.0" AnchorPane.leftAnchor="555.0" AnchorPane.topAnchor="48.0" />
+        <Label layoutX="15.0" layoutY="72.0" prefHeight="21.0" prefWidth="64.0" text="Accuracy" AnchorPane.topAnchor="70.0" />
+        <Label layoutX="14.0" layoutY="252.0" prefHeight="42.0" prefWidth="90.0" text="Iterations number" wrapText="true" />
+        <TextField fx:id="right" layoutX="130.0" layoutY="198.0" prefHeight="31.0" prefWidth="201.0" AnchorPane.leftAnchor="129.0" AnchorPane.topAnchor="187.0" />
+        <Label layoutX="15.0" layoutY="102.0" prefHeight="42.0" prefWidth="101.0" text="Initial approximation" wrapText="true" AnchorPane.topAnchor="97.0" />
+        <Label layoutX="422.0" layoutY="-1.0" prefHeight="51.0" prefWidth="77.0" text="Roots" textAlignment="CENTER" wrapText="true" AnchorPane.leftAnchor="422.0" AnchorPane.topAnchor="0.0">
             <font>
-                <Font name="System Bold" size="15.0"/>
+                <Font name="System Bold" size="15.0" />
             </font>
         </Label>
-        <Label layoutX="565.0" prefHeight="51.0" prefWidth="201.0" text="The corresponding residual error"
-               textAlignment="CENTER" wrapText="true" AnchorPane.topAnchor="0.0">
+        <Label layoutX="565.0" prefHeight="51.0" prefWidth="201.0" text="The corresponding residual error" textAlignment="CENTER" wrapText="true" AnchorPane.topAnchor="0.0">
             <font>
-                <Font name="System Bold" size="15.0"/>
+                <Font name="System Bold" size="15.0" />
             </font>
         </Label>
     </children>

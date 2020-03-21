@@ -126,4 +126,12 @@ public class LinearCombinationFunction implements MathFunction {
     public double getShift() {
         return shift;
     }
+
+    public static LinearCombinationFunction getWithNegateShift(LinearCombinationFunction function){
+        return new LinearCombinationFunction(function.function, function.constant, -function.shift);
+    }
+
+    public static LinearCombinationFunction getWithNegateConstant(LinearCombinationFunction function){
+        return new LinearCombinationFunction(function.function, -function.constant, function.shift);
+    }
 }

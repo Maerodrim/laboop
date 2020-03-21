@@ -25,7 +25,9 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
+import ru.ssau.tk.itenion.enums.SupportedSign;
 import ru.ssau.tk.itenion.enums.Variable;
+import ru.ssau.tk.itenion.functions.LinearCombinationFunction;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
@@ -127,10 +129,17 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
                 TabulatedFunction tabulatedFunction;
                 for (int i = 0; i < 2; i++) {
                     Variable variable = Variable.values()[(int) matrix.get(i, 0)];
-                    tabulatedFunction = factory().create(
-                            vmfState.getFunction().getMathFunction(variable, i).negate(),
-                            -10, 10, 1001
-                    );
+                    MathFunction function = vmfState.getFunction().getMathFunction(variable, i);
+                    if (function instanceof LinearCombinationFunction && variable.equals(Variable.values()[1])) {
+                        function = LinearCombinationFunction.getWithNegateShift((LinearCombinationFunction) function);
+                    }
+                    if (variable.equals(Variable.values()[0])) {
+                        function = function.negate();
+                    }
+                    if (vmfState.getFunction().getGeneratedSigns(i).get(0).equals(SupportedSign.SUBTRACT)) {
+                        function = function.negate();
+                    }
+                    tabulatedFunction = factory().create(function, -10, 10, 1001);
                     addSeries(TabulatedFunctionOperationService.asSeriesData(tabulatedFunction, variable), tabulatedFunction, variable);
                 }
             });
@@ -255,8 +264,8 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
 
     private class DetailsPopup extends VBox {
 
+        private ArrayList<HBox> onlySeriesNamePopupRows = new ArrayList<>();
         private ObservableList<TabulatedFunction> functions = FXCollections.observableArrayList();
-        private ObservableList<TabulatedFunction> onlyNameFunctions = FXCollections.observableArrayList();
 
 
         private DetailsPopup() {
@@ -272,7 +281,13 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
                         break;
                     }
                     case y: {
-                        onlyNameFunctions.add(function);
+                        Label onlySeriesName = new Label();
+                        onlySeriesName.setTextFill(functionColorMap.get(function.getMathFunction()));
+                        if (function.getMathFunction() instanceof LinearCombinationFunction){
+                            function.setMathFunction(LinearCombinationFunction.getWithNegateConstant((LinearCombinationFunction) function.getMathFunction()));
+                        }
+                        onlySeriesName.setText(function.getName().replaceAll("x","y"));
+                        onlySeriesNamePopupRows.add(new HBox(10, onlySeriesName, new Label("Not a function")));
                         break;
                     }
                 }
@@ -281,7 +296,7 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
 
         public void clear() {
             functions.clear();
-            onlyNameFunctions.clear();
+            onlySeriesNamePopupRows.clear();
         }
 
         public void showChartDescription(MouseEvent event) {
@@ -292,16 +307,9 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
                 HBox popupRow = buildPopupRow(event, x, function);
                 getChildren().add(popupRow);
             }
-            for (TabulatedFunction function : onlyNameFunctions) {
-                HBox popupRow = buildOnlyNamePopupRow(function);
-                getChildren().add(popupRow);
+            for (HBox onlySeriesNamePopupRow : onlySeriesNamePopupRows) {
+                getChildren().add(onlySeriesNamePopupRow);
             }
-        }
-
-        private HBox buildOnlyNamePopupRow(TabulatedFunction function) {
-            Label seriesName = new Label(function.getName());
-            seriesName.setTextFill(functionColorMap.get(function.getMathFunction()));
-            return new HBox(10, seriesName, new Label("Not a function"));
         }
 
         private HBox buildPopupRow(MouseEvent event, double x, TabulatedFunction function) {

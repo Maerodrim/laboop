@@ -2,6 +2,7 @@ package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions;
 
 import Jama.Matrix;
 import javafx.util.Pair;
+import org.atteo.classindex.ClassIndex;
 import ru.ssau.tk.itenion.enums.SupportedSign;
 import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.exceptions.DifferentLengthOfArraysException;
@@ -9,6 +10,8 @@ import ru.ssau.tk.itenion.exceptions.InconsistentFunctionsException;
 import ru.ssau.tk.itenion.exceptions.InconsistentMatrixSize;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.AbstractVAMF;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.SignAnnotation;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.SubtractiveVAMFSV;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions.VAMF;
 
 import java.util.*;
@@ -25,6 +28,13 @@ public class VMFSV implements VMF {
         joiner = new StringJoiner(";\n");
     }
 
+    public VMFSV(VMFSV vmfsv) {
+        functionList = new ArrayList<>(vmfsv.functionList);
+        dim = vmfsv.dim;
+        joiner = new StringJoiner(";\n");
+        joiner.merge(vmfsv.joiner);
+    }
+
     VMFSV(AbstractVAMF abstractVAMF) {
         this();
         functionList.add(abstractVAMF);
@@ -33,7 +43,7 @@ public class VMFSV implements VMF {
         joiner.add(abstractVAMF.toString());
     }
 
-    public VMFSV(Map<Pair<Variable, Integer>, MathFunction> baseOfVMF, List<SupportedSign> signs) {
+    private VMFSV(Map<Pair<Variable, Integer>, MathFunction> baseOfVMF, List<SupportedSign> signs, boolean withConvert) {
         this();
         requiredDim = Variable.values().length;
         if (baseOfVMF.values().size() != signs.size() * signs.size()) {
@@ -41,12 +51,17 @@ public class VMFSV implements VMF {
         }
         signs.forEach(supportedSign -> functionList.add(supportedSign.getVAMF()));
         baseOfVMF.forEach((variableIntegerPair, function) -> {
-            functionList.get(variableIntegerPair.getValue() - 1).put(variableIntegerPair.getKey(), function);
+            MathFunction reducedFunction = function;
+            functionList.get(variableIntegerPair.getValue() - 1).put(variableIntegerPair.getKey(), reducedFunction);
             if (variableIntegerPair.getKey() == Variable.values()[Variable.values().length - 1]) {
                 joiner.add(functionList.get(variableIntegerPair.getValue() - 1).toString());
                 dim++;
             }
         });
+    }
+
+    public VMFSV(Map<Pair<Variable, Integer>, MathFunction> baseOfVMF, List<SupportedSign> signs) {
+        this(baseOfVMF, signs, false);
     }
 
     public boolean isCanBeSolved() {
@@ -82,6 +97,11 @@ public class VMFSV implements VMF {
         return functionList.get(index).getMathFunction(variable);
     }
 
+    @Override
+    public List<SupportedSign> getGeneratedSigns(int j) {
+        return List.of(functionList.get(j).getClass().getAnnotation(SignAnnotation.class).supportedSign());
+    }
+
     public Matrix getJacobiMatrix(Matrix x) {
         if (x.getRowDimension() != 1 || x.getColumnDimension() != requiredDim) {
             throw new UnsupportedOperationException();
@@ -91,7 +111,11 @@ public class VMFSV implements VMF {
         if (isCanBeSolved()) {
             for (int i = 0; i < dim; i++) {
                 for (int j = 0; j < dim; j++) {
-                    matrix.set(i, j, functionList.get(i).differentiate(variables[j]).apply(x.get(0, j)));
+                    MathFunction function = functionList.get(i).differentiate(variables[j]);
+                    if (j != 0 && functionList.get(i).getClass().getAnnotation(SignAnnotation.class).supportedSign().equals(SupportedSign.SUBTRACT)) {
+                        function = function.negate();
+                    }
+                    matrix.set(i, j, function.apply(x.get(0, j)));
                 }
             }
         } else {

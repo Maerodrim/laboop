@@ -10,8 +10,8 @@ import java.util.Map;
 
 public enum SupportedSign {
     SUM("+"),
-    SUBTRACT("-"),
-    MULTIPLY("*");
+    SUBTRACT("-");
+    //MULTIPLY("*");
 
     private static final Map<String, SupportedSign> lookup = new HashMap<>();
 
@@ -41,13 +41,12 @@ public enum SupportedSign {
             case SUM: {
                 return new AdditiveVAMFSV();
             }
-            // todo
             case SUBTRACT: {
                 return new SubtractiveVAMFSV();
             }
-            case MULTIPLY: {
-                return new MultiplicativeVAMFSV();
-            }
+//            case MULTIPLY: {
+//                return new MultiplicativeVAMFSV();
+//            }
         }
         return null;
     }

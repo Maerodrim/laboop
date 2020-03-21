@@ -3,6 +3,7 @@ package ru.ssau.tk.itenion.numericalMethods;
 import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMFSV;
 import ru.ssau.tk.itenion.operations.DifferentialOperator;
 import ru.ssau.tk.itenion.operations.MathFunctionDifferentialOperator;
 import ru.ssau.tk.itenion.operations.MiddleSteppingDifferentialOperator;
@@ -57,7 +58,7 @@ public class LNumericalMethods extends NumericalMethods {
         return x1;
     }
 
-    @ConnectableItem(name = "Valentin's half-division method", type = Item.NUMERICAL_METHOD, priority = 6)
+    @ConnectableItem(name = "Valentin's half-division method", type = Item.NUMERICAL_METHOD, priority = 6, isBorderRequired = true)
     public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethod2(MathFunction func) {
         Map<Double, Map.Entry<Double, Integer>> map = new HashMap<>();
         int numberOfIterations = 0;

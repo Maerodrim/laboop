@@ -1,11 +1,13 @@
 package ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorArgumentMathFunctions;
 
 import Jama.Matrix;
+import ru.ssau.tk.itenion.enums.SupportedSign;
 import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.MathFunction;
 
 import java.util.ArrayList;
 
+//@SignAnnotation(supportedSign = SupportedSign.MULTIPLY)
 public class MultiplicativeVAMFSV extends AbstractVAMF {
     public MultiplicativeVAMFSV() {
         super(" * ");

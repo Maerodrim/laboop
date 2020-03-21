@@ -126,7 +126,7 @@ public class TabController implements Initializable, OpenableWindow {
         state.accept(new TabVisitor() {
             @Override
             public void visit(TFState tfState) {
-                File file = IO.loadTF(stage);
+                File file = IO.load(stage);
                 if (!Objects.isNull(file)) {
                     tfState.createTab(io.loadTabulatedFunctionAs(file));
                 }
