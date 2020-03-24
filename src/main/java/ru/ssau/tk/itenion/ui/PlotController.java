@@ -27,9 +27,10 @@ import org.gillius.jfxutils.chart.ChartPanManager;
 import org.gillius.jfxutils.chart.JFXChartUtil;
 import ru.ssau.tk.itenion.enums.SupportedSign;
 import ru.ssau.tk.itenion.enums.Variable;
-import ru.ssau.tk.itenion.functions.LinearCombinationFunction;
 import ru.ssau.tk.itenion.functions.MathFunction;
+import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
+import ru.ssau.tk.itenion.numericalMethods.NumericalMethods;
 import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,6 +51,7 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
     private AnchorPane detailsWindow;
     private PlotController.DetailsPopup detailsPopup;
     private double strokeWidth = 0.5;
+    NumericalMethods numMethod = IO.getNumericalMethodFactory().create(0., 0., new double[]{0,0}, 1E-6);
 
     public static void removeLegend(LineChart<Number, Number> lineChart) {
         ((Legend) lineChart.lookup(".chart-legend")).getItems().clear();
@@ -115,7 +117,7 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
     public void visit(TabController.TFState tfState) {
         lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.X_AXIS);
         setSeries(
-                TabulatedFunctionOperationService.asSeriesData(tfState.getFunction(), Variable.x),
+                asSeriesData(tfState.getFunction(), Variable.x),
                 tfState.getFunction(), Variable.x);
     }
 
@@ -123,6 +125,7 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
     public void visit(TabController.VMFState vmfState) {
         lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
         if (vmfState.getFunction().isCanBePlotted()) {
+            Map<Variable, List<TabulatedFunction>> functions = new HashMap<>();
             vmfState.getFunction().getIndexForPlot().ifPresent(matrix -> {
                 lineChart.getData().clear();
                 detailsPopup.clear();
@@ -130,22 +133,47 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
                 for (int i = 0; i < 2; i++) {
                     Variable variable = Variable.values()[(int) matrix.get(i, 0)];
                     MathFunction function = vmfState.getFunction().getMathFunction(variable, i);
-                    if (function instanceof LinearCombinationFunction && variable.equals(Variable.values()[1])) {
-                        function = LinearCombinationFunction.getWithNegateShift((LinearCombinationFunction) function);
-                    }
-                    if (variable.equals(Variable.values()[0])) {
+                    if (vmfState.getFunction().getGeneratedSigns(i).get(0).equals(SupportedSign.SUM)){
                         function = function.negate();
                     }
-                    if (vmfState.getFunction().getGeneratedSigns(i).get(0).equals(SupportedSign.SUBTRACT)) {
-                        function = function.negate();
-                    }
-                    tabulatedFunction = factory().create(function, -10, 10, 1001);
-                    addSeries(TabulatedFunctionOperationService.asSeriesData(tabulatedFunction, variable), tabulatedFunction, variable);
+                    tabulatedFunction = tabulate(function);
+                    addSeries(asSeriesData(tabulatedFunction, variable), tabulatedFunction, variable);
                 }
             });
         } else {
             AlertWindows.showWarning("Unsupported operation");
         }
+    }
+
+    private ObservableList<XYChart.Data<Number, Number>> asSeriesData(TabulatedFunction function, Variable variable) {
+        ObservableList<XYChart.Data<Number, Number>> data = FXCollections.observableArrayList();
+        switch (variable) {
+            case x: {
+                for (Point point : function) {
+                    data.add(new XYChart.Data<>(point.x, point.y));
+                }
+                break;
+            }
+            case y: {
+                forInverseSeriesObservableList(function).forEach(point -> data.add(new XYChart.Data<>(point.x, point.y)));
+                break;
+            }
+        }
+        return data;
+    }
+
+    public ObservableList<Point> forInverseSeriesObservableList(TabulatedFunction function) {
+        List<Point> listPoints = TabulatedFunctionOperationService.asSymmetricalWithRespectToTheYAxis(function);
+        List<Point> newPoints = new ArrayList<>();
+        for (Point point : listPoints) {
+            newPoints.add(new Point(point.y, -point.x));
+        }
+        newPoints.sort(Comparator.comparingDouble(point -> point.y));
+        return FXCollections.observableArrayList(newPoints);
+    }
+
+    private TabulatedFunction tabulate(MathFunction function){
+        return factory().create(function, -10, 10, 1001);
     }
 
     // хождение за два привата
@@ -283,9 +311,9 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
                     case y: {
                         Label onlySeriesName = new Label();
                         onlySeriesName.setTextFill(functionColorMap.get(function.getMathFunction()));
-                        if (function.getMathFunction() instanceof LinearCombinationFunction){
-                            function.setMathFunction(LinearCombinationFunction.getWithNegateConstant((LinearCombinationFunction) function.getMathFunction()));
-                        }
+//                        if (function.getMathFunction() instanceof LinearCombinationFunction){
+//                            function.setMathFunction(LinearCombinationFunction.getWithNegateConstant((LinearCombinationFunction) function.getMathFunction()));
+//                        }
                         onlySeriesName.setText(function.getName().replaceAll("x","y"));
                         onlySeriesNamePopupRows.add(new HBox(10, onlySeriesName, new Label("Not a function")));
                         break;

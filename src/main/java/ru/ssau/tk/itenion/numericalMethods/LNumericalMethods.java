@@ -7,6 +7,7 @@ import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.V
 import ru.ssau.tk.itenion.operations.DifferentialOperator;
 import ru.ssau.tk.itenion.operations.MathFunctionDifferentialOperator;
 import ru.ssau.tk.itenion.operations.MiddleSteppingDifferentialOperator;
+import ru.ssau.tk.itenion.ui.AlertWindows;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
@@ -38,35 +39,60 @@ public class LNumericalMethods extends NumericalMethods {
     }
 
     public Matrix solveNonlinearSystem(VMF VMF, boolean isModified) {
-        Matrix x1;
-        Matrix x0 = initialApproximation;
-        Matrix jacobian = VMF.getJacobiMatrix(x0.transpose());
-        Matrix y = VMF.apply(x0.transpose());
-        Matrix p = jacobian.solve(y.timesEquals(-1));
-        x1 = x0.plus(p);
-        iterationsNumber++;
-        while (x0.minus(x1).norm2() > eps) {
-            x0 = x1;
-            y = VMF.apply(x0.transpose());
-            if (!isModified) {
-                jacobian = VMF.getJacobiMatrix(x0.transpose());
-            }
-            p = jacobian.solve(y.timesEquals(-1));
+        Matrix x1 = null;
+        String warning = "Too many iterations. Solution doesn't exist";
+        try {
+            Matrix x0 = initialApproximation;
+            Matrix jacobian = VMF.getJacobiMatrix(x0.transpose());
+            Matrix y = VMF.apply(x0.transpose());
+            Matrix p = jacobian.solve(y.timesEquals(-1));
             x1 = x0.plus(p);
             iterationsNumber++;
+            while (x0.minus(x1).norm2() > eps) {
+                x0 = x1;
+                y = VMF.apply(x0.transpose());
+                if (!isModified) {
+                    jacobian = VMF.getJacobiMatrix(x0.transpose());
+                }
+                p = jacobian.solve(y.timesEquals(-1));
+                x1 = x0.plus(p);
+                iterationsNumber++;
+                if (iterationsNumber > 500) {
+                    throw new RuntimeException(warning);
+                }
+            }
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("Matrix is singular.")) {
+                AlertWindows.showWarning("Matrix is singular. Choose a different initial approximation");
+            } else if (e.getMessage().equals(warning)) {
+                AlertWindows.showWarning(warning);
+            } else {
+                AlertWindows.showError(e);
+            }
         }
         return x1;
     }
 
     @ConnectableItem(name = "Valentin's half-division method", type = Item.NUMERICAL_METHOD, priority = 6, isBorderRequired = true)
-    public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethod2(MathFunction func) {
+    public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethod(MathFunction func) {
         Map<Double, Map.Entry<Double, Integer>> map = new HashMap<>();
+//        int numberOfIterations = 0;
+//        while (Math.abs(func.apply(left) - func.apply(right)) > 2 * eps) {
+//            if (func.apply(left) * func.apply(0.5 * (left + right)) >= 0) {
+//                left = (left + right) / 2;
+//            } else {
+//                right = (left + right) / 2;
+//            }
+//            numberOfIterations++;
+//        }
+//        map.put((left + right) / 2, Map.entry(func.apply((left + right) / 2), numberOfIterations));
+//        return map;
         int numberOfIterations = 0;
-        while (Math.abs(func.apply(left) - func.apply(right)) > 2 * eps) {
-            if (func.apply(left) * func.apply(0.5 * (left + right)) >= 0) {
-                left = (left + right) / 2;
+        while (Math.abs(left - right) > 2 * eps) {
+            if (func.apply(left) * func.apply(0.5 * (left + right)) <= 0) {
+                right = 0.5 * (left + right);
             } else {
-                right = (left + right) / 2;
+                left = 0.5 * (left + right);
             }
             numberOfIterations++;
         }

@@ -36,7 +36,7 @@ public interface TabulatedFunction extends MathFunction, TabHolderMathFunction<T
 
     TabulatedFunction unwrap();
 
-    TabulatedFunction getInverseOperator();
+    int floorIndexOfX(double x);
 
     default boolean isCanBeComposed(TabulatedFunction function) {
         return Math.abs(leftBound() - function.leftBound()) < 1E-12

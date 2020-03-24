@@ -9,6 +9,7 @@ import ru.ssau.tk.itenion.exceptions.NaNException;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
+import ru.ssau.tk.itenion.ui.AlertWindows;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -91,7 +92,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             xValues[i] = buff;
             yValues[i] = source.apply(buff);
             if (yValues[i] != yValues[i]) {
-                throw new NaNException();
+                AlertWindows.showError(new NaNException());
             }
             buff += step;
         }
@@ -116,7 +117,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     }
 
     @Override
-    protected int floorIndexOfX(double x) {
+    public int floorIndexOfX(double x) {
         if (x < xValues[0]) {
             throw new IllegalArgumentException("Argument x less than minimal x in tabulated function");
         }
@@ -263,14 +264,14 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
         return this;
     }
 
-    @Override
-    @JsonIgnore
-    public TabulatedFunction getInverseOperator() {
-        TabulatedFunction inverseTabulatedFunction = new ArrayTabulatedFunction(
-                TabulatedFunctionOperationService.forInverseOperatorObservableList(this));
-        inverseTabulatedFunction.setMathFunction(this.getMathFunction());
-        return inverseTabulatedFunction;
-    }
+//    @Override
+//    @JsonIgnore
+//    public TabulatedFunction getInverseOperator() {
+//        TabulatedFunction inverseTabulatedFunction = new ArrayTabulatedFunction(
+//                TabulatedFunctionOperationService.forInverseOperatorObservableList(this));
+//        inverseTabulatedFunction.setMathFunction(this.getMathFunction());
+//        return inverseTabulatedFunction;
+//    }
 
     @Override
     public void insert(double x, double y) {

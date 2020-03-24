@@ -136,7 +136,9 @@ public class SolveController implements TabVisitor, PlotAccessible, Initializabl
 
     @Override
     public void visit(TabController.TFState tfState) {
-        initialApproximationTextField.setText("0");
+        if (initialApproximationTextField.getText().isEmpty()){
+            initialApproximationTextField.setText("0");
+        }
         Map<Double, Map.Entry<Double, Integer>> roots = null;
         try {
             roots = (Map<Double, Map.Entry<Double, Integer>>) numericalMethodMap
@@ -154,7 +156,9 @@ public class SolveController implements TabVisitor, PlotAccessible, Initializabl
 
     @Override
     public void visit(TabController.VMFState vmfState) {
-        initialApproximationTextField.setText("0;0;");
+        if (initialApproximationTextField.getText().isEmpty()){
+            initialApproximationTextField.setText("0;0;");
+        }
         Matrix roots = null;
         try {
             roots = (Matrix) numericalMethodMap

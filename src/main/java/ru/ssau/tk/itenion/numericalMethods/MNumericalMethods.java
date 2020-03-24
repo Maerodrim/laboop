@@ -24,7 +24,7 @@ public class MNumericalMethods extends NumericalMethods {
         super(left, right, initialApproximation, eps);
     }
 
-    @ConnectableItem(name = "Half-division method all roots", type = Item.NUMERICAL_METHOD, priority = 1)
+    @ConnectableItem(name = "Half-division method all roots", type = Item.NUMERICAL_METHOD, priority = 1, isBorderRequired = true)
     public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethodAllRoots(MathFunction func) {
         double x = left, step;
         Map<Double, Map.Entry<Double, Integer>> result = new HashMap<>();
@@ -38,7 +38,7 @@ public class MNumericalMethods extends NumericalMethods {
         return result;
     }
 
-    @ConnectableItem(name = "Half-division method Stas", type = Item.NUMERICAL_METHOD, priority = 2)
+    @ConnectableItem(name = "Half-division method Stas", type = Item.NUMERICAL_METHOD, priority = 2, isBorderRequired = true)
     public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethod(MathFunction func) {
         Map<Double, Map.Entry<Double, Integer>> map = new HashMap<>();
         solveWithHalfDivisionMethod(func, map, left, right);
@@ -88,7 +88,7 @@ public class MNumericalMethods extends NumericalMethods {
     }
 
     @ConnectableItem(name = "Modified Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 3, forVMF = true)
-    public Matrix solveNonlinearSystemWithNewtonMethod2(VMF VMF) {
+    public Matrix solveNonlinearSystemWithNewtonMethod(VMF VMF) {
         Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
         Matrix J = VMF.getJacobiMatrix(b.transpose());
         a = b.plus(p);
@@ -102,7 +102,7 @@ public class MNumericalMethods extends NumericalMethods {
     }
 
     @ConnectableItem(name = "Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 4, forVMF = true)
-    public Matrix solveNonlinearSystemWithModifiedNewtonMethod2(VMF VMF) {
+    public Matrix solveNonlinearSystemWithModifiedNewtonMethod(VMF VMF) {
         Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
         a = b.plus(p);
         for (; eps <= b.minus(a).norm2(); ) {

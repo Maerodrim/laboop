@@ -2,6 +2,7 @@ package ru.ssau.tk.itenion.numericalMethods;
 
 import Jama.Matrix;
 import ru.ssau.tk.itenion.enums.Variable;
+import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
@@ -31,4 +32,6 @@ public abstract class NumericalMethods {
     public int getIterationsNumber() {
         return iterationsNumber;
     }
+
+    public abstract Matrix solveNonlinearSystemWithNewtonMethod(VMF VMF);
 }

@@ -95,8 +95,8 @@ public class StrictTabulatedFunction implements TabulatedFunction {
     }
 
     @Override
-    public TabulatedFunction getInverseOperator() {
-        return tabulatedFunction.getInverseOperator();
+    public int floorIndexOfX(double x) {
+        return tabulatedFunction.floorIndexOfX(x);
     }
 
     @Override

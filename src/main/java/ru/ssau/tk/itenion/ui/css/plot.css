@@ -11,7 +11,7 @@
 }
 
 .default-color2.chart-series-line {
-    -fx-stroke: yellow;
+    -fx-stroke: green;
 }
 
 .default-color3.chart-series-line {
@@ -19,7 +19,7 @@
 }
 
 .default-color4.chart-series-line {
-    -fx-stroke: green;
+    -fx-stroke: yellow;
 }
 
 .default-color5.chart-series-line {

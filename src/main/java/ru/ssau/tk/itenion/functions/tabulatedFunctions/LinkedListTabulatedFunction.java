@@ -163,14 +163,14 @@ public class LinkedListTabulatedFunction extends AbstractTabulatedFunction imple
         return this;
     }
 
-    @Override
-    @JsonIgnore
-    public TabulatedFunction getInverseOperator() {
-        TabulatedFunction inverseTabulatedFunction = new LinkedListTabulatedFunction(
-                TabulatedFunctionOperationService.forInverseOperatorObservableList(this));
-        inverseTabulatedFunction.setMathFunction(this.getMathFunction());
-        return inverseTabulatedFunction;
-    }
+//    @Override
+//    @JsonIgnore
+//    public TabulatedFunction getInverseOperator() {
+//        TabulatedFunction inverseTabulatedFunction = new LinkedListTabulatedFunction(
+//                TabulatedFunctionOperationService.forInverseOperatorObservableList(this));
+//        inverseTabulatedFunction.setMathFunction(this.getMathFunction());
+//        return inverseTabulatedFunction;
+//    }
 
     private Node getNode(int index) {
         Node buff;

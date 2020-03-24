@@ -15,7 +15,7 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
     private double y1 = 10;
 
     @Override
-    protected int floorIndexOfX(double x) {
+    public int floorIndexOfX(double x) {
         if (x < x0) {
             return 0;
         } else if (x > x0 && x < x1) {
@@ -128,10 +128,10 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
         return this;
     }
 
-    @Override
-    public TabulatedFunction getInverseOperator() {
-        return null;
-    }
+//    @Override
+//    public TabulatedFunction getInverseOperator() {
+//        return null;
+//    }
 
     @Override
     public MathFunction getMathFunction() {

@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
 import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.exceptions.InconsistentFunctionsException;
+import ru.ssau.tk.itenion.functions.LinearCombinationFunction;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.ArrayTabulatedFunctionFactory;
@@ -71,42 +72,30 @@ public class TabulatedFunctionOperationService {
         return points;
     }
 
+    public static List<Point> asSymmetricalWithRespectToTheYAxis(TabulatedFunction function) {
+        List<Point> points = asList(function);
+        List<Point> newPoints = new ArrayList<>();
+        points.forEach(point -> {
+            newPoints.add(new Point(-point.x, point.y));
+        });
+        newPoints.sort(Comparator.comparingDouble(point -> point.x));
+        return newPoints;
+    }
+
     public static void sort(ObservableList<Point> list) {
         list.sort(Comparator.comparingDouble(point -> point.x));
     }
 
-    public static ObservableList<Point> forInverseOperatorObservableList(TabulatedFunction function) {
-        List<Point> listPoint = new ArrayList<>();
-        for (Point point : function) {
-            listPoint.add(new Point(point.y, -point.x));
-        }
-        listPoint.sort(Comparator.comparingDouble(point -> point.y));
-        return FXCollections.observableArrayList(listPoint);
-    }
-
-    public static ObservableList<Point> asObservableList(TabulatedFunction function) {
+    public static List<Point> asList(TabulatedFunction function) {
         List<Point> listPoint = new ArrayList<>();
         for (Point point : function) {
             listPoint.add(point);
         }
-        return FXCollections.observableArrayList(listPoint);
+        return listPoint;
     }
 
-    public static ObservableList<XYChart.Data<Number, Number>> asSeriesData(TabulatedFunction function, Variable variable) {
-        ObservableList<XYChart.Data<Number, Number>> data = FXCollections.observableArrayList();
-        switch (variable) {
-            case x: {
-                for (Point point : function) {
-                    data.add(new XYChart.Data<>(point.x, point.y));
-                }
-                break;
-            }
-            case y: {
-                forInverseOperatorObservableList(function).forEach(point -> data.add(new XYChart.Data<>(point.x, point.y)));
-                break;
-            }
-        }
-        return data;
+    public static ObservableList<Point> asObservableList(TabulatedFunction function) {
+        return FXCollections.observableArrayList(asList(function));
     }
 
     public TabulatedFunctionFactory getFactory() {
