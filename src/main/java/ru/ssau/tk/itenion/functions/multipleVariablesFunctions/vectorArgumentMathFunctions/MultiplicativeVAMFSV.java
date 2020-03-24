@@ -7,7 +7,6 @@ import ru.ssau.tk.itenion.functions.MathFunction;
 
 import java.util.ArrayList;
 
-//@SignAnnotation(supportedSign = SupportedSign.MULTIPLY)
 public class MultiplicativeVAMFSV extends AbstractVAMF {
     public MultiplicativeVAMFSV() {
         super(" * ");

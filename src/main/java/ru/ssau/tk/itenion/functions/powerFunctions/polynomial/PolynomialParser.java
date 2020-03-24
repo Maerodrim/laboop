@@ -52,7 +52,7 @@ public class PolynomialParser {
                     indexActual = i;
                 }
             }
-            double currentCoefficient = calcCoeff(isNegative, m.group(indexActual));
+            double currentCoefficient = calcCoefficient(isNegative, m.group(indexActual));
             int currentDegree = calcDegree(m.group(indexActual + 2),
                     m.group(indexActual + 1));
             result.put(currentDegree, currentCoefficient);
@@ -63,7 +63,7 @@ public class PolynomialParser {
     /**
      * Вычисление коэффициента одночлена
      */
-    private double calcCoeff(boolean isNegative, String coefficient) {
+    private double calcCoefficient(boolean isNegative, String coefficient) {
         double result = (!coefficient.isEmpty()) ? Double.parseDouble(coefficient) : 1;
         return (isNegative) ? -result : result;
     }

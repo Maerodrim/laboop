@@ -129,11 +129,6 @@ class IO {
         }
     }
 
-//    public static ConnectableItem getConnectableItem(Map<String, Method> map, ActionEvent event){
-//        return map.get(((ComboBox<String>) event.getSource()).getValue())
-//                .getDeclaredAnnotation(ConnectableItem.class);
-//    }
-
     private static TabulatedFunction unwrap(TabulatedFunction function) {
         boolean isStrict = function.isStrict();
         boolean isUnmodifiable = function.isUnmodifiable();

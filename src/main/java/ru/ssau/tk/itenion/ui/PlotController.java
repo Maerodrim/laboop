@@ -311,9 +311,6 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
                     case y: {
                         Label onlySeriesName = new Label();
                         onlySeriesName.setTextFill(functionColorMap.get(function.getMathFunction()));
-//                        if (function.getMathFunction() instanceof LinearCombinationFunction){
-//                            function.setMathFunction(LinearCombinationFunction.getWithNegateConstant((LinearCombinationFunction) function.getMathFunction()));
-//                        }
                         onlySeriesName.setText(function.getName().replaceAll("x","y"));
                         onlySeriesNamePopupRows.add(new HBox(10, onlySeriesName, new Label("Not a function")));
                         break;

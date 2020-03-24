@@ -12,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.enums.State;
+import ru.ssau.tk.itenion.exceptions.NaNException;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.factory.ArrayTabulatedFunctionFactory;
@@ -123,10 +124,10 @@ public class TabController implements Initializable, OpenableWindow {
 
     @FXML
     private void loadFunction() {
+        File file = IO.load(stage);
         state.accept(new TabVisitor() {
             @Override
             public void visit(TFState tfState) {
-                File file = IO.load(stage);
                 if (!Objects.isNull(file)) {
                     tfState.createTab(io.loadTabulatedFunctionAs(file));
                 }
@@ -134,7 +135,6 @@ public class TabController implements Initializable, OpenableWindow {
 
             @Override
             public void visit(VMFState vmfState) {
-
             }
         });
     }
@@ -273,11 +273,16 @@ public class TabController implements Initializable, OpenableWindow {
 
                 @Override
                 public void visit(VMFState vmfState) {
-                    if (vmfState.getFunction().isCanBePlotted()) {
-                        controller.setSeries();
-                        controller.getStage().show();
-                    } else {
-                        AlertWindows.showWarning("It cannot be plotted now");
+                    String warning = "It cannot be plotted now";
+                    try {
+                        if (vmfState.getFunction().isCanBePlotted()) {
+                            controller.setSeries();
+                            controller.getStage().show();
+                        } else {
+                            AlertWindows.showWarning(warning);
+                        }
+                    } catch (NaNException e) {
+                        AlertWindows.showWarning(warning);
                     }
                 }
             });
@@ -539,7 +544,7 @@ public class TabController implements Initializable, OpenableWindow {
 
         public void createTab(AnchorPane vmfPane, VMF vmf) {
             mainPane.setBottom(null);
-            // todo
+            // todo serialization
             Tab tab = new Tab("Function" + numberId, vmfPane);
             tab.setId("function" + numberId++);
             tab.setClosable(true);

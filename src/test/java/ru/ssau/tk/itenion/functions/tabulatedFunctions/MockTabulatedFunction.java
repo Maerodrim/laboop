@@ -128,11 +128,6 @@ public class MockTabulatedFunction extends AbstractTabulatedFunction {
         return this;
     }
 
-//    @Override
-//    public TabulatedFunction getInverseOperator() {
-//        return null;
-//    }
-
     @Override
     public MathFunction getMathFunction() {
         return null;

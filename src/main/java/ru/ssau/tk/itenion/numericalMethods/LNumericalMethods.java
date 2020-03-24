@@ -39,25 +39,27 @@ public class LNumericalMethods extends NumericalMethods {
     }
 
     public Matrix solveNonlinearSystem(VMF VMF, boolean isModified) {
-        Matrix x1 = null;
-        String warning = "Too many iterations. Solution doesn't exist";
+        Matrix x_next = null;
+        String warning = "The method diverges for this initial approximation. Choose a different initial approximation";
         try {
-            Matrix x0 = initialApproximation;
-            Matrix jacobian = VMF.getJacobiMatrix(x0.transpose());
-            Matrix y = VMF.apply(x0.transpose());
+            Matrix x_previous;
+            Matrix x_current = initialApproximation;
+            Matrix jacobian = VMF.getJacobiMatrix(x_current.transpose());
+            Matrix y = VMF.apply(x_current.transpose());
             Matrix p = jacobian.solve(y.timesEquals(-1));
-            x1 = x0.plus(p);
+            x_next = x_current.plus(p);
             iterationsNumber++;
-            while (x0.minus(x1).norm2() > eps) {
-                x0 = x1;
-                y = VMF.apply(x0.transpose());
+            while (x_current.minus(x_next).norm2() > eps) {
+                x_previous = x_current;
+                x_current = x_next;
+                y = VMF.apply(x_current.transpose());
                 if (!isModified) {
-                    jacobian = VMF.getJacobiMatrix(x0.transpose());
+                    jacobian = VMF.getJacobiMatrix(x_current.transpose());
                 }
                 p = jacobian.solve(y.timesEquals(-1));
-                x1 = x0.plus(p);
+                x_next = x_current.plus(p);
                 iterationsNumber++;
-                if (iterationsNumber > 500) {
+                if (x_current.minus(x_next).norm2() > x_previous.minus(x_current).norm2()) {
                     throw new RuntimeException(warning);
                 }
             }
@@ -70,7 +72,7 @@ public class LNumericalMethods extends NumericalMethods {
                 AlertWindows.showError(e);
             }
         }
-        return x1;
+        return x_next;
     }
 
     @ConnectableItem(name = "Half-division method", type = Item.NUMERICAL_METHOD, priority = 6, isBorderRequired = true)

@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-//@JsonAutoDetect
 public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements Serializable {
     private static final long serialVersionUID = 3990511369369675738L;
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
@@ -92,7 +91,7 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
             xValues[i] = buff;
             yValues[i] = source.apply(buff);
             if (yValues[i] != yValues[i]) {
-                AlertWindows.showError(new NaNException());
+                throw new NaNException();
             }
             buff += step;
         }
@@ -263,15 +262,6 @@ public class ArrayTabulatedFunction extends AbstractTabulatedFunction implements
     public TabulatedFunction unwrap() {
         return this;
     }
-
-//    @Override
-//    @JsonIgnore
-//    public TabulatedFunction getInverseOperator() {
-//        TabulatedFunction inverseTabulatedFunction = new ArrayTabulatedFunction(
-//                TabulatedFunctionOperationService.forInverseOperatorObservableList(this));
-//        inverseTabulatedFunction.setMathFunction(this.getMathFunction());
-//        return inverseTabulatedFunction;
-//    }
 
     @Override
     public void insert(double x, double y) {

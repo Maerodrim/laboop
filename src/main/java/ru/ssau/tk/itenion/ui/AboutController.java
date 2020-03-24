@@ -3,6 +3,7 @@ package ru.ssau.tk.itenion.ui;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Nameable;
@@ -15,15 +16,24 @@ import java.util.ResourceBundle;
 @ConnectableItem(name = "About function", type = Item.CONTROLLER, pathFXML = "about.fxml")
 public class AboutController implements TabVisitor, OpenableWindow, Initializable {
     @FXML
-    Label baseMathFunction;
+    private AnchorPane pane;
     @FXML
-    Label leftBorder;
+    private Label baseMathFunction;
     @FXML
-    Label rightBorder;
+    private Label leftBorder;
     @FXML
-    Label numberOfPoints;
+    private Label rightBorder;
+    @FXML
+    private Label numberOfPoints;
+    @FXML
+    private Label rightBorderLabel;
+    @FXML
+    private Label leftBorderLabel;
+    @FXML
+    private Label numberOfPointsLabel;
 
     private Stage stage;
+    private double defaultStageHeight;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -58,10 +68,14 @@ public class AboutController implements TabVisitor, OpenableWindow, Initializabl
 
     public void setStage(Stage stage) {
         this.stage = stage;
+        defaultStageHeight = stage.getHeight();
     }
 
     @Override
     public void visit(TabController.TFState tfState) {
+        clearTFTextFields();
+        setTFTextFields();
+        stage.setHeight(defaultStageHeight);
         TabulatedFunction function = tfState.getFunction();
         try {
             baseMathFunction.setText(function.getName());
@@ -75,6 +89,26 @@ public class AboutController implements TabVisitor, OpenableWindow, Initializabl
 
     @Override
     public void visit(TabController.VMFState vmfState) {
+        clearTFTextFields();
+        stage.setHeight(85);
         baseMathFunction.setText(vmfState.getFunction().getName());
+    }
+
+    private void clearTFTextFields(){
+        pane.getChildren().remove(rightBorderLabel);
+        pane.getChildren().remove(leftBorderLabel);
+        pane.getChildren().remove(numberOfPointsLabel);
+        pane.getChildren().remove(rightBorder);
+        pane.getChildren().remove(leftBorder);
+        pane.getChildren().remove(numberOfPoints);
+    }
+
+    private void setTFTextFields(){
+        pane.getChildren().add(rightBorderLabel);
+        pane.getChildren().add(leftBorderLabel);
+        pane.getChildren().add(numberOfPointsLabel);
+        pane.getChildren().add(rightBorder);
+        pane.getChildren().add(leftBorder);
+        pane.getChildren().add(numberOfPoints);
     }
 }
