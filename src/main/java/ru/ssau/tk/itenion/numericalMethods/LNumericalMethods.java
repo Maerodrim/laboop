@@ -24,12 +24,12 @@ public class LNumericalMethods extends NumericalMethods {
         super(left, right, initialApproximation, eps);
     }
 
-    @ConnectableItem(name = "Valentin's Newton method", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)
+    @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)
     public Matrix solveNonlinearSystemWithNewtonMethod(VMF VMF) {
         return solveNonlinearSystem(VMF, false);
     }
 
-    @ConnectableItem(name = "Valentin's modified newton method", type = Item.NUMERICAL_METHOD, priority = 2, forVMF = true)
+    @ConnectableItem(name = "Modified newton method", type = Item.NUMERICAL_METHOD, priority = 2, forVMF = true)
     public Matrix solveNonlinearSystemWithModifiedNewtonMethod(VMF VMF) {
         return solveNonlinearSystem(VMF, true);
     }
@@ -73,20 +73,9 @@ public class LNumericalMethods extends NumericalMethods {
         return x1;
     }
 
-    @ConnectableItem(name = "Valentin's half-division method", type = Item.NUMERICAL_METHOD, priority = 6, isBorderRequired = true)
+    @ConnectableItem(name = "Half-division method", type = Item.NUMERICAL_METHOD, priority = 6, isBorderRequired = true)
     public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethod(MathFunction func) {
         Map<Double, Map.Entry<Double, Integer>> map = new HashMap<>();
-//        int numberOfIterations = 0;
-//        while (Math.abs(func.apply(left) - func.apply(right)) > 2 * eps) {
-//            if (func.apply(left) * func.apply(0.5 * (left + right)) >= 0) {
-//                left = (left + right) / 2;
-//            } else {
-//                right = (left + right) / 2;
-//            }
-//            numberOfIterations++;
-//        }
-//        map.put((left + right) / 2, Map.entry(func.apply((left + right) / 2), numberOfIterations));
-//        return map;
         int numberOfIterations = 0;
         while (Math.abs(left - right) > 2 * eps) {
             if (func.apply(left) * func.apply(0.5 * (left + right)) <= 0) {
@@ -119,15 +108,19 @@ public class LNumericalMethods extends NumericalMethods {
         return result;
     }
 
-    @ConnectableItem(name = "Valentin's secant method", type = Item.NUMERICAL_METHOD, priority = 4)
+    @ConnectableItem(name = "Secant method", type = Item.NUMERICAL_METHOD, priority = 4)
     public Map<Double, Map.Entry<Double, Integer>> solveWithSecantMethod(MathFunction func) {
         return newtonMethod(func, new MiddleSteppingDifferentialOperator(eps), false);
     }
 
-    @ConnectableItem(name = "Valentin's modified Newton method", type = Item.NUMERICAL_METHOD, priority = 5)
+    @ConnectableItem(name = "Modified Newton method", type = Item.NUMERICAL_METHOD, priority = 5)
     public Map<Double, Map.Entry<Double, Integer>> solveWithModifiedNewtonMethod(MathFunction func) {
         return newtonMethod(func, new MathFunctionDifferentialOperator(), true);
     }
 
+    @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 6)
+    public Map<Double, Map.Entry<Double, Integer>> solveWithNewtonMethod(MathFunction func) {
+        return newtonMethod(func, new MathFunctionDifferentialOperator(), false);
+    }
 
 }

@@ -168,8 +168,8 @@ public class SolveController implements TabVisitor, PlotAccessible, Initializabl
             for (int i = 0; i < roots.getRowDimension(); i++) {
                 listOfRootsItems.add(roots.get(i, 0));
                 listOfEpsItems.add(residuals.get(i, 0));
-                joiner.add(numMethod.getIterationsNumber() + "");
             }
+            joiner.add(numMethod.getIterationsNumber() + "");
         } catch (IllegalAccessException | InvocationTargetException e) {
             AlertWindows.showError(e);
         }
