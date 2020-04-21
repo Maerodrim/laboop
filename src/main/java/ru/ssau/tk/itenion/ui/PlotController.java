@@ -30,7 +30,7 @@ import ru.ssau.tk.itenion.enums.Variable;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
-import ru.ssau.tk.itenion.numericalMethods.NumericalMethods;
+import ru.ssau.tk.itenion.labNumericalMethods.lab1.SolveNonlinearEquations;
 import ru.ssau.tk.itenion.operations.TabulatedFunctionOperationService;
 
 import java.lang.reflect.InvocationTargetException;
@@ -51,7 +51,7 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
     private AnchorPane detailsWindow;
     private PlotController.DetailsPopup detailsPopup;
     private double strokeWidth = 0.5;
-    NumericalMethods numMethod = IO.getNumericalMethodFactory().create(0., 0., new double[]{0,0}, 1E-6);
+    SolveNonlinearEquations numMethod = IO.getNumericalMethodFactory().create(0., 0., new double[]{0,0}, 1E-6);
 
     public static void removeLegend(LineChart<Number, Number> lineChart) {
         ((Legend) lineChart.lookup(".chart-legend")).getItems().clear();
@@ -103,10 +103,30 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
         detailsPopup.addPopupRow(function, variable);
     }
 
+    public void addSeries(TabulatedFunction function) {
+        addSeries(asSeriesData(function, Variable.x), function, Variable.x);
+    }
+
     public void setSeries(ObservableList<XYChart.Data<Number, Number>> data, TabulatedFunction function, Variable variable) {
         lineChart.getData().clear();
         detailsPopup.clear();
         addSeries(data, function, variable);
+    }
+
+    public void setSeries(TabulatedFunction function) {
+        lineChart.getData().clear();
+        functionColorMap.clear();
+        detailsPopup.clear();
+        addSeries(function);
+    }
+
+    public void addSeries() {
+        state().accept((TFTabVisitor) tfState -> {
+            lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.X_AXIS);
+            addSeries(
+                    asSeriesData(tfState.getFunction(), Variable.x),
+                    tfState.getFunction(), Variable.x);
+        });
     }
 
     public void setSeries() {
@@ -125,7 +145,6 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
     public void visit(TabController.VMFState vmfState) {
         lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
         if (vmfState.getFunction().isCanBePlotted()) {
-            Map<Variable, List<TabulatedFunction>> functions = new HashMap<>();
             vmfState.getFunction().getIndexForPlot().ifPresent(matrix -> {
                 lineChart.getData().clear();
                 detailsPopup.clear();

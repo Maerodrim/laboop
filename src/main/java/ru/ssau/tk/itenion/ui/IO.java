@@ -10,9 +10,9 @@ import ru.ssau.tk.itenion.functions.tabulatedFunctions.StrictTabulatedFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.UnmodifiableTabulatedFunction;
 import ru.ssau.tk.itenion.io.FunctionsIO;
-import ru.ssau.tk.itenion.numericalMethods.factory.LNumericalMethodsFactory;
-import ru.ssau.tk.itenion.numericalMethods.factory.MNumericalMethodsFactory;
-import ru.ssau.tk.itenion.numericalMethods.factory.NumericalMethodsFactory;
+import ru.ssau.tk.itenion.labNumericalMethods.lab1.factory.LNumericalMethodsFactory;
+import ru.ssau.tk.itenion.labNumericalMethods.lab1.factory.MNumericalMethodsFactory;
+import ru.ssau.tk.itenion.labNumericalMethods.lab1.factory.NumericalMethodsFactory;
 
 import java.io.*;
 import java.util.Collection;

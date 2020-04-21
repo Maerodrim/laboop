@@ -1,4 +1,4 @@
-package ru.ssau.tk.itenion.numericalMethods;
+package ru.ssau.tk.itenion.labNumericalMethods.lab1;
 
 import Jama.Matrix;
 import ru.ssau.tk.itenion.enums.Variable;
@@ -6,18 +6,18 @@ import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.V
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
-@ConnectableItem(name = "", type = Item.NUMERICAL_METHOD)
-public abstract class NumericalMethods {
+@ConnectableItem(name = "", type = Item.SOLVE_NUMERICAL_METHOD)
+public abstract class SolveNonlinearEquations {
     protected double left, right, eps;
     protected Matrix initialApproximation;
     protected int iterationsNumber = 0;
     protected int dim = Variable.values().length;
 
-    public NumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
+    public SolveNonlinearEquations(Double left, Double right, double initialApproximation, Double eps) {
         this(left, right, new double[]{initialApproximation}, eps);
     }
 
-    public NumericalMethods(Double left, Double right, double[] initialApproximation, Double eps) {
+    public SolveNonlinearEquations(Double left, Double right, double[] initialApproximation, Double eps) {
         if (initialApproximation.length == 1) {
             dim = 1;
         }

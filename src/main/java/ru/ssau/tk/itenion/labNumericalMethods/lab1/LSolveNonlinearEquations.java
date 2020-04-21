@@ -1,9 +1,8 @@
-package ru.ssau.tk.itenion.numericalMethods;
+package ru.ssau.tk.itenion.labNumericalMethods.lab1;
 
 import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.MathFunction;
 import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMF;
-import ru.ssau.tk.itenion.functions.multipleVariablesFunctions.vectorFunctions.VMFSV;
 import ru.ssau.tk.itenion.operations.DifferentialOperator;
 import ru.ssau.tk.itenion.operations.MathFunctionDifferentialOperator;
 import ru.ssau.tk.itenion.operations.MiddleSteppingDifferentialOperator;
@@ -14,22 +13,22 @@ import ru.ssau.tk.itenion.ui.Item;
 import java.util.HashMap;
 import java.util.Map;
 
-@ConnectableItem(name = "", type = Item.NUMERICAL_METHOD)
-public class LNumericalMethods extends NumericalMethods {
-    public LNumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
+@ConnectableItem(name = "", type = Item.SOLVE_NUMERICAL_METHOD)
+public class LSolveNonlinearEquations extends SolveNonlinearEquations {
+    public LSolveNonlinearEquations(Double left, Double right, double initialApproximation, Double eps) {
         super(left, right, initialApproximation, eps);
     }
 
-    public LNumericalMethods(Double left, Double right, double[] initialApproximation, Double eps) {
+    public LSolveNonlinearEquations(Double left, Double right, double[] initialApproximation, Double eps) {
         super(left, right, initialApproximation, eps);
     }
 
-    @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 1, forVMF = true)
+    @ConnectableItem(name = "Newton method", type = Item.SOLVE_NUMERICAL_METHOD, priority = 1, forVMF = true)
     public Matrix solveNonlinearSystemWithNewtonMethod(VMF VMF) {
         return solveNonlinearSystem(VMF, false);
     }
 
-    @ConnectableItem(name = "Modified newton method", type = Item.NUMERICAL_METHOD, priority = 2, forVMF = true)
+    @ConnectableItem(name = "Modified newton method", type = Item.SOLVE_NUMERICAL_METHOD, priority = 2, forVMF = true)
     public Matrix solveNonlinearSystemWithModifiedNewtonMethod(VMF VMF) {
         return solveNonlinearSystem(VMF, true);
     }
@@ -39,27 +38,27 @@ public class LNumericalMethods extends NumericalMethods {
     }
 
     public Matrix solveNonlinearSystem(VMF VMF, boolean isModified) {
-        Matrix x_next = null;
+        Matrix xNext = null;
         String warning = "The method diverges for this initial approximation. Choose a different initial approximation";
         try {
-            Matrix x_previous;
-            Matrix x_current = initialApproximation;
-            Matrix jacobian = VMF.getJacobiMatrix(x_current.transpose());
-            Matrix y = VMF.apply(x_current.transpose());
+            Matrix xPrevious;
+            Matrix xCurrent = initialApproximation;
+            Matrix jacobian = VMF.getJacobiMatrix(xCurrent.transpose());
+            Matrix y = VMF.apply(xCurrent.transpose());
             Matrix p = jacobian.solve(y.timesEquals(-1));
-            x_next = x_current.plus(p);
+            xNext = xCurrent.plus(p);
             iterationsNumber++;
-            while (x_current.minus(x_next).norm2() > eps) {
-                x_previous = x_current;
-                x_current = x_next;
-                y = VMF.apply(x_current.transpose());
+            while (xCurrent.minus(xNext).norm2() > eps) {
+                xPrevious = xCurrent;
+                xCurrent = xNext;
+                y = VMF.apply(xCurrent.transpose());
                 if (!isModified) {
-                    jacobian = VMF.getJacobiMatrix(x_current.transpose());
+                    jacobian = VMF.getJacobiMatrix(xCurrent.transpose());
                 }
                 p = jacobian.solve(y.timesEquals(-1));
-                x_next = x_current.plus(p);
+                xNext = xCurrent.plus(p);
                 iterationsNumber++;
-                if (x_current.minus(x_next).norm2() > x_previous.minus(x_current).norm2()) {
+                if (xCurrent.minus(xNext).norm2() > xPrevious.minus(xCurrent).norm2()) {
                     throw new RuntimeException(warning);
                 }
             }
@@ -72,10 +71,10 @@ public class LNumericalMethods extends NumericalMethods {
                 AlertWindows.showError(e);
             }
         }
-        return x_next;
+        return xNext;
     }
 
-    @ConnectableItem(name = "Half-division method", type = Item.NUMERICAL_METHOD, priority = 6, isBorderRequired = true)
+    @ConnectableItem(name = "Half-division method", type = Item.SOLVE_NUMERICAL_METHOD, priority = 6, isBorderRequired = true)
     public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethod(MathFunction func) {
         Map<Double, Map.Entry<Double, Integer>> map = new HashMap<>();
         int numberOfIterations = 0;
@@ -110,17 +109,17 @@ public class LNumericalMethods extends NumericalMethods {
         return result;
     }
 
-    @ConnectableItem(name = "Secant method", type = Item.NUMERICAL_METHOD, priority = 4)
+    @ConnectableItem(name = "Secant method", type = Item.SOLVE_NUMERICAL_METHOD, priority = 4)
     public Map<Double, Map.Entry<Double, Integer>> solveWithSecantMethod(MathFunction func) {
         return newtonMethod(func, new MiddleSteppingDifferentialOperator(eps), false);
     }
 
-    @ConnectableItem(name = "Modified Newton method", type = Item.NUMERICAL_METHOD, priority = 5)
+    @ConnectableItem(name = "Modified Newton method", type = Item.SOLVE_NUMERICAL_METHOD, priority = 5)
     public Map<Double, Map.Entry<Double, Integer>> solveWithModifiedNewtonMethod(MathFunction func) {
         return newtonMethod(func, new MathFunctionDifferentialOperator(), true);
     }
 
-    @ConnectableItem(name = "Newton method", type = Item.NUMERICAL_METHOD, priority = 6)
+    @ConnectableItem(name = "Newton method", type = Item.SOLVE_NUMERICAL_METHOD, priority = 6)
     public Map<Double, Map.Entry<Double, Integer>> solveWithNewtonMethod(MathFunction func) {
         return newtonMethod(func, new MathFunctionDifferentialOperator(), false);
     }

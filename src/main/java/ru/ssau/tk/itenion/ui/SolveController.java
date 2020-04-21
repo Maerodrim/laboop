@@ -11,7 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import ru.ssau.tk.itenion.numericalMethods.NumericalMethods;
+import ru.ssau.tk.itenion.labNumericalMethods.lab1.SolveNonlinearEquations;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,7 +38,7 @@ public class SolveController implements TabVisitor, PlotAccessible, Initializabl
     private Stage stage;
     private Map<String, Method> numericalMethodMap;
     private Map<Method, Class<?>> classes;
-    private NumericalMethods numMethod;
+    private SolveNonlinearEquations numMethod;
     private ArrayList<Double> listOfEpsItems;
     private ArrayList<Double> listOfRootsItems;
     private StringJoiner joiner;
@@ -116,7 +116,7 @@ public class SolveController implements TabVisitor, PlotAccessible, Initializabl
                     predicateAtomicReference.set(ConnectableItem::forVMF);
                 }
             });
-            Map[] maps = initializeMap(classes, numericalMethodMap, Item.NUMERICAL_METHOD,
+            Map[] maps = initializeMap(classes, numericalMethodMap, Item.SOLVE_NUMERICAL_METHOD,
                     item -> item.belongTo().equals(IO.belongTo),
                     predicateAtomicReference.get());
             classes = (Map<Method, Class<?>>) maps[0];

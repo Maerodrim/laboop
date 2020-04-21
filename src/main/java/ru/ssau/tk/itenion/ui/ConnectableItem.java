@@ -51,4 +51,5 @@ public @interface ConnectableItem {
      * @return numerical methods parameters
      */
     boolean isBorderRequired() default false;
+    boolean isForSplineApproximation() default false;
 }

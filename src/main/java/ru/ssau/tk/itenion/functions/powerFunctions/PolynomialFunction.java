@@ -139,6 +139,10 @@ public class PolynomialFunction extends AbstractMathFunction implements MathFunc
                     result = new PseudoPolynomialFunction(function).multiply(afterFunction);
                     break;
                 }
+                case "/": {
+                    result = new PseudoPolynomialFunction(function).divide(afterFunction);
+                    break;
+                }
             }
             return result;
         }

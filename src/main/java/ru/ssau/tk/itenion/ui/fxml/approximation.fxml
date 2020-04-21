@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="308.0" prefWidth="538.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.ssau.tk.itenion.ui.ApproximationController">
+   <children>
+      <ComboBox fx:id="approximationStrategyComboBox" layoutX="14.0" layoutY="14.0" onAction="#ok" prefHeight="42.0" prefWidth="503.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
+      <Label layoutX="254.0" layoutY="65.0" text="Погрешность" AnchorPane.leftAnchor="255.0" AnchorPane.topAnchor="65.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <GridPane layoutX="19.0" layoutY="88.0" prefHeight="162.0" prefWidth="503.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="90.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" text="a " GridPane.columnIndex="1">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" text="a + h" GridPane.columnIndex="2">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" text="b - h" GridPane.columnIndex="3">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" text="a " GridPane.columnIndex="1">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" text="b" GridPane.columnIndex="4">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" text="L(x)" GridPane.rowIndex="1">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" text="S(x)" GridPane.rowIndex="2">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="lEps0" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label fx:id="lEps1" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label fx:id="lEps2" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label fx:id="lEps3" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" GridPane.columnIndex="4" GridPane.rowIndex="1">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label fx:id="sEps0" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label fx:id="sEps1" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label fx:id="sEps2" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label fx:id="sEps3" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="96.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+         </children>
+      </GridPane>
+      <Button layoutX="15.0" layoutY="263.0" mnemonicParsing="false" onAction="#plotApproximatedFunction" prefHeight="31.0" prefWidth="243.0" text="Построить полином/сплайн" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
+      <Button layoutX="286.0" layoutY="262.0" mnemonicParsing="false" onAction="#plotAccuracy" prefHeight="31.0" prefWidth="243.0" text="Построить график погрешности" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+   </children>
+</AnchorPane>

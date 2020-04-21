@@ -20,6 +20,7 @@ import java.util.stream.StreamSupport;
 
 public class Initializer {
     private Stage ownerStage;
+    private static final Class<ConnectableItem> annotationClass = ConnectableItem.class;
     private Function<Class<?>, OpenableWindow> initializeWindowController = new Function<>() {
         @Override
         public OpenableWindow apply(Class<?> clazz) {
@@ -29,10 +30,10 @@ public class Initializer {
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
-            String path = IO.FXML_PATH + controller.getClass().getDeclaredAnnotation(ConnectableItem.class).pathFXML();
+            String path = IO.FXML_PATH + controller.getClass().getDeclaredAnnotation(annotationClass).pathFXML();
             controller = initializeModalityWindow(path, controller);
             controller.getStage().initOwner(ownerStage);
-            controller.getStage().setTitle(controller.getClass().getDeclaredAnnotation(ConnectableItem.class).name());
+            controller.getStage().setTitle(controller.getClass().getDeclaredAnnotation(annotationClass).name());
             return controller;
         }
     };
@@ -58,13 +59,20 @@ public class Initializer {
         return modalityWindow;
     }
 
+    public void initializeWindowControllers(Map<String, OpenableWindow> controllerMap) {
+        StreamSupport.stream(ClassIndex.getAnnotated(annotationClass).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(annotationClass).type() == Item.CONTROLLER)
+                .forEach(clazz -> controllerMap.put(clazz.getDeclaredAnnotation(annotationClass).pathFXML(),
+                        initializeWindowController.apply(clazz)));
+    }
+
     public static void initializeMathFunctionMap(Map<String, MathFunction> mathFunctionMap) {
-        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.FUNCTION)
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
+        StreamSupport.stream(ClassIndex.getAnnotated(annotationClass).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(annotationClass).type() == Item.FUNCTION)
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(annotationClass).priority()))
                 .forEach(clazz -> {
                     try {
-                        mathFunctionMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).name(),
+                        mathFunctionMap.put(clazz.getDeclaredAnnotation(annotationClass).name(),
                                 (MathFunction) clazz.getDeclaredConstructor().newInstance());
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                         AlertWindows.showError(e);
@@ -73,16 +81,16 @@ public class Initializer {
     }
 
     public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item, Predicate<ConnectableItem> classPredicate, Predicate<ConnectableItem> methodPredicate) {
-        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == item)
-                .filter(method -> classPredicate.test(method.getDeclaredAnnotation(ConnectableItem.class)))
-                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
+        StreamSupport.stream(ClassIndex.getAnnotated(annotationClass).spliterator(), false)
+                .filter(f -> f.getDeclaredAnnotation(annotationClass).type() == item)
+                .filter(method -> classPredicate.test(method.getDeclaredAnnotation(annotationClass)))
+                .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(annotationClass).priority()))
                 .forEach(clazz -> Stream.of(clazz.getMethods())
-                        .filter(method -> method.isAnnotationPresent(ConnectableItem.class))
-                        .filter(method -> methodPredicate.test(method.getDeclaredAnnotation(ConnectableItem.class)))
-                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(ConnectableItem.class).priority()))
+                        .filter(method -> method.isAnnotationPresent(annotationClass))
+                        .filter(method -> methodPredicate.test(method.getDeclaredAnnotation(annotationClass)))
+                        .sorted(Comparator.comparingInt(f -> f.getDeclaredAnnotation(annotationClass).priority()))
                         .forEach(method -> {
-                            map.put(method.getDeclaredAnnotation(ConnectableItem.class).name(), method);
+                            map.put(method.getDeclaredAnnotation(annotationClass).name(), method);
                             classes.put(method, clazz);
                         }));
         return new Map[]{classes, map};
@@ -94,12 +102,5 @@ public class Initializer {
 
     public static Map[] initializeMap(Map<Method, Class<?>> classes, Map<String, Method> map, Item item) {
         return initializeMap(classes, map, item, connectableItem -> true, connectableItem -> true);
-    }
-
-    public void initializeWindowControllers(Map<String, OpenableWindow> controllerMap) {
-        StreamSupport.stream(ClassIndex.getAnnotated(ConnectableItem.class).spliterator(), false)
-                .filter(f -> f.getDeclaredAnnotation(ConnectableItem.class).type() == Item.CONTROLLER)
-                .forEach(clazz -> controllerMap.put(clazz.getDeclaredAnnotation(ConnectableItem.class).pathFXML(),
-                        initializeWindowController.apply(clazz)));
     }
 }

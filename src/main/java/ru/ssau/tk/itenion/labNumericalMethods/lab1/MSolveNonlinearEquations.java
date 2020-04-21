@@ -1,4 +1,4 @@
-package ru.ssau.tk.itenion.numericalMethods;
+package ru.ssau.tk.itenion.labNumericalMethods.lab1;
 
 import Jama.Matrix;
 import ru.ssau.tk.itenion.enums.BelongTo;
@@ -12,19 +12,19 @@ import ru.ssau.tk.itenion.ui.Item;
 import java.util.HashMap;
 import java.util.Map;
 
-@ConnectableItem(name = "", type = Item.NUMERICAL_METHOD, belongTo = BelongTo.MAERODRIM)
-public class MNumericalMethods extends NumericalMethods {
+@ConnectableItem(name = "", type = Item.SOLVE_NUMERICAL_METHOD, belongTo = BelongTo.MAERODRIM)
+public class MSolveNonlinearEquations extends SolveNonlinearEquations {
     private static final int NUMBER_OF_SEGMENT_SPLITS = 1001;
 
-    public MNumericalMethods(Double left, Double right, double initialApproximation, Double eps) {
+    public MSolveNonlinearEquations(Double left, Double right, double initialApproximation, Double eps) {
         super(left, right, initialApproximation, eps);
     }
 
-    public MNumericalMethods(Double left, Double right, double[] initialApproximation, Double eps) {
+    public MSolveNonlinearEquations(Double left, Double right, double[] initialApproximation, Double eps) {
         super(left, right, initialApproximation, eps);
     }
 
-    @ConnectableItem(name = "Half-division method all roots", type = Item.NUMERICAL_METHOD, priority = 1, isBorderRequired = true)
+    @ConnectableItem(name = "Half-division method all roots", type = Item.SOLVE_NUMERICAL_METHOD, priority = 1, isBorderRequired = true)
     public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethodAllRoots(MathFunction func) {
         double x = left, step;
         Map<Double, Map.Entry<Double, Integer>> result = new HashMap<>();
@@ -38,7 +38,7 @@ public class MNumericalMethods extends NumericalMethods {
         return result;
     }
 
-    @ConnectableItem(name = "Half-division method Stas", type = Item.NUMERICAL_METHOD, priority = 2, isBorderRequired = true)
+    @ConnectableItem(name = "Half-division method Stas", type = Item.SOLVE_NUMERICAL_METHOD, priority = 2, isBorderRequired = true)
     public Map<Double, Map.Entry<Double, Integer>> solveWithHalfDivisionMethod(MathFunction func) {
         Map<Double, Map.Entry<Double, Integer>> map = new HashMap<>();
         solveWithHalfDivisionMethod(func, map, left, right);
@@ -58,12 +58,12 @@ public class MNumericalMethods extends NumericalMethods {
         map.put((a + b) / 2, Map.entry(func.apply((a + b) / 2), numberOfIterations));
     }
 
-    @ConnectableItem(name = "Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 3)
+    @ConnectableItem(name = "Newton method Stas", type = Item.SOLVE_NUMERICAL_METHOD, priority = 3)
     public Map<Double, Map.Entry<Double, Integer>> solveWithNewtonMethod(MathFunction func) {
         return newtonMethod(func, new MathFunctionDifferentialOperator(), false);
     }
 
-    @ConnectableItem(name = "Modified newton method", type = Item.NUMERICAL_METHOD, priority = 5)
+    @ConnectableItem(name = "Modified newton method", type = Item.SOLVE_NUMERICAL_METHOD, priority = 5)
     public Map<Double, Map.Entry<Double, Integer>> solveWithModifiedNewtonMethod(MathFunction func) {
         return newtonMethod(func, new MathFunctionDifferentialOperator(), true);
     }
@@ -87,7 +87,7 @@ public class MNumericalMethods extends NumericalMethods {
         return result;
     }
 
-    @ConnectableItem(name = "Modified Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 3, forVMF = true)
+    @ConnectableItem(name = "Modified Newton method Stas", type = Item.SOLVE_NUMERICAL_METHOD, priority = 3, forVMF = true)
     public Matrix solveNonlinearSystemWithNewtonMethod(VMF VMF) {
         Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
         Matrix J = VMF.getJacobiMatrix(b.transpose());
@@ -101,7 +101,7 @@ public class MNumericalMethods extends NumericalMethods {
         return a;
     }
 
-    @ConnectableItem(name = "Newton method Stas", type = Item.NUMERICAL_METHOD, priority = 4, forVMF = true)
+    @ConnectableItem(name = "Newton method Stas", type = Item.SOLVE_NUMERICAL_METHOD, priority = 4, forVMF = true)
     public Matrix solveNonlinearSystemWithModifiedNewtonMethod(VMF VMF) {
         Matrix a, b = initialApproximation, p = VMF.getJacobiMatrix(b.transpose()).solve(VMF.apply(b.transpose()).timesEquals(-1));
         a = b.plus(p);

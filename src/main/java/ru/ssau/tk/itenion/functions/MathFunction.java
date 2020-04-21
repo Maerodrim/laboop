@@ -27,12 +27,12 @@ public interface MathFunction extends Serializable, Nameable, VAMF, Differentiab
         MathFunction result;
         if (afterFunction instanceof ConstantFunction) {
             if (this instanceof LinearCombinationFunction) {
-                result = new LinearCombinationFunction((LinearCombinationFunction) this, (ConstantFunction) afterFunction, true);
+                result = new LinearCombinationFunction((LinearCombinationFunction)this, (ConstantFunction) afterFunction, true);
             } else {
                 result = new LinearCombinationFunction(this, (ConstantFunction) afterFunction, true);
             }
         } else if (this instanceof ConstantFunction) {
-            result = new LinearCombinationFunction(afterFunction, (ConstantFunction) this, true);
+            result = new LinearCombinationFunction(afterFunction, (ConstantFunction)this, true);
         } else {
             result = new MathFunction() {
                 private static final long serialVersionUID = -4986154588819604160L;
@@ -162,7 +162,7 @@ public interface MathFunction extends Serializable, Nameable, VAMF, Differentiab
             }
             result = new LinearCombinationFunction(afterFunction, new ConstantFunction(1 / ((ConstantFunction) this).getConstant()), false);
         } else {
-            result = multiply(afterFunction.negate());
+            result = multiply(afterFunction.inverse());
         }
         if (result instanceof LinearCombinationFunction && ((LinearCombinationFunction) result).getShift() == 0 && ((LinearCombinationFunction) result).getConstant() == 1) {
             result = ((LinearCombinationFunction) result).getFunction();
@@ -183,7 +183,7 @@ public interface MathFunction extends Serializable, Nameable, VAMF, Differentiab
                 if (x == 0) {
                     throw new IllegalArgumentException();
                 }
-                return 1. / x;
+                return 1. / function.apply(x);
             }
 
             @Override
@@ -239,4 +239,25 @@ public interface MathFunction extends Serializable, Nameable, VAMF, Differentiab
         return this;
     }
 
+    default MathFunction copy(){
+        MathFunction function = this;
+        return new MathFunction() {
+            private static final long serialVersionUID = 323511822574161968L;
+
+            @Override
+            public double apply(double x) {
+                return function.apply(x);
+            }
+
+            @Override
+            public MathFunction differentiate() {
+                return function.differentiate();
+            }
+
+            @Override
+            public String getName() {
+                return function.getName();
+            }
+        };
+    }
 }

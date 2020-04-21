@@ -35,19 +35,19 @@ public class TabController implements Initializable, OpenableWindow {
     public static TabHolderState state;
     private final TableColumn<Point, Double> x = new TableColumn<>("X");
     private final TableColumn<Point, Double> y = new TableColumn<>("Y");
-    public TFState tfState;
-    public VMFState vmfState;
+    public TFState tfState = new TFState();
+    public VMFState vmfState = new VMFState();
     private TabController tabController = this;
     private Stage stage;
     private int numberId = 1;
-    private TabulatedFunctionFactory factory;
-    private Map<Tab, TabulatedFunction> tabulatedFunctionMap;
-    private Map<Tab, VMF> VMFMap;
-    private Map<String, MathFunction> mathFunctionMap;
-    private Map<String, OpenableWindow> controllerMap;
-    private Map<String, MathFunction> compositeFunctionMap;
+    private TabulatedFunctionFactory factory = new ArrayTabulatedFunctionFactory();
+    private Map<Tab, TabulatedFunction> tabulatedFunctionMap = new HashMap<>();
+    private Map<Tab, VMF> VMFMap = new HashMap<>();
+    private Map<String, MathFunction> mathFunctionMap = new HashMap<>();
+    private Map<String, OpenableWindow> controllerMap = new HashMap<>();
+    private Map<String, MathFunction> compositeFunctionMap = new HashMap<>();
     private Tab currentTab;
-    Function<Boolean, TabVisitor> tabVisitorFunction = aBoolean -> new TabVisitor() {
+    Function<Boolean, TabVisitor> showFunction = aBoolean -> new TabVisitor() {
         @Override
         public void visit(TFState tfState) {
             if (aBoolean ? !tfState.getFunction().isStrict() : !tfState.getFunction().isUnmodifiable()) {
@@ -78,8 +78,6 @@ public class TabController implements Initializable, OpenableWindow {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        tfState = new TFState();
-        vmfState = new VMFState();
         anyTabHolderState = new AnyTabHolderState();
         state = tfState;
 
@@ -89,17 +87,11 @@ public class TabController implements Initializable, OpenableWindow {
         bottomPane.setRight(null);
         bottomPane.setBottom(null);
 
-        controllerMap = new HashMap<>();
-        mathFunctionMap = new LinkedHashMap<>();
-        tabulatedFunctionMap = new LinkedHashMap<>();
-        VMFMap = new LinkedHashMap<>();
-        compositeFunctionMap = new LinkedHashMap<>();
         x.setCellValueFactory(new PropertyValueFactory<>("X"));
         y.setCellValueFactory(new PropertyValueFactory<>("Y"));
         x.setPrefWidth(300);
         y.setPrefWidth(300);
         tabPane.getSelectionModel().selectLast();
-        factory = new ArrayTabulatedFunctionFactory();
         io = new IO(factory);
         boolean isCreated = new File(IO.DEFAULT_DIRECTORY).mkdir();
         new Initializer(stage).initializeWindowControllers(controllerMap);
@@ -181,7 +173,7 @@ public class TabController implements Initializable, OpenableWindow {
     private void show(boolean isResizable, StackTraceElement stackTraceElement) {
         Stage stage = lookupController(stackTraceElement.getMethodName()).getStage();
         stage.setResizable(isResizable);
-        stage.showAndWait();
+        stage.show();
     }
 
     private void showFromNestedClass(boolean isResizable) {
@@ -199,10 +191,10 @@ public class TabController implements Initializable, OpenableWindow {
     private OpenableWindow lookupController(String path) {
         OpenableWindow controller = controllerMap.get(path + ".fxml");
         if (controller instanceof TabulatedFunctionAccessible) {
-            ((TabulatedFunctionAccessible) controller).bindTabulatedFunctionMap(tabulatedFunctionMap);
+            ((TabulatedFunctionAccessible)controller).bindTabulatedFunctionMap(tabulatedFunctionMap);
         }
         if (controller instanceof CompositeFunctionAccessible) {
-            ((CompositeFunctionAccessible) controller).bindCompositeFunctionMap(compositeFunctionMap);
+            ((CompositeFunctionAccessible)controller).bindCompositeFunctionMap(compositeFunctionMap);
         }
         return controllerMap.get(path + ".fxml");
     }
@@ -220,28 +212,28 @@ public class TabController implements Initializable, OpenableWindow {
     @FXML
     private void deletePoint() {
         if (isTabExist()) {
-            state.accept(tabVisitorFunction.apply(false));
+            state.accept(showFunction.apply(false));
         }
     }
 
     @FXML
     private void addPoint() {
         if (isTabExist()) {
-            state.accept(tabVisitorFunction.apply(false));
+            state.accept(showFunction.apply(false));
         }
     }
 
     @FXML
     private void calculate() {
         if (isTabExist()) {
-            state.accept(tabVisitorFunction.apply(true));
+            state.accept(showFunction.apply(true));
         }
     }
 
     @FXML
     private void compose() {
         if (isTabExist()) {
-            state.accept(tabVisitorFunction.apply(true));
+            state.accept(showFunction.apply(true));
         }
     }
 
@@ -324,8 +316,13 @@ public class TabController implements Initializable, OpenableWindow {
     @FXML
     private void operator() {
         if (isTabExist()) {
-            state.accept(tabVisitorFunction.apply(true));
+            state.accept(showFunction.apply(true));
         }
+    }
+
+    @FXML
+    private void approximation() {
+        show(false);
     }
 
     public boolean isStrict() {
@@ -387,6 +384,10 @@ public class TabController implements Initializable, OpenableWindow {
 
         public void plot() {
             tabController.plot();
+        }
+
+        public PlotController getPlotController(){
+            return (PlotController) controllerMap.get("plot.fxml");
         }
 
         public TabulatedFunctionFactory getFactory() {
