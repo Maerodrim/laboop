@@ -22,13 +22,11 @@ public class Approximation {
     int numberOfPoints;
     double[] xPoints;
     double h;
-    TabulatedFunctionFactory factory;
 
-    public Approximation(double left, double right, int numberOfPoints, TabulatedFunctionFactory factory) {
+    public Approximation(double left, double right, int numberOfPoints) {
         this.left = left;
         this.right = right;
         this.numberOfPoints = numberOfPoints;
-        this.factory = factory;
         xPoints = new double[numberOfPoints];
         h = (right - left) / (numberOfPoints - 1);
         for (int i = 0; i < numberOfPoints; i++) {
@@ -41,8 +39,8 @@ public class Approximation {
     }
 
     @ConnectableItem(name = "Интерполяция полиномами Лагранжа", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 1)
-    public TabulatedFunction lagrangeTabulate(double[] yPoints) {
-        return tabulate(new MathFunction() {
+    public MathFunction lagrangeTabulate(double[] yPoints) {
+        return new MathFunction() {
             private static final long serialVersionUID = -7502011778115269174L;
 
             @Override
@@ -59,12 +57,14 @@ public class Approximation {
             public String getName() {
                 return "Полином Лагранжа";
             }
-        });
+        };
     }
 
     @ConnectableItem(name = "Интерполяция полиномами Ньютона", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 2)
-    public TabulatedFunction newtonTabulate(double[] yPoints) {
-        return tabulate(new MathFunction() {
+    public MathFunction newtonTabulate(double[] yPoints) {
+        return new MathFunction() {
+            private static final long serialVersionUID = 1460863578548877512L;
+
             @Override
             public double apply(double x) {
                 double y = yPoints[0];
@@ -83,11 +83,11 @@ public class Approximation {
             public String getName() {
                 return "Полином Ньютона";
             }
-        });
+        };
     }
 
     @ConnectableItem(name = "Интерполяция линейным сплайном", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 3, isForSplineApproximation = true)
-    public TabulatedFunction linearSpline(double[] yPoints) {
+    public MathFunction linearSpline(double[] yPoints) {
         Matrix A = new Matrix(new double[][]{
                 {1, 0, 0, 0, 0, 0},
                 {1, h, 0, 0, 0, 0},
@@ -101,44 +101,40 @@ public class Approximation {
     }
 
     @ConnectableItem(name = "Интерполяция параболическим сплайном", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 4, isForSplineApproximation = true)
-    public TabulatedFunction parabolicSpline(double[] yPoints) {
+    public MathFunction parabolicSpline(double[] yPoints) {
         Matrix A = new Matrix(new double[][]{
-                {1, 0, 0, 0, 0, 0, 0, 0, 0},
-                {1, h, h * h, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 1, h, h * h, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 1, h, h * h},
-                {1, h, h*h, -1, 0, 0, 0, 0, 0},
-                {0, 0, 0, 1, h, h*h, -1, 0, 0},
-                {0, 1, 2 * h, 0, -1, 0, 0, 0, 0},
-                {0, 0, 0, 0, 1, 2 * h, 0, -1, 0},
-                {0, 0, 1, 0, 0, 0, 0, 0, 0}}
+                {1,     0,        0,        0,      0,         0,       0,     0,      0},
+                {1,     h,        h * h,    0,      0,         0,       0,     0,      0},
+                {0,     0,        0,        1,      h,         h * h,   0,     0,      0},
+                {0,     0,        0,        0,      0,         0,       1,     h,      h * h},
+                {1,     h,        h * h,   -1,      0,         0,       0,     0,      0},
+                {0,     0,        0,        1,      h,         h * h,  -1,     0,      0},
+                {0,     1,        2 * h,    0,     -1,         0,       0,     0,      0},
+                {0,     0,        0,        0,      1,         2 * h,   0,    -1,      0},
+                {0,     0,        1,        0,      0,         0,       0,     0,      0}}
         );
         Matrix B = new Matrix(new double[][]{{yPoints[0]}, {yPoints[1]}, {yPoints[2]}, {yPoints[3]}, {0.}, {0.}, {0.}, {0.}, {0.}});
         return spline(PARABOLIC, A.solve(B));
     }
 
     @ConnectableItem(name = "Интерполяция кубическим сплайном", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 5, isForSplineApproximation = true)
-    public TabulatedFunction cubicSpline(double[] yPoints) {
+    public MathFunction cubicSpline(double[] yPoints) {
         Matrix A = new Matrix(new double[][]{
-                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {1, h, h * h, h * h * h, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 1, h, h * h, h * h * h, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 1, h, h * h, h * h * h},
-                {0, 1, 2 * h, 3 * h * h, 0, -1, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 1, 2 * h, 3 * h * h, 0, -1, 0, 0},
-                {0, 0, 2, 6 * h, 0, 0, -2, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 2, 6 * h, 0, 0, -2, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 6 * h},
-                {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0}}
+                {1,     0,     0,         0,            0,      0,      0,         0,           0,      0,        0,        0},
+                {1,     h,     h * h,     h * h * h,    0,      0,      0,         0,           0,      0,        0,        0},
+                {0,     0,     0,         0,            1,      0,      0,         0,           0,      0,        0,        0},
+                {0,     0,     0,         0,            1,      h,      h * h,     h * h * h,   0,      0,        0,        0},
+                {0,     0,     0,         0,            0,      0,      0,         0,           1,      0,        0,        0},
+                {0,     0,     0,         0,            0,      0,      0,         0,           1,      h,        h * h,    h * h * h},
+                {0,     1,     2 * h,     3 * h * h,    0,     -1,      0,         0,           0,      0,        0,        0},
+                {0,     0,     0,         0,            0,      1,      2 * h,     3 * h * h,   0,     -1,        0,        0},
+                {0,     0,     2,         6 * h,        0,      0,     -2,         0,           0,      0,        0,        0},
+                {0,     0,     0,         0,            0,      2,      6 * h,     0,           0,     -2,        0,        0},
+                {0,     0,     0,         0,            0,      0,      0,         0,           0,      0,        2,        6 * h},
+                {0,     0,     2,         0,            0,      0,      0,         0,           0,      0,        0,        0}}
         );
         Matrix B = new Matrix(new double[][]{{yPoints[0]}, {yPoints[1]}, {yPoints[1]}, {yPoints[2]}, {yPoints[2]}, {yPoints[3]}, {0.}, {0.}, {0.}, {0.}, {0.}, {0.}});
         return spline(CUBIC, A.solve(B));
-    }
-
-    private TabulatedFunction tabulate(MathFunction function) {
-        return factory.create(function, left, right, 1000);
     }
 
     private double l(int n, double x) {
@@ -163,13 +159,15 @@ public class Approximation {
         return y;
     }
 
-    private double getDividedDifference(double[] yPoints, double... x) {
-        if (x.length == 2) {
-            return (yPoints[1] - yPoints[0]) / (x[1] - x[0]);
+    private double getDividedDifference(double[] yPoints, double... xPoints) {
+        if (xPoints.length == 2) {
+            return (yPoints[1] - yPoints[0]) / (xPoints[1] - xPoints[0]);
         } else {
-            return (getDividedDifference(Arrays.copyOfRange(yPoints, 1, x.length), Arrays.copyOfRange(x, 1, x.length)) -
-                    getDividedDifference(Arrays.copyOfRange(yPoints, 0, x.length - 1), Arrays.copyOfRange(x, 0, x.length - 1)))
-                    / (x[x.length - 1] - x[0]);
+            double[] yRight = Arrays.copyOfRange(yPoints, 1, xPoints.length);
+            double[] xRight = Arrays.copyOfRange(xPoints, 1, xPoints.length);
+            double[] yLeft = Arrays.copyOfRange(yPoints, 0, xPoints.length - 1);
+            double[] xLeft = Arrays.copyOfRange(xPoints, 0, xPoints.length - 1);
+            return (getDividedDifference(yRight, xRight) - getDividedDifference(yLeft, xLeft)) / (xPoints[xPoints.length - 1] - xPoints[0]);
         }
     }
 
@@ -181,8 +179,8 @@ public class Approximation {
         return W;
     }
 
-    private TabulatedFunction spline(int orderOfSpline, Matrix coefficients) {
-        return tabulate(new MathFunction() {
+    private MathFunction spline(int orderOfSpline, Matrix coefficients) {
+        return new MathFunction() {
             private static final long serialVersionUID = 8977791784179429156L;
 
             @Override
@@ -207,7 +205,7 @@ public class Approximation {
             public String getName() {
                 return names.get(orderOfSpline);
             }
-        });
+        };
     }
 
     private double splineBit(int n, double x, int orderOfSpline, Matrix coefficients) {
@@ -215,11 +213,11 @@ public class Approximation {
     }
 
     private int shiftForSpline(int orderOfSpline, double x) {
-        if (x >= xPoints[0] && x < xPoints[1]) {
+        if (x < xPoints[1]) {
             return 0;
         } else if (x >= xPoints[1] && x < xPoints[2]) {
             return orderOfSpline + 1;
-        } else if (x >= xPoints[2] && x < xPoints[3]) {
+        } else if (x >= xPoints[2]) {
             return 2 * (orderOfSpline + 1);
         } else {
             throw new UnsupportedOperationException();

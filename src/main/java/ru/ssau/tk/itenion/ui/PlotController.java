@@ -51,7 +51,7 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
     private AnchorPane detailsWindow;
     private PlotController.DetailsPopup detailsPopup;
     private double strokeWidth = 0.5;
-    SolveNonlinearEquations numMethod = IO.getNumericalMethodFactory().create(0., 0., new double[]{0,0}, 1E-6);
+    //SolveNonlinearEquations numMethod = IO.getNumericalMethodFactory().create(0., 0., new double[]{0,0}, 1E-6);
 
     public static void removeLegend(LineChart<Number, Number> lineChart) {
         ((Legend) lineChart.lookup(".chart-legend")).getItems().clear();
@@ -109,6 +109,7 @@ public class PlotController implements TabVisitor, FactoryAccessible, Initializa
 
     public void setSeries(ObservableList<XYChart.Data<Number, Number>> data, TabulatedFunction function, Variable variable) {
         lineChart.getData().clear();
+        functionColorMap.clear();
         detailsPopup.clear();
         addSeries(data, function, variable);
     }

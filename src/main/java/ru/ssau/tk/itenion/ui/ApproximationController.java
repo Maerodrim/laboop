@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import ru.ssau.tk.itenion.functions.AbsFunction;
 import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
+import ru.ssau.tk.itenion.functions.Point;
 import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.labNumericalMethods.lab2.Approximation;
 
@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static ru.ssau.tk.itenion.ui.Initializer.initializeMap;
 
@@ -26,13 +27,10 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
     private Map<String, Method> approximationStrategies;
     private Map<Method, Class<?>> classes;
     private Map<String, TabulatedFunction> functions;
-    private TabulatedFunction function;
-    private List<Double> yPoints = new ArrayList<>();
     private List<Label> polynomialAccuracyLabels;
     private List<Label> splineAccuracyLabels;
-    private double[] xPoints;
-    private double left, right, h;
-    private int numberOfPointsForPlot;
+    private int numberOfPointsForApproximation;
+    private Map<String, TabulatedFunction> sourceFunctions;
     @FXML
     private Label lEps0, lEps1, lEps2, lEps3, sEps0, sEps1, sEps2, sEps3;
     @FXML
@@ -40,10 +38,11 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        sourceFunctions = new HashMap<>();
         functions = new HashMap<>();
         polynomialAccuracyLabels = List.of(lEps0, lEps1, lEps2, lEps3);
+        numberOfPointsForApproximation = polynomialAccuracyLabels.size();
         splineAccuracyLabels = List.of(sEps0, sEps1, sEps2, sEps3);
-        xPoints = new double[polynomialAccuracyLabels.size()];
         approximationStrategies = new LinkedHashMap<>();
         classes = new LinkedHashMap<>();
         Map[] maps = initializeMap(classes, approximationStrategies, Item.APPROXIMATION_NUMERICAL_METHOD);
@@ -54,14 +53,8 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
         approximationStrategyComboBox.getItems().add("Построить полином и линейный сплайн");
         approximationStrategyComboBox.getItems().add("Построить полином и параболический сплайн");
         approximationStrategyComboBox.getItems().add("Построить полином и кубический сплайн");
+        approximationStrategyComboBox.getItems().add("Построить сплайны");
         approximationStrategyComboBox.getSelectionModel().selectFirst();
-    }
-
-    private void setAccuracy(TabulatedFunction function, List<Label> labels) {
-        for (int i = 0; i < labels.size(); i++) {
-            labels.get(i).setText("" +
-                    round(Math.abs(yPoints.get(i) - function.apply(10E-12 + i * h)), 16));
-        }
     }
 
     @Override
@@ -73,7 +66,7 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
     public void setStage(Stage stage) {
         stage.setOnShown(windowEvent -> {
             state().accept(this);
-            setAccuracy(function, polynomialAccuracyLabels);
+            setAccuracy("Интерполяция полиномами Ньютона", polynomialAccuracyLabels);
         });
         this.stage = stage;
     }
@@ -81,32 +74,34 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
     @FXML
     public void ok() {
         switch (approximationStrategyComboBox.getValue()) {
+            case "Интерполяция полиномами Лагранжа":
+            case "Интерполяция полиномами Ньютона":
             case "Построить полиномы Лагранжа и Ньютона":
                 break;
             case "Построить полином и линейный сплайн":
-                setAccuracy(functions.get("Интерполяция линейным сплайном"), splineAccuracyLabels);
+                setAccuracy("Интерполяция линейным сплайном", splineAccuracyLabels);
                 break;
             case "Построить полином и параболический сплайн":
-                setAccuracy(functions.get("Интерполяция параболическим сплайном"), splineAccuracyLabels);
+                setAccuracy("Интерполяция параболическим сплайном", splineAccuracyLabels);
                 break;
             case "Построить полином и кубический сплайн":
-                setAccuracy(functions.get("Интерполяция кубическим сплайном"), splineAccuracyLabels);
-                break;
-            case "Интерполяция линейным сплайном":
-                setAccuracy(functions.get("Интерполяция линейным сплайном"), splineAccuracyLabels);
-                state().accept(this);
-                break;
-            case "Интерполяция параболическим сплайном":
-                setAccuracy(functions.get("Интерполяция параболическим сплайном"), splineAccuracyLabels);
-                state().accept(this);
-                break;
-            case "Интерполяция кубическим сплайном":
-                setAccuracy(functions.get("Интерполяция кубическим сплайном"), splineAccuracyLabels);
-                state().accept(this);
+                setAccuracy("Интерполяция кубическим сплайном", splineAccuracyLabels);
                 break;
             default:
-                state().accept(this);
+                setAccuracy(approximationStrategyComboBox.getValue(), splineAccuracyLabels);
                 break;
+          }
+    }
+
+    private void setAccuracy(String name, List<Label> labels) {
+        TabulatedFunction sourceFunction = sourceFunctions.get(name);
+        double h = (sourceFunction.rightBound() - sourceFunction.leftBound()) / (numberOfPointsForApproximation - 1);
+        double[] yPoints = new double[numberOfPointsForApproximation];
+        for (int i = 0; i < yPoints.length; i++) {
+            yPoints[i] = sourceFunction.apply(sourceFunction.leftBound() + i * h);
+        }
+        for (int i = 0; i < labels.size(); i++) {
+            labels.get(i).setText("" + round(Math.abs(yPoints[i] - functions.get(name).apply(sourceFunction.leftBound() + i * h)), 10));
         }
     }
 
@@ -115,36 +110,34 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
         try {
             switch (approximationStrategyComboBox.getValue()) {
                 case "Построить полиномы Лагранжа и Ньютона":
-                    anyState().getPlotController().setSeries(anyState().getFactory()
-                            .create(functions.get("Интерполяция полиномами Лагранжа"), left, right, numberOfPointsForPlot));
-                    anyState().getPlotController().addSeries(anyState().getFactory()
-                            .create(functions.get("Интерполяция полиномами Ньютона"), left, right, numberOfPointsForPlot));
-                    state().accept((TFTabVisitor) tfState -> anyState().getPlotController().addSeries(tfState.getFunction()));
+                    plotAllFunctions(
+                            "Интерполяция полиномами Лагранжа",
+                            "Интерполяция полиномами Ньютона");
                     break;
                 case "Построить полином и линейный сплайн":
-                    anyState().getPlotController().setSeries(anyState().getFactory()
-                            .create(functions.get("Интерполяция линейным сплайном"), left, right, numberOfPointsForPlot));
-                    anyState().getPlotController().addSeries(anyState().getFactory()
-                            .create(functions.get("Интерполяция полиномами Ньютона"), left, right, numberOfPointsForPlot));
-                    state().accept((TFTabVisitor) tfState -> anyState().getPlotController().addSeries(tfState.getFunction()));
+                    plotAllFunctions(
+                            "Интерполяция линейным сплайном",
+                            "Интерполяция полиномами Ньютона");
                     break;
                 case "Построить полином и параболический сплайн":
-                    anyState().getPlotController().setSeries(anyState().getFactory()
-                            .create(functions.get("Интерполяция параболическим сплайном"), left, right, numberOfPointsForPlot));
-                    anyState().getPlotController().addSeries(anyState().getFactory()
-                            .create(functions.get("Интерполяция полиномами Ньютона"), left, right, numberOfPointsForPlot));
-                    state().accept((TFTabVisitor) tfState -> anyState().getPlotController().addSeries(tfState.getFunction()));
+                    plotAllFunctions(
+                            "Интерполяция параболическим сплайном",
+                            "Интерполяция полиномами Ньютона");
                     break;
                 case "Построить полином и кубический сплайн":
-                    anyState().getPlotController().setSeries(anyState().getFactory()
-                            .create(functions.get("Интерполяция кубическим сплайном"), left, right, numberOfPointsForPlot));
-                    anyState().getPlotController().addSeries(anyState().getFactory()
-                            .create(functions.get("Интерполяция полиномами Ньютона"), left, right, numberOfPointsForPlot));
-                    state().accept((TFTabVisitor) tfState -> anyState().getPlotController().addSeries(tfState.getFunction()));
+                    plotAllFunctions(
+                            "Интерполяция кубическим сплайном",
+                            "Интерполяция полиномами Ньютона");
+                    break;
+                case "Построить сплайны":
+                    plotAllFunctions(
+                            "Интерполяция линейным сплайном",
+                            "Интерполяция параболическим сплайном",
+                            "Интерполяция кубическим сплайном");
                     break;
                 default:
-                    anyState().getPlotController().setSeries(function);
-                    state().accept((TFTabVisitor) tfState -> anyState().getPlotController().addSeries(tfState.getFunction()));
+                    anyState().getPlotController().setSeries(functions.get(approximationStrategyComboBox.getSelectionModel().getSelectedItem()));
+                    anyState().getPlotController().addSeries(sourceFunctions.get(approximationStrategyComboBox.getSelectionModel().getSelectedItem()));
                     break;
             }
             anyState().getPlotController().getStage().show();
@@ -156,83 +149,66 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
     @FXML
     public void plotAccuracy() {
         try {
-            final MathFunction[] accuracyFunction = new MathFunction[2];
             switch (approximationStrategyComboBox.getValue()) {
                 case "Построить полиномы Лагранжа и Ньютона":
-                    state().accept((TFTabVisitor) tfState -> {
-                        accuracyFunction[0] = new AbsFunction()
-                                .andThen(functions.get("Интерполяция полиномами Лагранжа").subtract(tfState.getFunction()));
-                        accuracyFunction[1] = new AbsFunction()
-                                .andThen(functions.get("Интерполяция полиномами Ньютона").subtract(tfState.getFunction()));
-                    });
-                    anyState().getPlotController().setSeries(anyState().getFactory()
-                            .create(accuracyFunction[0], left, right, numberOfPointsForPlot));
-                    anyState().getPlotController().addSeries(anyState().getFactory()
-                            .create(accuracyFunction[1], left, right, numberOfPointsForPlot));
+                    plotAllAccuracyFunctions(
+                            "Интерполяция полиномами Лагранжа",
+                            "Интерполяция полиномами Ньютона");
                     break;
                 case "Построить полином и линейный сплайн":
-                    state().accept((TFTabVisitor) tfState -> {
-                        accuracyFunction[0] = new AbsFunction()
-                                .andThen(functions.get("Интерполяция линейным сплайном").subtract(tfState.getFunction()));
-                        accuracyFunction[1] = new AbsFunction()
-                                .andThen(functions.get("Интерполяция полиномами Ньютона").subtract(tfState.getFunction()));
-                    });
-                    anyState().getPlotController().setSeries(anyState().getFactory()
-                            .create(accuracyFunction[0], left, right, numberOfPointsForPlot));
-                    anyState().getPlotController().addSeries(anyState().getFactory()
-                            .create(accuracyFunction[1], left, right, numberOfPointsForPlot));
+                    plotAllAccuracyFunctions(
+                            "Интерполяция линейным сплайном",
+                            "Интерполяция полиномами Ньютона");
                     break;
                 case "Построить полином и параболический сплайн":
-                    state().accept((TFTabVisitor) tfState -> {
-                        accuracyFunction[0] = new AbsFunction()
-                                .andThen(functions.get("Интерполяция параболическим сплайном").subtract(tfState.getFunction()));
-                        accuracyFunction[1] = new AbsFunction()
-                                .andThen(functions.get("Интерполяция полиномами Ньютона").subtract(tfState.getFunction()));
-                    });
-                    anyState().getPlotController().setSeries(anyState().getFactory()
-                            .create(accuracyFunction[0], left, right, numberOfPointsForPlot));
-                    anyState().getPlotController().addSeries(anyState().getFactory()
-                            .create(accuracyFunction[1], left, right, numberOfPointsForPlot));
+                    plotAllAccuracyFunctions(
+                            "Интерполяция параболическим сплайном",
+                            "Интерполяция полиномами Ньютона");
                     break;
                 case "Построить полином и кубический сплайн":
-                    state().accept((TFTabVisitor) tfState -> {
-                        accuracyFunction[0] = new AbsFunction()
-                                .andThen(functions.get("Интерполяция кубическим сплайном").subtract(tfState.getFunction()));
-                        accuracyFunction[1] = new AbsFunction()
-                                .andThen(functions.get("Интерполяция полиномами Ньютона").subtract(tfState.getFunction()));
-                    });
-                    anyState().getPlotController().setSeries(anyState().getFactory()
-                            .create(accuracyFunction[0], left, right, numberOfPointsForPlot));
-                    anyState().getPlotController().addSeries(anyState().getFactory()
-                            .create(accuracyFunction[1], left, right, numberOfPointsForPlot));
+                    plotAllAccuracyFunctions(
+                            "Интерполяция кубическим сплайном",
+                            "Интерполяция полиномами Ньютона");
+                    break;
+                case "Построить сплайны":
+                    plotAllAccuracyFunctions(
+                            "Интерполяция линейным сплайном",
+                            "Интерполяция параболическим сплайном",
+                            "Интерполяция кубическим сплайном");
                     break;
                 default:
-                    state().accept((TFTabVisitor) tfState -> {
-                        accuracyFunction[0] = new AbsFunction()
-                                .andThen(function.subtract(tfState.getFunction()));
-                        accuracyFunction[1] = new MathFunction() {
-                            private static final long serialVersionUID = -6036766437877741124L;
+                    TabulatedFunction sourceFunction = sourceFunctions.get(approximationStrategyComboBox.getSelectionModel().getSelectedItem());
+                    TabulatedFunction approximatedFunction = functions.get(approximationStrategyComboBox.getSelectionModel().getSelectedItem());
+                    double h = (sourceFunction.rightBound() - sourceFunction.leftBound()) / (numberOfPointsForApproximation - 1);
+                    double[] xPoints = new double[numberOfPointsForApproximation];
+                    for (int i = 0; i < xPoints.length; i++) {
+                        xPoints[i] = sourceFunction.leftBound() + i * h;
+                    }
+                    MathFunction[] accuracyFunction = new MathFunction[1];
+                    state().accept((TFTabVisitor) tfState -> accuracyFunction[0] = new MathFunction() {
+                        private static final long serialVersionUID = -6036766437877741124L;
 
-                            @Override
-                            public double apply(double x) {
-                                return 42170.4 * Math.abs(Approximation.w(4, x, xPoints)) / factorial(polynomialAccuracyLabels.size());
-                            }
+                        @Override
+                        public double apply(double x) {
+                            return 42170.4 * Math.abs(Approximation.w(4, x, xPoints)) / factorial(numberOfPointsForApproximation);
+                            // 42170.4 is the maximum of the function considered in the laboratory work
+                        }
 
-                            @Override
-                            public MathFunction differentiate() {
-                                return null;
-                            }
 
-                            @Override
-                            public String getName() {
-                                return "Теоретический максимум";
-                            }
-                        };
+                        @Override
+                        public MathFunction differentiate() {
+                            return null;
+                        }
+
+                        @Override
+                        public String getName() {
+                            return "Теоретический максимум";
+                        }
                     });
                     anyState().getPlotController().setSeries(anyState().getFactory()
-                            .create(accuracyFunction[0], left, right, numberOfPointsForPlot));
-//          anyState().getPlotController().setSeries(anyState().getFactory()
-//                    .create(accuracyFunction[1], function.leftBound(), function.rightBound(), function.getCount()));
+                            .create(new AbsFunction().andThen(approximatedFunction.subtract(sourceFunction)), sourceFunction.leftBound(), sourceFunction.rightBound(), sourceFunction.getCount()));
+//                    anyState().getPlotController().setSeries(anyState().getFactory()
+//                            .create(accuracyFunction[0], sourceFunction.leftBound(), sourceFunction.rightBound(), sourceFunction.getCount()));
                     break;
             }
             anyState().getPlotController().getStage().show();
@@ -241,39 +217,105 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
         }
     }
 
+    private void plotAllFunctions(String... names) {
+        plotAllFunctions(Arrays.stream(names).map(value -> functions.get(value)).collect(Collectors.toList()));
+    }
+
+    private void plotAllAccuracyFunctions(String... names) {
+        List<TabulatedFunction> accuracyFunctions = new ArrayList<>();
+        for (String name : names) {
+            TabulatedFunction sourceFunction = sourceFunctions.get(name);
+            accuracyFunctions.add(anyState().getFactory()
+                    .create(
+                            new AbsFunction().andThen(functions.get(name).subtract(sourceFunction)),
+                            sourceFunction.leftBound(),
+                            sourceFunction.rightBound(),
+                            sourceFunction.getCount()));
+        }
+        boolean isFirst = true;
+        for (TabulatedFunction function : accuracyFunctions) {
+            if (isFirst) {
+                anyState().getPlotController().setSeries(anyState().getFactory()
+                        .create(function, function.leftBound(), function.rightBound(), function.getCount()));
+                isFirst = false;
+            } else {
+                anyState().getPlotController().addSeries(anyState().getFactory()
+                        .create(function, function.leftBound(), function.rightBound(), function.getCount()));
+            }
+        }
+    }
+
+    private void plotAllFunctions(TabulatedFunction... functions) {
+        plotAllFunctions(new ArrayList<>(Arrays.asList(functions)));
+    }
+
+    private void plotAllFunctions(List<TabulatedFunction> functions) {
+        state().accept((TFTabVisitor) tfState -> anyState().getPlotController().setSeries(tfState.getFunction()));
+        functions.forEach(function -> anyState().getPlotController().addSeries(anyState().getFactory()
+                .create(function, function.leftBound(), function.rightBound(), function.getCount())));
+    }
+
     @Override
     public void visit(TabController.TFState tfState) {
-        left = tfState.getFunction().leftBound();
-        right = tfState.getFunction().rightBound();
-        numberOfPointsForPlot = tfState.getFunction().getCount();
-        h = (right - left) / (polynomialAccuracyLabels.size() - 1);
-        for (int i = 0; i < polynomialAccuracyLabels.size(); i++) {
-            xPoints[i] = tfState.getFunction().leftBound() + i * h;
+        approximationStrategies.keySet().forEach(value -> sourceFunctions.put(value, tfState.getFunction().copy()));
+        approximationStrategies.keySet()
+                .forEach(value -> {
+                    startApproximation(value);
+                    if ((value.equals("Интерполяция полиномами Лагранжа") || value.equals("Интерполяция полиномами Ньютона")) && isInvalidError(value)) {
+                        cropUntilNotProperlyError(value);
+                    }
+                });
+    }
+
+    private void cropUntilNotProperlyError(String value) {
+        int i = 0;
+        do {
+            removeBoundPoints(sourceFunctions.get(value), i++);
+            startApproximation(value);
+        } while (isInvalidError(value));
+    }
+
+    private void removeBoundPoints(TabulatedFunction function, int iterationNumber) {
+        if (iterationNumber % 3 == 0) {
+            function.remove(0);
         }
-        for (int i = 0; i < polynomialAccuracyLabels.size(); i ++) {
-            yPoints.add(tfState.getFunction().apply(10E-12 + i * h));
-        }
-        double[] yPointsArray = new double[polynomialAccuracyLabels.size()];
-        for (int i = 0; i < yPointsArray.length; i++) {
-            yPointsArray[i] = yPoints.get(i);
-        }
-        approximationStrategies.keySet().forEach(value -> {
-            try {
-                functions.put(
-                        value, (TabulatedFunction)
-                                approximationStrategies.get(value).invoke(classes.get(approximationStrategies.get(value))
-                                                .getDeclaredConstructor(Double.TYPE, Double.TYPE, Integer.TYPE, TabulatedFunctionFactory.class)
-                                                .newInstance(tfState.getFunction().leftBound(),
-                                                        tfState.getFunction().rightBound(),
-                                                        polynomialAccuracyLabels.size(),
-                                                        anyState().getFactory()),
-                                        yPointsArray
-                                ));
-            } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
-                e.printStackTrace();
+        function.remove(function.getCount() - 1);
+    }
+
+    private boolean isInvalidError(String value) {
+        double max = Double.MIN_VALUE;
+        double yMax = 0;
+        TabulatedFunction sourceFunction = sourceFunctions.get(value);
+        MathFunction function = new AbsFunction().andThen(functions.get(value).subtract(sourceFunction));
+        for (Point point : sourceFunction) {
+            if (function.apply(point.x) > max) {
+                max = function.apply(point.x);
+                yMax = sourceFunction.apply(point.x);
             }
-        });
-        function = functions.get(approximationStrategyComboBox.getValue());
+        }
+        return Math.abs(max / yMax) > 1E-4;
+    }
+
+    private void startApproximation(String nameOfApproximationStrategy) {
+        functions.remove(nameOfApproximationStrategy);
+        TabulatedFunction sourceFunction = sourceFunctions.get(nameOfApproximationStrategy);
+        double left = sourceFunction.leftBound();
+        double right = sourceFunction.rightBound();
+        double h = (right - left) / (numberOfPointsForApproximation - 1);
+        double[] yPoints = new double[numberOfPointsForApproximation];
+        for (int i = 0; i < yPoints.length; i++) {
+            yPoints[i] = sourceFunction.apply(sourceFunction.leftBound() + i * h);
+        }
+        try {
+            MathFunction function = ((MathFunction) approximationStrategies.get(nameOfApproximationStrategy).invoke(classes.get(approximationStrategies.get(nameOfApproximationStrategy))
+                    .getDeclaredConstructor(Double.TYPE, Double.TYPE, Integer.TYPE)
+                    .newInstance(left, right, numberOfPointsForApproximation), yPoints));
+            functions.put(
+                    nameOfApproximationStrategy, anyState().getFactory()
+                            .create(function, left, right, sourceFunction.getCount()));
+        } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 
     private static double round(double value, int places) {
@@ -284,8 +326,10 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
     }
 
     public static int factorial(int n) {
-        int ret = 1;
-        for (int i = 1; i <= n; ++i) ret *= i;
-        return ret;
+        int result = 1;
+        for (int i = 1; i <= n; ++i) {
+            result *= i;
+        }
+        return result;
     }
 }
