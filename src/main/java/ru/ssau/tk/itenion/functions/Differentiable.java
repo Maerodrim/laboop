@@ -1,7 +1,5 @@
 package ru.ssau.tk.itenion.functions;
 
-import ru.ssau.tk.itenion.Copyable;
-
 public interface Differentiable extends Copyable {
     MathFunction differentiate();
 

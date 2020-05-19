@@ -2,8 +2,6 @@ package ru.ssau.tk.itenion.labNumericalMethods.lab2;
 
 import Jama.Matrix;
 import ru.ssau.tk.itenion.functions.MathFunction;
-import ru.ssau.tk.itenion.functions.factory.TabulatedFunctionFactory;
-import ru.ssau.tk.itenion.functions.tabulatedFunctions.TabulatedFunction;
 import ru.ssau.tk.itenion.ui.ConnectableItem;
 import ru.ssau.tk.itenion.ui.Item;
 
@@ -60,7 +58,12 @@ public class Approximation {
         };
     }
 
-    @ConnectableItem(name = "Интерполяция полиномами Ньютона", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 2)
+    @ConnectableItem(name = "Интерполяция полиномами Лагранжа на усеченном отрезке", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 2)
+    public MathFunction lagrangeTabulateOnATruncatedSegment(double[] yPoints) {
+        return lagrangeTabulate(yPoints);
+    }
+
+    @ConnectableItem(name = "Интерполяция полиномами Ньютона", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 3)
     public MathFunction newtonTabulate(double[] yPoints) {
         return new MathFunction() {
             private static final long serialVersionUID = 1460863578548877512L;
@@ -86,7 +89,12 @@ public class Approximation {
         };
     }
 
-    @ConnectableItem(name = "Интерполяция линейным сплайном", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 3, isForSplineApproximation = true)
+    @ConnectableItem(name = "Интерполяция полиномами Ньютона на усеченном отрезке", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 4)
+    public MathFunction newtonTabulateOnATruncatedSegment(double[] yPoints) {
+        return newtonTabulate(yPoints);
+    }
+
+    @ConnectableItem(name = "Интерполяция линейным сплайном", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 5, isForSplineApproximation = true)
     public MathFunction linearSpline(double[] yPoints) {
         Matrix A = new Matrix(new double[][]{
                 {1, 0, 0, 0, 0, 0},
@@ -100,7 +108,7 @@ public class Approximation {
         return spline(LINEAR, A.solve(B));
     }
 
-    @ConnectableItem(name = "Интерполяция параболическим сплайном", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 4, isForSplineApproximation = true)
+    @ConnectableItem(name = "Интерполяция параболическим сплайном", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 6, isForSplineApproximation = true)
     public MathFunction parabolicSpline(double[] yPoints) {
         Matrix A = new Matrix(new double[][]{
                 {1,     0,        0,        0,      0,         0,       0,     0,      0},
@@ -117,7 +125,7 @@ public class Approximation {
         return spline(PARABOLIC, A.solve(B));
     }
 
-    @ConnectableItem(name = "Интерполяция кубическим сплайном", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 5, isForSplineApproximation = true)
+    @ConnectableItem(name = "Интерполяция кубическим сплайном", type = Item.APPROXIMATION_NUMERICAL_METHOD, priority = 7, isForSplineApproximation = true)
     public MathFunction cubicSpline(double[] yPoints) {
         Matrix A = new Matrix(new double[][]{
                 {1,     0,     0,         0,            0,      0,      0,         0,           0,      0,        0,        0},

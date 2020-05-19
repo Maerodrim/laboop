@@ -51,8 +51,7 @@ public class VMFSV implements VMF {
         }
         signs.forEach(supportedSign -> functionList.add(supportedSign.getVAMF()));
         baseOfVMF.forEach((variableIntegerPair, function) -> {
-            MathFunction reducedFunction = function;
-            functionList.get(variableIntegerPair.getValue() - 1).put(variableIntegerPair.getKey(), reducedFunction);
+            functionList.get(variableIntegerPair.getValue() - 1).put(variableIntegerPair.getKey(), function);
             if (variableIntegerPair.getKey() == Variable.values()[Variable.values().length - 1]) {
                 joiner.add(functionList.get(variableIntegerPair.getValue() - 1).toString());
                 dim++;

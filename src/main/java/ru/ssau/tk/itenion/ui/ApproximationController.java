@@ -50,10 +50,12 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
         approximationStrategies = (Map<String, Method>) maps[1];
         approximationStrategyComboBox.getItems().setAll(approximationStrategies.keySet());
         approximationStrategyComboBox.getItems().add("Построить полиномы Лагранжа и Ньютона");
-        approximationStrategyComboBox.getItems().add("Построить полином и линейный сплайн");
-        approximationStrategyComboBox.getItems().add("Построить полином и параболический сплайн");
-        approximationStrategyComboBox.getItems().add("Построить полином и кубический сплайн");
+        approximationStrategyComboBox.getItems().add("Построить полиномы Лагранжа и Ньютона на усеченном отрезке");
+        approximationStrategyComboBox.getItems().add("Построить полином и линейный сплайн на усеченном отрезке");
+        approximationStrategyComboBox.getItems().add("Построить полином и параболический сплайн на усеченном отрезке");
+        approximationStrategyComboBox.getItems().add("Построить полином и кубический сплайн на усеченном отрезке");
         approximationStrategyComboBox.getItems().add("Построить сплайны");
+        approximationStrategyComboBox.getItems().add("Построить все графики");
         approximationStrategyComboBox.getSelectionModel().selectFirst();
     }
 
@@ -66,7 +68,7 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
     public void setStage(Stage stage) {
         stage.setOnShown(windowEvent -> {
             state().accept(this);
-            setAccuracy("Интерполяция полиномами Ньютона", polynomialAccuracyLabels);
+            setAccuracy("Интерполяция полиномами Ньютона на усеченном отрезке", polynomialAccuracyLabels);
         });
         this.stage = stage;
     }
@@ -77,14 +79,17 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
             case "Интерполяция полиномами Лагранжа":
             case "Интерполяция полиномами Ньютона":
             case "Построить полиномы Лагранжа и Ньютона":
+            case "Построить полиномы Лагранжа и Ньютона на усеченном отрезке":
+            case "Построить сплайны":
+            case "Построить все графики":
                 break;
-            case "Построить полином и линейный сплайн":
+            case "Построить полином и линейный сплайн на усеченном отрезке":
                 setAccuracy("Интерполяция линейным сплайном", splineAccuracyLabels);
                 break;
-            case "Построить полином и параболический сплайн":
+            case "Построить полином и параболический сплайн на усеченном отрезке":
                 setAccuracy("Интерполяция параболическим сплайном", splineAccuracyLabels);
                 break;
-            case "Построить полином и кубический сплайн":
+            case "Построить полином и кубический сплайн на усеченном отрезке":
                 setAccuracy("Интерполяция кубическим сплайном", splineAccuracyLabels);
                 break;
             default:
@@ -114,23 +119,35 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
                             "Интерполяция полиномами Лагранжа",
                             "Интерполяция полиномами Ньютона");
                     break;
-                case "Построить полином и линейный сплайн":
+                case "Построить полиномы Лагранжа и Ньютона на усеченном отрезке":
+                    plotAllFunctions(
+                            "Интерполяция полиномами Лагранжа на усеченном отрезке",
+                            "Интерполяция полиномами Ньютона на усеченном отрезке");
+                    break;
+                case "Построить полином и линейный сплайн на усеченном отрезке":
                     plotAllFunctions(
                             "Интерполяция линейным сплайном",
-                            "Интерполяция полиномами Ньютона");
+                            "Интерполяция полиномами Ньютона на усеченном отрезке");
                     break;
-                case "Построить полином и параболический сплайн":
+                case "Построить полином и параболический сплайн на усеченном отрезке":
                     plotAllFunctions(
                             "Интерполяция параболическим сплайном",
-                            "Интерполяция полиномами Ньютона");
+                            "Интерполяция полиномами Ньютона на усеченном отрезке");
                     break;
-                case "Построить полином и кубический сплайн":
+                case "Построить полином и кубический сплайн на усеченном отрезке":
                     plotAllFunctions(
                             "Интерполяция кубическим сплайном",
-                            "Интерполяция полиномами Ньютона");
+                            "Интерполяция полиномами Ньютона на усеченном отрезке");
                     break;
                 case "Построить сплайны":
                     plotAllFunctions(
+                            "Интерполяция линейным сплайном",
+                            "Интерполяция параболическим сплайном",
+                            "Интерполяция кубическим сплайном");
+                    break;
+                case "Построить все графики":
+                    plotAllFunctions(
+                            "Интерполяция полиномами Ньютона на усеченном отрезке",
                             "Интерполяция линейным сплайном",
                             "Интерполяция параболическим сплайном",
                             "Интерполяция кубическим сплайном");
@@ -155,23 +172,35 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
                             "Интерполяция полиномами Лагранжа",
                             "Интерполяция полиномами Ньютона");
                     break;
-                case "Построить полином и линейный сплайн":
+                case "Построить полиномы Лагранжа и Ньютона на усеченном отрезке":
+                    plotAllAccuracyFunctions(
+                            "Интерполяция полиномами Лагранжа на усеченном отрезке",
+                            "Интерполяция полиномами Ньютона на усеченном отрезке");
+                    break;
+                case "Построить полином и линейный сплайн на усеченном отрезке":
                     plotAllAccuracyFunctions(
                             "Интерполяция линейным сплайном",
-                            "Интерполяция полиномами Ньютона");
+                            "Интерполяция полиномами Ньютона на усеченном отрезке");
                     break;
-                case "Построить полином и параболический сплайн":
+                case "Построить полином и параболический сплайн на усеченном отрезке":
                     plotAllAccuracyFunctions(
                             "Интерполяция параболическим сплайном",
-                            "Интерполяция полиномами Ньютона");
+                            "Интерполяция полиномами Ньютона на усеченном отрезке");
                     break;
-                case "Построить полином и кубический сплайн":
+                case "Построить полином и кубический сплайн на усеченном отрезке":
                     plotAllAccuracyFunctions(
                             "Интерполяция кубическим сплайном",
-                            "Интерполяция полиномами Ньютона");
+                            "Интерполяция полиномами Ньютона на усеченном отрезке");
                     break;
                 case "Построить сплайны":
                     plotAllAccuracyFunctions(
+                            "Интерполяция линейным сплайном",
+                            "Интерполяция параболическим сплайном",
+                            "Интерполяция кубическим сплайном");
+                    break;
+                case "Построить все графики":
+                    plotAllAccuracyFunctions(
+                            "Интерполяция полиномами Ньютона на усеченном отрезке",
                             "Интерполяция линейным сплайном",
                             "Интерполяция параболическим сплайном",
                             "Интерполяция кубическим сплайном");
@@ -260,8 +289,11 @@ public class ApproximationController implements TFTabVisitor, PlotAccessible, In
         approximationStrategies.keySet().forEach(value -> sourceFunctions.put(value, tfState.getFunction().copy()));
         approximationStrategies.keySet()
                 .forEach(value -> {
+                    if (value.equals("Интерполяция линейным сплайном") || value.equals("Интерполяция параболическим сплайном") || value.equals("Интерполяция кубическим сплайном")) {
+                        sourceFunctions.replace(value, sourceFunctions.get("Интерполяция полиномами Лагранжа на усеченном отрезке"));
+                    }
                     startApproximation(value);
-                    if ((value.equals("Интерполяция полиномами Лагранжа") || value.equals("Интерполяция полиномами Ньютона")) && isInvalidError(value)) {
+                    if ((value.equals("Интерполяция полиномами Лагранжа на усеченном отрезке") || value.equals("Интерполяция полиномами Ньютона на усеченном отрезке")) && isInvalidError(value)) {
                         cropUntilNotProperlyError(value);
                     }
                 });
